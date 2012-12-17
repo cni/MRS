@@ -1,8 +1,5 @@
 import numpy as np
 
-import pfile
-import pfheader
-
 import nitime as nt
 import nitime.analysis as nta
 
