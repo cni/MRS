@@ -1,17 +1,17 @@
 import numpy.testing as npt
 import scipy.io as sio
 
-import mrs
+import ..io as io
 
-file_name = 'mrs/pure_gaba_P64024.7'
+file_name = '../data/pure_gaba_P64024.7'
 
 def test_get_header():
     """
     Test that the header we get has the same information as was read by the
     matlab code.
     """
-    mat_header = sio.loadmat('header.mat', squeeze_me=True)['header']
-    hdr = mrs.get_header(file_name)
+    mat_header = sio.loadmat('../header.mat', squeeze_me=True)['header']
+    hdr = io.get_header(file_name)
 
     for x in hdr:
         npt.assert_(mat_header[x]==hdr[x], "hdr['%s'] = %s, not %s "%(
@@ -22,8 +22,8 @@ def test_get_data():
     Test that the data is the same as the one read using Matlab tools.
 
     """ 
-    matlab_data = sio.loadmat('data.mat', squeeze_me=True)['data']
-    mrs_data = mrs.get_data(file_name)
+    matlab_data = sio.loadmat('../data.mat', squeeze_me=True)['data']
+    mrs_data = io.get_data(file_name)
 
     # There are differences in the data because the numbers are very large, so
     # we check that the differences are minscule in relative terms:
