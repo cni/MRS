@@ -1,5 +1,9 @@
 #! /usr/bin/python
 
+# plots multiple spectra on the same plot
+# takes folders with echo1 and echo2 subfolders as arguments
+# e.g. usage: python gaba_multiplot.py folder1 folder2 folder3 
+
 import os
 import array
 import numpy

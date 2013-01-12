@@ -1,6 +1,6 @@
 #! /usr/bin/python
 
-# Wang 2006 and  Sanacora 1999's method of calculating the GABA concentration 
+# attempting Wang 2006's method of calculating the GABA concentration 
 
 import os
 import array
