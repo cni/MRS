@@ -9,8 +9,13 @@ import array
 import numpy
 import matplotlib.pyplot as plt
 import sys
+from frange import *
 
 sage = os.environ['SAGE_DATABASE']
+
+inc = -1* (5.1/534)
+xAxisRange = list(frange(4.3, -0.8, inc))
+
 for exam in range(1,len(sys.argv)):
 	print 'plotting %s' % sys.argv[exam]
 
@@ -29,10 +34,10 @@ for exam in range(1,len(sys.argv)):
 	    diff1[i] -= d1[i]
 
 	ax = plt.subplot(1,1,1)
-	ax.plot(diff1[::2])
+	ax.plot(xAxisRange,diff1[::2])
 
 ax.set_title('Diffs')
 ax.set_ylim(-.1,.1)
-ax.set_xlim(0,534)
+ax.set_xlim(4.3,-0.8)
 
 plt.show()
