@@ -13,10 +13,13 @@ from scipy.ndimage.filters import maximum_filter1d
 from peakdetect import *
 from pylab import *
 import array
+import scipy.linalg as la
+from MRS.utils import *
+
 sage = os.environ['SAGE_DATABASE']
 
-def lorentzian(l,x):
-	return l/(l**2+(x)**2)
+def lorentzian(l,w,x):
+	return l/(l**2+(x-w)**2)
 
 # read file
 exam = 'SM3714/SM_LStr2'
@@ -50,7 +53,6 @@ maxmax = array.array('f')
 for idx in range(len(peak_x)):
 	cluster=array.array('f')
 	[cluster.append(peak_x[i]) for i in range(len(peak_x)) if peak_x[idx]-10<peak_x[i]<peak_x[idx]+10]
-	print cluster
 	max_x=array.array('f')
 	for idx in range(len(cluster)):
 		max_x.append(d1real[int(cluster[idx])])
@@ -60,7 +62,6 @@ uniquemaxmax = list(set(maxmax))
 unique_peak=array.array('f')
 for idx in range(len(uniquemaxmax)):
         unique_peak.append(d1real.index(uniquemaxmax[idx]))
-print unique_peak
 
 for idx in range(len(unique_peak)):
 	plot(unique_peak[idx],d1real[int(unique_peak[idx])], 'ro')
@@ -70,34 +71,40 @@ for idx in range(len(unique_peak)):
 # model peaks convolve delta and lorentzian function 
 lorentz=array.array('f')
 for x in np.arange(-1,1,0.01):
-	lorentz.append(lorentzian(0.1,x))
+	lorentz.append(lorentzian(0.1,0,x))
 #figure(2)
 #plot(np.arange(-1,1,0.01),lorentz)
-#plt.show()
+##plt.show()
 
 # for each unique peak found before, construct delta function
 deltas=np.zeros((len(unique_peak),534))
 for i in range(len(unique_peak)):
 	deltas[i][int(unique_peak[i])]=1
 
-delta_mat = np.asmatrix(deltas)
-print delta_mat
+figure(2)
+for idx in range(len(unique_peak)):
+        plot(unique_peak[idx],d1real[int(unique_peak[idx])], 'ro')
+
 # convolve with lorentzian
-deltas_con = np.zeros((1,534))
+X = np.zeros((len(unique_peak),534))
 for i in range(len(unique_peak)):
-	print len(deltas[i])
-	deltas_c = deltas[i]*lorentz
-	plot(deltas_c)
-	print len(deltas_c)
-	print len(deltas_con)
-	deltas_con=np.vstack([deltas_con, deltas_c])
+	lor = array.array('f')
+	for j in range(534):
+		lor.append(lorentzian(0.4,int(unique_peak[i]),j))
+	X[i]=lor
+	plot(X[i])
+##plt.show()
+res = np.dot(ols_matrix(X.T),d1real)
+print res
 
-#initial = 0.1, 0.1 # initial guess
-#params, _ = opt.leastsq(err_func, initial, args=(xAxis,d1,lorentzian))
+# convert peak x axis units to ppm and print corresponding beta
+print 'RESULTS:'
+for i in range(len(unique_peak)):
+	ppm =  4.3 - (unique_peak[i]/534 * 5.1)
+	print 'ppm: ' + str(ppm) + '; amp: ' + str(res[0,i])
 
+plt.show()
 
-#xopt = fmin(lorentzian, x0, maxiter=300)
-#print xopt
-
+# verify - multiply design matrix by betas, do you get something resembling raw data?
 
 
