@@ -50,25 +50,27 @@ def coil_combine(data, w_idx=[1,2,3], sampling_rate=5000.0, NFFT=640):
     ts_w = nt.TimeSeries(w_data.T, sampling_rate=sampling_rate)
     ts_w_supp = nt.TimeSeries(w_supp_data.T, sampling_rate=sampling_rate)
         
-    # Push them through into spectral analysis. We'll use the Welch method
-    S_w = nta.SpectralAnalyzer(ts_w, method=dict(NFFT=NFFT))    
-    f_w, psd_w = S_w.spectrum_multi_taper
-
+    # Push them through into spectral analysis. We'll use the Fourier
+    # transformed version of this:
+    S_w = nta.SpectralAnalyzer(ts_w)    
+    f_w, psd_w = S_w.spectrum_fourier
     # Average across repeats:
-    max_psd = np.max(psd_w.squeeze(), -1)
-    max_psd = np.mean(max_psd, 2)
+    mean_psd = np.mean(psd_w.squeeze(), -1)
+    mean_psd = np.mean(mean_psd, 2)
     # Average across off-/on-resonance (they're very similar anyway):
-    max_psd = np.mean(max_psd, -1) 
-    w = np.power(max_psd/np.sqrt(np.sum(max_psd**2)),2)
-    w = max_psd/np.sqrt(np.sum(max_psd))
+    mean_psd = np.mean(mean_psd, -1) 
+    w = np.power(mean_psd/np.sqrt(np.sum(mean_psd**2)),2)
+    w = mean_psd/np.sqrt(np.sum(mean_psd))
     # Shorthand:
     na = np.newaxis
-    # reshape to the data dimensions, so that you can broadcast
+    # reshape to the number of dimensions in the data, so that you can broadcast
     w = w[:,na,na,na] #* 8 
     # Making sure the coil dimension is now first:
     weighted_w_data = np.sum(w * w_data.squeeze().T, 0)
     weighted_w_supp_data = np.sum(w * w_supp_data.squeeze().T, 0)
     return weighted_w_data, weighted_w_supp_data
+
+
 
 if "__name__" == "__main__":
 

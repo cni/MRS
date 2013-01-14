@@ -3,6 +3,11 @@ Utility functions for analysis of MRS data.
 
 """ 
 
+import numpy as np
+import scipy.linalg as la
+import scipy.stats as stats
+import nitime.timeseries as nts
+
 """
 lowess: Locally linear regression  
 ==================================
@@ -16,9 +21,6 @@ Learning; Chapter 6
 Scatterplots. J American Statistical Association, 74: 829-836.
 
 """
-import numpy as np
-import scipy.linalg as la
-import scipy.stats as stats
 
 # Kernel functions:
 def epanechnikov(xx, idx=None):
@@ -299,3 +301,45 @@ def unit_vector(arr, norm_func=l2_norm):
     
     """
     return arr/norm_func(arr)
+
+def zero_pad(ts, n_zeros):
+    """
+    Pad a nitime.TimeSeries class instance with n_zeros before and after the
+    data
+
+    Parameters
+    ----------
+    ts : a nitime.TimeSeries class instance
+    
+    """
+    
+    zeros_shape = ts.shape[:-1] + (n_zeros,)
+    zzs = np.zeros(zeros_shape)
+    # Concatenate along the time-dimension:
+    new_data = np.concatenate((zzs, ts.data, zzs), axis=-1)
+
+    return nts.TimeSeries(new_data, sampling_rate=ts.sampling_rate)
+
+def apodize(ts, window=np.hanning):
+    """
+    Window the time-series in each of its channels
+
+    Parameters
+    ----------
+    ts : a nitime.TimeSeries class instance
+
+    window : callable.
+       A function that returns a window. Default np.hamming
+    
+    """
+    # We'll need to broadcast into this many dims:
+    n_dims = len(ts.shape)
+
+    # The window is the length of the time-dimension:
+    win = window(ts.shape[-1])
+
+    for d in range(n_dims-1):
+        win = win[np.newaxis,...]
+
+    new_data = ts.data * win
+    return nts.TimeSeries(new_data, sampling_rate=ts.sampling_rate)
