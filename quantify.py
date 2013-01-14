@@ -10,101 +10,116 @@ import scipy.integrate
 import matplotlib.pyplot as plt
 import sys
 from scipy.ndimage.filters import maximum_filter1d
-from peakdetect import *
 from pylab import *
 import array
 import scipy.linalg as la
 from MRS.utils import *
+from peaks import * 
 
 sage = os.environ['SAGE_DATABASE']
 
-def lorentzian(l,w,x):
-	return l/(l**2+(x-w)**2)
-
 # read file
+# eventually want to enter exam as input argument
 exam = 'SM3714/SM_LStr2'
+# echo 1 - GABA suppressed
 f1 = open(sage+'/'+exam+'/echo1/P11111.7_combine_pro.sdf', 'rb')
 d1 = array.array('f')
 d1.fromfile(f1, 1068)
+# echo 2 - GABA non-suppressed 
+f2 = open(sage+'/'+exam+'/echo2/P11111.7_combine_pro.sdf', 'rb')
+d2 = array.array('f')
+d2.fromfile(f2, 1068)
 
+# take real numbers only 
 d1real = d1[::2]
+d2real = d2[::2]
+# calculate difference
+diff_tmp = d2
+for i in range(len(diff_tmp)):
+    diff_tmp[i] -= d1[i]
+diff = diff_tmp[::2]
+
+# number of points in data
+npts = len(d1real)
+
+xmin = 4.3 # x axis lower bound
+xmax = -0.8 # x axis upper bound
 
 # plot fig
-xAxis = np.arange(4.3,-0.8,-5.1/534)
-#fig, ax = plt.subplots(1)
+xAxis = np.arange(xmin,xmax,(xmax-xmin)/npts)
 figure(1)
-plot(range(534),d1real)
-#plot(xAxis, d1real)
-#ax.plot(xAxis,d1real) # plot real values only
-#ax.set_title('Echo 1')
-#ax.set_xlim(4.3,-0.8)
-#plt.show()
+plot(xAxis,d1real)
+plot(xAxis,d2real)
+plot(xAxis,diff)
+xlim(xmin,xmax)
 
+# detect peaks -- should really make a function that will search for peaks near known peaks
+# returns in index not ppm
+peaks1 = peakdetect(d1real)
+peaks2 = peakdetect(d2real)
+peaksDiff = peakdetect(diff)
 
-# detect peaks
-local_max = maximum_filter1d(d1real,100)
-unique_max = list(set(local_max))
-# find index of maxima
-peak_x=array.array('f')
-for idx in range(len(unique_max)):
-	peak_x.append(d1real.index(unique_max[idx]))
-# if indices are very close together, take the max of that cluster
-maxmax = array.array('f')
-for idx in range(len(peak_x)):
-	cluster=array.array('f')
-	[cluster.append(peak_x[i]) for i in range(len(peak_x)) if peak_x[idx]-10<peak_x[i]<peak_x[idx]+10]
-	max_x=array.array('f')
-	for idx in range(len(cluster)):
-		max_x.append(d1real[int(cluster[idx])])
-		print d1real[int(cluster[idx])]
-	maxmax.append(max(max_x))
-uniquemaxmax = list(set(maxmax))	
-unique_peak=array.array('f')
-for idx in range(len(uniquemaxmax)):
-        unique_peak.append(d1real.index(uniquemaxmax[idx]))
+# convert to ppm
+ppmPeaks1 = array.array('f')
+ppmPeaks2 = array.array('f')
+ppmPeaksDiff = array.array('f')
+for i in range(len(peaks1)):
+	ppmPeaks1.append(peaks1[i]*(xmax-xmin)/npts+xmin)
+for i in range(len(peaks2)):
+	ppmPeaks2.append(peaks2[i]*(xmax-xmin)/npts+xmin)
+for i in range(len(peaksDiff)):
+	ppmPeaksDiff.append(peaksDiff[i]*(xmax-xmin)/npts+xmin)
 
-for idx in range(len(unique_peak)):
-	plot(unique_peak[idx],d1real[int(unique_peak[idx])], 'ro')
-#plt.show()
+# plot - should visually check!
+for idx in range(len(peaks2)):
+	plot(ppmPeaks2[idx],d2real[int(peaks2[idx])], 'co')
+for idx in range(len(peaks1)):
+	plot(ppmPeaks1[idx],d1real[int(peaks1[idx])], 'ro')
+for idx in range(len(peaksDiff)):
+	plot(ppmPeaksDiff[idx],diff[int(peaksDiff[idx])], 'mo')
+plt.show()
 
-
-# model peaks convolve delta and lorentzian function 
-lorentz=array.array('f')
-for x in np.arange(-1,1,0.01):
-	lorentz.append(lorentzian(0.1,0,x))
-#figure(2)
-#plot(np.arange(-1,1,0.01),lorentz)
-##plt.show()
-
-# for each unique peak found before, construct delta function
-deltas=np.zeros((len(unique_peak),534))
-for i in range(len(unique_peak)):
-	deltas[i][int(unique_peak[i])]=1
-
-figure(2)
-for idx in range(len(unique_peak)):
-        plot(unique_peak[idx],d1real[int(unique_peak[idx])], 'ro')
 
 # convolve with lorentzian
-X = np.zeros((len(unique_peak),534))
-for i in range(len(unique_peak)):
-	lor = array.array('f')
-	for j in range(534):
-		lor.append(lorentzian(0.4,int(unique_peak[i]),j))
-	X[i]=lor
-	plot(X[i])
-##plt.show()
-res = np.dot(ols_matrix(X.T),d1real)
-print res
+X1 = conv_lorentz(peaks1, d1real)
+X2 = conv_lorentz(peaks2, d2real)
+Xdiff = conv_lorentz(peaksDiff, diff)
+
+# calculate the betas
+res1 = np.dot(ols_matrix(X1.T),d1real) # dot multiple ordinary least squares matrix and Y
+res2 = np.dot(ols_matrix(X2.T),d2real) # dot multiple ordinary least squares matrix and Y
+resDiff = np.dot(ols_matrix(Xdiff.T),diff) # dot multiple ordinary least squares matrix and Y
 
 # convert peak x axis units to ppm and print corresponding beta
 print 'RESULTS:'
-for i in range(len(unique_peak)):
-	ppm =  4.3 - (unique_peak[i]/534 * 5.1)
-	print 'ppm: ' + str(ppm) + '; amp: ' + str(res[0,i])
+for i in range(len(peaks1)):
+	ppm =  xmin - (peaks1[i]/npts * (xmin-xmax))
+	print 'ppm: ' + str(ppm) + '; amp: ' + str(res1[0,i])
 
-plt.show()
+#plt.show()
 
 # verify - multiply design matrix by betas, do you get something resembling raw data?
+
+
+
+# calculate GABA peak from difference between echo 2 and echo 1
+
+
+# reference compound peak
+# Wang 2006 paper's reference is Creatine in unedited spectrum
+# Creatine = 3.0ppm in echo2? why not take from GABA-suppressed instead of unedited
+CrPeakIdx = peak_nearest(3.0, ppmPeaks2)
+CrAmp = res2[0,CrPeakIdx]
+
+# GABA = 3.0ppm in diff (GABA edited)
+GABAPeakIdx = peak_nearest(3.0, ppmPeaksDiff)
+GABAamp = resDiff[0,GABAPeakIdx]
+
+
+
+# find correct GABA concentration using reference
+GABAconc = GABAamp/CrAmp 
+print 'GABA: '+ str(GABAconc)
+
 
 
