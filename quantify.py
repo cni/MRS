@@ -14,13 +14,14 @@ from pylab import *
 import array
 import scipy.linalg as la
 from MRS.utils import *
-from peaks import * 
+from MRS.peaks import * 
 
 sage = os.environ['SAGE_DATABASE']
 
 # read file
-# eventually want to enter exam as input argument
-exam = 'SM3714/SM_LStr2'
+exam = str(sys.argv[1])
+#exam = 'SM3714/SM_LStr2'
+
 # echo 1 - GABA suppressed
 f1 = open(sage+'/'+exam+'/echo1/P11111.7_combine_pro.sdf', 'rb')
 d1 = array.array('f')
