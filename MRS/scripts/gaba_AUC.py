@@ -1,6 +1,7 @@
 #! /usr/bin/python
 
 # attempting Wang 2006's method of calculating the GABA concentration 
+# takes folder name as argument
 
 import os
 import array
@@ -16,13 +17,15 @@ sage = os.environ['SAGE_DATABASE']
 exam = str(sys.argv[1])
 
 inc = -1* (5.1/534)
-xrange = list(frange(4.3, -0.8, inc))
-#print xrange
-#print len(xrange)
+xAxis = list(frange(4.3, -0.8, inc))
+#print xAxis
+#print len(xAxis)
 
 newlines = array.array('c')
 f1 = open(sage+'/'+exam+'/echo1/P11111.7_combine_pro.sdf', 'rb')
 f2 = open(sage+'/'+exam+'/echo2/P11111.7_combine_pro.sdf', 'rb')
+
+
 
 # if diff file was already created, open it
 try:
@@ -40,14 +43,15 @@ d1.fromfile(f1, 1068)
 ax1 = plt.subplot(3,1,1)
 #print len(d1[::2])
 #ax1.plot(d1[::2]) # plot real values only
-ax1.plot(xrange,d1[::2]) # plot real values only
+ax1.plot(xAxis,d1[::2]) # plot real values only
 ax1.set_title('Echo 1')
 ax1.set_xlim(4.3,-0.8)
+
 
 d2 = array.array('f')
 d2.fromfile(f2, 1068)
 ax2 = plt.subplot(3,1,2)
-ax2.plot(xrange,d2[::2])
+ax2.plot(xAxis,d2[::2])
 ax2.set_title('Echo 2')
 ax2.set_xlim(4.3,-0.8)
 
@@ -55,9 +59,9 @@ diff = d2
 for i in range( len(diff) ):
     diff[i] -= d1[i]
 ax3 = plt.subplot(3,1,3)
-ax3.plot(xrange, diff[::2])
+ax3.plot(xAxis, diff[::2])
 ax3.set_title('Diff')
-ax3.set_ylim(-.02,.02)
+#ax3.set_ylim(-.02,.02)
 ax3.set_xlim(4.3,-0.8)
 
 plt.show()
@@ -77,11 +81,11 @@ print "AUC Cr: %f" %aucCr
 # trying curve fitting (wang 2006)
 plt.figure(2)
 axdiff = plt.subplot(1,1,1)
-axdiff.plot(xrange,cdiff[::2])
+axdiff.plot(xAxis,cdiff[::2])
 axdiff.set_xlim(4.3,-0.8)
 axdiff.set_title('difference')
 
 # curve fit
-fitdiff = scipy.optimize.curve_fit(f, xrange, cdiff[::2])
-axdiff.plot(xrange, fitdiff[::2])
+fitdiff = scipy.optimize.curve_fit(f, xAxis, cdiff[::2])
+axdiff.plot(xAxis, fitdiff[::2])
 plt.show()
