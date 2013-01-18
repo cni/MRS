@@ -115,7 +115,19 @@ def get_spectra(data, sampling_rate=5000.0,
     # Return the tuple (f_w should be the same as f_nonw, so return only one of
     # them):
     return f_w, w_sig, nonw_sig
+
+
+def normalize_water(w_sig, nonw_sig, idx=slice(44, 578)):
+    """
+    Normalize the water-suppressed signal by the signal that is not
+    water-suppressed, to get rid of the residual water peak.
     
+    """
+    scale_fac = np.mean(w_sig[idx]/nonw_sig[idx])
+    approx = w_sig/scale_fac
+    corrected = nonw_sig - approx
+    return corrected
+
 if "__name__" == "__main__":
     # There will be some testing in here
     pass
