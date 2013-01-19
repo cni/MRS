@@ -47,6 +47,7 @@ def reconstruct(pfile, xmin=4.3, xmax=-0.8, sampling_rate=5000):
 
 	np.save(os.path.join(data_dir,pfile[:-2]), data) # save in .npy format
 
+
 	# process with-water and water-suppressed data
 	print 'coil combine...'
 	w_data, w_supp_data = coil_combine(data)
@@ -139,10 +140,10 @@ def reconstruct(pfile, xmin=4.3, xmax=-0.8, sampling_rate=5000):
 	#ax.plot((f_nonw_off[idx]-76)/128, np.real(corrected_off[1][idx])/np.max(np.real(corrected_off[1][idx])))
 	#ax.plot((f_nonw_on[idx]-76)/128, np.real(corrected_on[1][idx])/np.max(np.real(corrected_on[1][idx])))
 
-	amp_off = np.real(corrected_off[1][idx])/np.max(np.real(corrected_off[1][idx]))
-	amp_on = np.real(corrected_on[1][idx])/np.max(np.real(corrected_on[1][idx]))
-	#amp_off = np.real(corrected_off[1][idx])
-	#amp_on = np.real(corrected_on[1][idx])
+	#amp_off = np.real(corrected_off[1][idx])/np.max(np.real(corrected_off[1][idx]))
+	#amp_on = np.real(corrected_on[1][idx])/np.max(np.real(corrected_on[1][idx]))
+	amp_off = np.real(corrected_off[1][idx])
+	amp_on = np.real(corrected_on[1][idx])
 
 
 	npts = len(amp_on) 
@@ -177,7 +178,7 @@ def quantify(pfile, xmin=4.3, xmax=-0.8):
 	amp_on, amp_off = reconstruct(pfile)
 	
 	# calculate difference between on and off resonance data
-	figure(1)
+	figure(2)
 
 	npts = len(amp_on)
         xAxis = np.arange(xmin,xmax,(xmax-xmin)/npts)
@@ -223,7 +224,8 @@ def quantify(pfile, xmin=4.3, xmax=-0.8):
 	# find correct GABA concentration using Creatine reference
 	GABAconc = GABA_AUC/Cr_AUC
 	print 'GABA: '+ str(GABAconc)
-
+	
+	return GABAconc
 
 
 

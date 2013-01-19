@@ -90,11 +90,11 @@ def two_echo_coil_combine(data, w_idx=[1,2,3], sampling_rate=5000.0, NFFT=640):
     # reshape to the number of dimensions in the data, so that you can broadcast
     #w = w[:,na,na,na] #* 8 
     
-    w_off = w_off[:,na,na]
+    w_off = w_off[:,na,na,na]
     weighted_w_data_off = np.sum(w_off * w_data_off.squeeze().T, 0)
     weighted_w_supp_data_off = np.sum(w_off * w_supp_data_off.squeeze().T, 0)
 
-    w_on = w_on[:,na,na]
+    w_on = w_on[:,na,na,na]
     weighted_w_data_on = np.sum(w_on * w_data_on.squeeze().T, 0)
     weighted_w_supp_data_on = np.sum(w_on * w_supp_data_on.squeeze().T, 0)
     
