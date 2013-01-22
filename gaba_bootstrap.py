@@ -27,6 +27,17 @@ nTransients = (hdr['nframes']-4)*2
 print 'number of transients: ' + str(nTransients) # which one is number of transients?
 
 ### bootstrap ###
+# coil combine, get water signal
 w_data, w_supp_data = coil_combine(data)
+f_w, w_sig = get_single_spectra(w_data)
 
-CIs = bootstrap.ci(w_supp_data, statfunction=get_single_spectra, alpha=0.05, n_samples=10000, method='bca')
+w_supp_data = w_supp_data.swapaxes(0,1) # swap axes so that the transients are axis = 0
+print w_supp_data.shape
+
+CIs = bootstrap.ci(w_supp_data, statfunction=get_single_spectra, alpha=0.05, n_samples=10, method='bca')  # should use 10000 samples, but here reduced to see if this is working
+
+print CIs
+#(UL,LL) = CIs # upper and lower limit
+
+# normalize with water signal
+#corrected_UL = normalize_water(w_sig, CIs)
