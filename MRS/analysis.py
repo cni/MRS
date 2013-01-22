@@ -116,6 +116,36 @@ def get_spectra(data, sampling_rate=5000.0,
     # them):
     return f_w, w_sig, nonw_sig
 
+def get_single_spectra(data, sampling_rate=5000.0,
+                filt_method=dict(lb=1.8, ub=600., filt_order=128),
+                spect_method=dict(NFFT=128, BW=6)):
+    """
+    Derive the spectra from MRS data (one set of data at a time)
+
+    Parameters
+    ----------
+    data : individual outputs of `coil_combine`s, i.e. either w_data or w_supp_data 
+
+    
+    """
+    ts_w = ut.apodize(nts.TimeSeries(np.mean(data, 1),
+                                     sampling_rate=sampling_rate))
+
+    f_ts_w = nta.FilterAnalyzer(ts_w, **filt_method).fir
+    S_w = nta.SpectralAnalyzer(ts_w,
+                               method=dict(NFFT=spect_method['NFFT']),
+                               BW=spect_method['BW'])
+
+
+    f_w, c_w = S_w.spectrum_multi_taper
+
+    # Extract only the real part of the spectrum:
+    w_sig = np.real(c_w)
+
+    # Return the tuple (f_w should be the same as f_nonw, so return only one of
+    # them):
+    return f_w, w_sig
+
 
 def normalize_water(w_sig, nonw_sig, idx=slice(44, 578)):
     """
