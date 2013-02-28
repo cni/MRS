@@ -2,6 +2,7 @@ import os
 
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.mlab as mlab
 
 import files as io
 import nitime as nt
@@ -75,7 +76,7 @@ def coil_combine(data, w_idx=[0,1,2,3]):
     idxes_nonw[np.where(~idxes_w)] = True
     idxes_nonw[0] = False
     w_supp_data = data[:,np.where(idxes_nonw),:,:]
-
+    
     fft_w = fft.fft(w_data)
     fft_w_supp = fft.fft(w_supp_data)
 
@@ -104,9 +105,10 @@ def coil_combine(data, w_idx=[0,1,2,3]):
     # Transpose, so that the time dimension is last:
     return np.squeeze(weighted_w_data).T, np.squeeze(weighted_w_supp_data).T
 
-
 def get_spectra(data, sampling_rate=5000.0,
-                spect_method=dict(NFFT=128, BW=2)):
+                spect_method=dict(NFFT=1024, n_overlap=1023,
+                detrend=mlab.detrend_linear,
+                BW=2)):
     """
     Derive the spectra from MRS data
 
@@ -120,11 +122,8 @@ def get_spectra(data, sampling_rate=5000.0,
     """
     w_data, w_supp_data = data
 
-    ts_w = ut.apodize(nts.TimeSeries(np.mean(w_data, 1),
-                                     sampling_rate=sampling_rate))
-    
-    ts_nonw = ut.apodize(nts.TimeSeries(np.mean(w_supp_data, 1),
-                                        sampling_rate=sampling_rate))
+    ts_w = nts.TimeSeries(w_data, sampling_rate=sampling_rate)
+    ts_nonw = nts.TimeSeries(w_supp_data,sampling_rate=sampling_rate)
 
     S_w = nta.SpectralAnalyzer(ts_w,
                                method=dict(NFFT=spect_method['NFFT']),
@@ -134,13 +133,12 @@ def get_spectra(data, sampling_rate=5000.0,
                                   method=dict(NFFT=spect_method['NFFT']),
                                   BW=spect_method['BW'])
 
-    
-    f_w, c_w = S_w.spectrum_multi_taper
-    f_nonw, c_nonw = S_nonw.spectrum_multi_taper
+    f_w, c_w = S_w.psd
+    f_nonw, c_nonw = S_nonw.psd
 
     # Return the tuple (f_w should be the same as f_nonw, so return only one of
     # them):
-    return f_w, c_w, c_nonw
+    return f_w, np.real(c_w), np.real(c_nonw)
 
 
 def normalize_water(w_sig, nonw_sig, idx):
