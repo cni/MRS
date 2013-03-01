@@ -343,3 +343,12 @@ def apodize(ts, window=np.hanning):
 
     new_data = ts.data * win
     return nts.TimeSeries(new_data, sampling_rate=ts.sampling_rate)
+
+
+def freq_to_ppm(f, water_hz=0.0, water_ppm=4.7, hz_per_ppm=127.8):
+    """
+    Convert a set of numbers from frequeny in hertz to chemical shift in ppm
+    """
+    return water_ppm - (f - water_hz)/hz_per_ppm
+    
+    
