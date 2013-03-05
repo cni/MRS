@@ -12,7 +12,7 @@ import scipy.fftpack as fft
 
 import MRS.utils as ut
 
-def coil_combine(data, w_idx=[0,1,2,3]):
+def coil_combine(data, w_idx=[1,2,3]):
     """
     Combine data across coils based on the amplitude of the water peak,
     according to:
@@ -77,8 +77,8 @@ def coil_combine(data, w_idx=[0,1,2,3]):
     idxes_nonw[0] = False
     w_supp_data = data[:,np.where(idxes_nonw),:,:]
     
-    fft_w = fft.fft(w_data)
-    fft_w_supp = fft.fft(w_supp_data)
+    fft_w = fft.fft(w_data).squeeze()
+    fft_w_supp = fft.fft(w_supp_data).squeeze()
 
     # We use the water peak (the 0th frequency) as the reference:
     zero_freq_w = np.abs(fft_w[0])
@@ -103,12 +103,18 @@ def coil_combine(data, w_idx=[0,1,2,3]):
     weighted_w_data = fft.ifft(np.sum(w[na, na, na, :] * fft_w, -1))
     weighted_w_supp_data = fft.ifft(np.sum(w[na, na, na, :] * fft_w_supp, -1))
     # Transpose, so that the time dimension is last:
-    return np.squeeze(weighted_w_data).T, np.squeeze(weighted_w_supp_data).T
+    w_out = np.squeeze(weighted_w_data).T
+    w_supp_out = np.squeeze(weighted_w_supp_data).T
+    # Normalize to sum to number of measurements:
+    w_out = w_out * (w_out.shape[-1] / np.sum(w_out))
+    w_supp_out = w_supp_out * (w_supp_out.shape[-1] / np.sum(w_supp_out))
+    return w_out, w_supp_out 
 
 def get_spectra(data, sampling_rate=5000.0,
                 spect_method=dict(NFFT=1024, n_overlap=1023,
-                detrend=mlab.detrend_linear,
-                BW=2)):
+                                  #detrend=mlab.detrend_linear,
+                BW=12),
+                filt_method = dict(lb=0.1, filt_order=256)):
     """
     Derive the spectra from MRS data
 
@@ -122,8 +128,13 @@ def get_spectra(data, sampling_rate=5000.0,
     """
     w_data, w_supp_data = data
 
-    ts_w = nts.TimeSeries(w_data, sampling_rate=sampling_rate)
-    ts_nonw = nts.TimeSeries(w_supp_data,sampling_rate=sampling_rate)
+    ts_w = ut.apodize(nta.FilterAnalyzer(
+        nts.TimeSeries(w_data, sampling_rate=sampling_rate),
+        **filt_method).fir)
+    
+    ts_nonw = ut.apodize(nta.FilterAnalyzer(
+        nts.TimeSeries(w_supp_data,sampling_rate=sampling_rate),
+        **filt_method).fir)
 
     S_w = nta.SpectralAnalyzer(ts_w,
                                method=dict(NFFT=spect_method['NFFT']),
@@ -133,8 +144,8 @@ def get_spectra(data, sampling_rate=5000.0,
                                   method=dict(NFFT=spect_method['NFFT']),
                                   BW=spect_method['BW'])
 
-    f_w, c_w = S_w.psd
-    f_nonw, c_nonw = S_nonw.psd
+    f_w, c_w = S_w.spectrum_fourier
+    f_nonw, c_nonw = S_nonw.spectrum_fourier
 
     # Return the tuple (f_w should be the same as f_nonw, so return only one of
     # them):

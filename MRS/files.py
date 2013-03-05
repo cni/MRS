@@ -122,10 +122,6 @@ def get_data(file_name, header=None):
     coilsize = slicesize*hdr['nslices']/hdr['npasses']
     passsize = coilsize*hdr['ncoils']
 
-    
-    # Jump past the header:
-    bytes_to_skip = hdr['rawhdrsize']
-
     for passidx in range(n_passes):
         for coilidx in range(n_coils):
             for sliceidx in range(n_slices):

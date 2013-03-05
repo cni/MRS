@@ -329,14 +329,14 @@ def apodize(ts, window=np.hanning):
     ts : a nitime.TimeSeries class instance
 
     window : callable.
-       A function that returns a window. Default np.hamming
+       A function that returns a window. Default np.hanning
     
     """
     # We'll need to broadcast into this many dims:
     n_dims = len(ts.shape)
 
-    # The window is the length of the time-dimension:
-    win = window(ts.shape[-1])
+    # The window is the length of the time-dimension, but decays towards the end:
+    win = window(ts.shape[-1] * 2)[ts.shape[-1]:]
 
     for d in range(n_dims-1):
         win = win[np.newaxis,...]
@@ -345,7 +345,7 @@ def apodize(ts, window=np.hanning):
     return nts.TimeSeries(new_data, sampling_rate=ts.sampling_rate)
 
 
-def freq_to_ppm(f, water_hz=0.0, water_ppm=4.7, hz_per_ppm=127.8):
+def freq_to_ppm(f, water_hz=0.0, water_ppm=4.7, hz_per_ppm=128.):
     """
     Convert a set of numbers from frequeny in hertz to chemical shift in ppm
     """
