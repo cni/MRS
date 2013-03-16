@@ -87,7 +87,7 @@ def coil_combine(data, w_idx=[1,2,3]):
     zero_freq_w_across_coils = np.sqrt(np.sum(zero_freq_w**2,-1))
     w = zero_freq_w/zero_freq_w_across_coils[...,np.newaxis]
 
-    # We average across 
+    # We average across echos and repeats:
     w = np.mean(np.mean(w,0),0)
 
     # We will use the phase of this peak to align the phases:
@@ -100,8 +100,10 @@ def coil_combine(data, w_idx=[1,2,3]):
 
     # Dot product each one of them and ifft back into the time-domain
     na = np.newaxis # Short-hand
-    weighted_w_data = fft.ifft(np.sum(w[na, na, na, :] * fft_w, -1))
-    weighted_w_supp_data = fft.ifft(np.sum(w[na, na, na, :] * fft_w_supp, -1))
+    weighted_w_data = fft.ifft(np.sum(w[na, na, na, :] * fft_w,
+                                      axis=-1), axis=-1)
+    weighted_w_supp_data = fft.ifft(np.sum(w[na, na, na, :] * fft_w_supp,
+                                           axis=-1),axis=-1)
     # Transpose, so that the time dimension is last:
     w_out = np.squeeze(weighted_w_data).T
     w_supp_out = np.squeeze(weighted_w_supp_data).T
@@ -111,9 +113,9 @@ def coil_combine(data, w_idx=[1,2,3]):
     return w_out, w_supp_out 
 
 def get_spectra(data, sampling_rate=5000.0,
-                spect_method=dict(NFFT=1024, n_overlap=1023,
+                spect_method=dict(NFFT=1024, n_overlap=512,
                                   #detrend=mlab.detrend_linear,
-                BW=12),
+                                  BW=12),
                 filt_method = dict(lb=0.1, filt_order=256)):
     """
     Derive the spectra from MRS data
@@ -137,11 +139,13 @@ def get_spectra(data, sampling_rate=5000.0,
         **filt_method).fir)
 
     S_w = nta.SpectralAnalyzer(ts_w,
-                               method=dict(NFFT=spect_method['NFFT']),
+                               method=dict(NFFT=spect_method['NFFT'],
+                                           n_overlap=spect_method['n_overlap']),
                                BW=spect_method['BW'])
 
     S_nonw = nta.SpectralAnalyzer(ts_nonw,
-                                  method=dict(NFFT=spect_method['NFFT']),
+                                  method=dict(NFFT=spect_method['NFFT'],
+                                           n_overlap=spect_method['n_overlap']),
                                   BW=spect_method['BW'])
 
     f_w, c_w = S_w.spectrum_fourier
@@ -156,6 +160,8 @@ def normalize_water(w_sig, nonw_sig, idx):
     """
     Normalize the water-suppressed signal by the signal that is not
     water-suppressed, to get rid of the residual water peak.
+
+    Might not be necessary if appropriate filtering is applied to the signal.
     
     """
     scale_fac = np.mean(w_sig[idx]/nonw_sig[idx])
