@@ -64,8 +64,6 @@ if __name__ == "__main__":
     out_array = np.array(prep_arr, dtype=dt)
 
     # And save to output:
-    print('out_array has shape: %s'%out_array.shape)
-    print('Saving into: %s'%in_args.out_file)
     mlab.rec2csv(out_array, in_args.out_file)
     
     
