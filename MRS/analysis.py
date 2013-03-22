@@ -92,7 +92,7 @@ def coil_combine(data, w_idx=[1,2,3]):
 
     # We will use the phase of this peak to align the phases:
     zero_phi_w = np.angle(fft_w[0])
-    zero_phi_w = np.mean(np.mean(zero_phi_w,0), 0)
+    zero_phi_w = np.mean(np.mean(zero_phi_w, 0), 0)
 
     # This recalculates the weight with the phase alignment (see page 397 in
     # Wald paper):
