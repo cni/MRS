@@ -4,6 +4,7 @@ import argparse as arg
 
 import numpy as np
 import matplotlib.mlab as mlab
+import matplotlib.pyplot as plt
 
 import nitime as nt
 
@@ -65,5 +66,13 @@ if __name__ == "__main__":
 
     # And save to output:
     mlab.rec2csv(out_array, in_args.out_file)
-    
+
+    fig, ax = plt.subplots(3)
+    ax[0].plot(f_ppm, m_e1)
+    ax[1].plot(f_ppm, m_e2)
+    ax[2].plot(f_ppm, diff)
+    for a in ax:
+        a.invert_xaxis()
+        a.set_xlabel('ppm')
+    plt.show()
     
