@@ -96,7 +96,7 @@ def coil_combine(data, w_idx=[1,2,3]):
 
     # This recalculates the weight with the phase alignment (see page 397 in
     # Wald paper):
-    w = w * np.exp(-1j * zero_phi_w) 
+    w = w * np.exp(-1j * (zero_phi_w + np.pi)) 
 
     # Dot product each one of them and ifft back into the time-domain
     na = np.newaxis # Short-hand
