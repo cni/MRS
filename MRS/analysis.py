@@ -96,14 +96,14 @@ def coil_combine(data, w_idx=[1,2,3]):
 
     # This recalculates the weight with the phase alignment (see page 397 in
     # Wald paper):
-    w = w * np.exp(-1j * (zero_phi_w + np.pi)) 
+    w = np.abs(w) * np.exp(1j * zero_phi_w)
 
-    # Dot product each one of them and ifft back into the time-domain
+    # Multiply each one of them by it's weight and ifft back into the time-domain
     na = np.newaxis # Short-hand
-    weighted_w_data = fft.ifft(np.sum(w[na, na, na, :] * fft_w,
-                                      axis=-1), axis=-1)
-    weighted_w_supp_data = fft.ifft(np.sum(w[na, na, na, :] * fft_w_supp,
-                                           axis=-1),axis=-1)
+    weighted_w_data = np.sum(fft.ifft(w[na, na, na, :] * fft_w), axis=-1)
+    weighted_w_supp_data = np.sum(fft.ifft(w[na, na, na, :] * fft_w_supp),
+                                   axis=-1)
+
     # Transpose, so that the time dimension is last:
     w_out = np.squeeze(weighted_w_data).T
     w_supp_out = np.squeeze(weighted_w_supp_data).T
@@ -157,6 +157,7 @@ def get_spectra(data, filt_method = dict(lb=0.1, filt_order=256),
                              BW=spect_method['BW'])
     
     f, c = S.spectrum_fourier
+    c = ut.phase_correct(c)
     
     return f, np.real(c)
 

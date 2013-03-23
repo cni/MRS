@@ -45,7 +45,7 @@ if __name__ == "__main__":
     # The first echo (off-resonance) is in the first output 
     echo1 = nonw_sig[0]
     # The second output is the difference between off- and on-resonance echos:
-    echo2 = nonw_sig[0] - nonw_sig[1]    
+    echo2 = nonw_sig[1]
     f_ppm = ut.freq_to_ppm(f_nonw)
     idx0 = np.argmin(np.abs(f_ppm - in_args.min_ppm))
     idx1 = np.argmin(np.abs(f_ppm - in_args.max_ppm))
@@ -60,8 +60,7 @@ if __name__ == "__main__":
     m_e1 = np.mean(echo1[:,idx], 0)
     m_e2 = np.mean(echo2[:,idx], 0)
     diff = m_e2 - m_e1
-    prep_arr = [(f_ppm[i], m_e1[i], m_e2[i], diff[i]) for i in
-                range(len(f_ppm))]
+    prep_arr = [(f_ppm[i], m_e1[i], m_e2[i], diff[i]) for i in range(len(f_ppm))]
     out_array = np.array(prep_arr, dtype=dt)
 
     # And save to output:

@@ -351,4 +351,28 @@ def freq_to_ppm(f, water_hz=0.0, water_ppm=4.7, hz_per_ppm=127.680):
     """
     return water_ppm - (f - water_hz)/hz_per_ppm
     
+
+def phase_correct(sig,ref_freq=0):
+    """
+    Correct the phases of a spectrum, according to the shift in a reference
+    frequency band
+
+    Parameters
+    ----------
+    sig : float array of complex dtype
+        The signal to be corrected
+       
+    ref_freq : int
+        The index of the frequency band to use as a reference for the
+        correction
+
+    Returns
+    -------
+    sig : float array
+         The signal, phase aligned so that the reference frequency is now at
+         zero phase
+    """
+    phi = np.angle(sig[ref_freq])
+    return sig * np.exp(-1j * phi)
     
+
