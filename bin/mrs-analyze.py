@@ -44,7 +44,7 @@ if __name__ == "__main__":
                                         sampling_rate=in_args.sampling_rate))
     # The first echo (off-resonance) is in the first output 
     echo1 = nonw_sig[0]
-    # The second output is the difference between off- and on-resonance echos:
+    # The on-resonance is in the second:
     echo2 = nonw_sig[1]
     f_ppm = ut.freq_to_ppm(f_nonw)
     idx0 = np.argmin(np.abs(f_ppm - in_args.min_ppm))
