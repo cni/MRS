@@ -320,7 +320,7 @@ def zero_pad(ts, n_zeros):
 
     return nts.TimeSeries(new_data, sampling_rate=ts.sampling_rate)
 
-def apodize(ts, window=np.hanning):
+def apodize(ts, window=np.hanning, n=None):
     """
     Window the time-series in each of its channels
 
@@ -330,13 +330,24 @@ def apodize(ts, window=np.hanning):
 
     window : callable.
        A function that returns a window. Default np.hanning
+
+    n : int
+        The size of the windowing function (the rest is padded to zero).
+
+    Returns
+    -------
+    nts.TimeSeries class instance, with data windowed.
     
     """
     # We'll need to broadcast into this many dims:
     n_dims = len(ts.shape)
 
-    # The window is the length of the time-dimension, but decays towards the end:
-    win = window(ts.shape[-1] * 2)[ts.shape[-1]:]
+    if n is None:
+        # The window is the length of the time-dimension, but we only take half
+        # of it, so that it starts at 1 and decays towards the end:
+        win = window(ts.shape[-1] * 2)[ts.shape[-1]:]
+    else:
+        win = np.hstack([window(n*2)[n:], np.zeros(ts.shape[-1])-n])
 
     for d in range(n_dims-1):
         win = win[np.newaxis,...]
@@ -352,27 +363,63 @@ def freq_to_ppm(f, water_hz=0.0, water_ppm=4.7, hz_per_ppm=127.680):
     return water_ppm - (f - water_hz)/hz_per_ppm
     
 
-def phase_correct(sig,ref_freq=0):
+def phase_correct_zero(spec, phi):
     """
-    Correct the phases of a spectrum, according to the shift in a reference
-    frequency band
+    Correct the phases of a spectrum by phi radians
 
     Parameters
     ----------
-    sig : float array of complex dtype
-        The signal to be corrected
+    spec : float array of complex dtype
+        The spectrum to be corrected. 
        
-    ref_freq : int
-        The index of the frequency band to use as a reference for the
-        correction
+    phi : float
 
     Returns
     -------
-    sig : float array
-         The signal, phase aligned so that the reference frequency is now at
-         zero phase
-    """
-    phi = np.angle(sig[ref_freq])
-    return sig * np.exp(-1j * phi)
-    
+    spec : float array
+         The phase corrected spectrum
 
+    Notes
+    -----
+    [Keeler2005] Keeler, J (2005). Understanding NMR Spectroscopy, 2nd
+        edition. Wiley. Page 88.  
+
+    """
+    c_factor = np.exp(-1j * phi)
+    # If it's an array, we need to reshape it and broadcast across the
+    # frequency bands in the spectrum. Otherwise, we assume it's a scalar and
+    # apply it to all the dimensions of the spec array:
+    if hasattr(phi, 'shape'):
+        c_factor = c_factor.reshape(c_factor.shape + (1,))
+
+    return spec * c_factor
+
+
+def phase_correct_first(spec, freq, k):
+    """
+    First order phase correction.
+
+    Parameters
+    ----------
+    spec : float array
+        The spectrum to be corrected.
+
+    freq : float array
+        The frequency axis.
+
+    k : float
+        The slope of the phase correction as a function of frequency.
+
+    Returns
+    -------
+    The phase-corrected spectrum.
+
+    Notes
+    -----
+    [Keeler2005] Keeler, J (2005). Understanding NMR Spectroscopy, 2nd
+        edition. Wiley. Page 88
+
+    """
+    c_factor = np.exp(-1j * k * freq)
+    c_factor = c_factor.reshape((len(spec.shape) -1) * (1,) + c_factor.shape)
+    return spec * c_factor
