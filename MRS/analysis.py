@@ -46,23 +46,22 @@ def coil_combine(data, w_idx=[1,2,3]):
     -----
     Following [Wald1997]_, we compute weights on the different coils based on
     the amplitudes and phases of the water peak. The signal from different
-    coils is ultimately combined as
+    coils is combined as:
 
     .. math :: 
 
         S = \sum_{i=1}^{n}{w_i * S_i}
 
-    Where w_i are weights on the individual coils. To derive $w_i$, we use
-    eqaution 29/30 from the Wald paper:
-
-    .. math ::
-
-         S = 
-   
+    In addition, a phase correction is applied, so that all coils have the same
+    phase.
+  
     References
     ----------
     .. [Wald1997] Wald, L. and Wright, S. (1997). Theory and application of
        array coils in MR spectroscopy. NMR in Biomedicine, 10: 394-410.
+
+    .. [Keeler2005] Keeler, J (2005). Understanding NMR spectroscopy, second
+       edition. Wiley (West Sussex, UK).
     
     """
     # The transients are the second dimension in the data
@@ -90,7 +89,8 @@ def coil_combine(data, w_idx=[1,2,3]):
     # We average across echos and repeats:
     w = np.mean(np.mean(w,0),0)
 
-    # We will use the phase of this peak to align the phases:
+    # Next, we make sure that all the coils have the same phase. We will use
+    # the phase of this peak to align the phases: 
     zero_phi_w = np.angle(fft_w[0])
     zero_phi_w = np.mean(np.mean(zero_phi_w, 0), 0)
 
@@ -98,22 +98,26 @@ def coil_combine(data, w_idx=[1,2,3]):
     # Wald paper):
     w = w * np.exp(-1j * zero_phi_w) 
 
-    # Dot product each one of them and ifft back into the time-domain
+    # Multiply each one of them by it's weight and ifft back into the time-domain
     na = np.newaxis # Short-hand
-    weighted_w_data = fft.ifft(np.sum(w[na, na, na, :] * fft_w,
-                                      axis=-1), axis=-1)
-    weighted_w_supp_data = fft.ifft(np.sum(w[na, na, na, :] * fft_w_supp,
-                                           axis=-1),axis=-1)
+    weighted_w_data = np.sum(fft.ifft(w[na, na, na, :] * fft_w), axis=-1)
+    weighted_w_supp_data = np.sum(fft.ifft(w[na, na, na, :] * fft_w_supp),
+                                  axis=-1)
+    
     # Transpose, so that the time dimension is last:
     w_out = np.squeeze(weighted_w_data).T
     w_supp_out = np.squeeze(weighted_w_supp_data).T
+    
     # Normalize to sum to number of measurements:
     w_out = w_out * (w_out.shape[-1] / np.sum(w_out))
     w_supp_out = w_supp_out * (w_supp_out.shape[-1] / np.sum(w_supp_out))
+    
     return w_out, w_supp_out 
 
+
 def get_spectra(data, filt_method = dict(lb=0.1, filt_order=256),
-                spect_method=dict(NFFT=1024, n_overlap=1023, BW=2)):
+                spect_method=dict(NFFT=1024, n_overlap=1023, BW=2),
+                phase_zero=None, phase_first=None):
     """
     Derive the spectra from MRS data
 
@@ -129,7 +133,9 @@ def get_spectra(data, filt_method = dict(lb=0.1, filt_order=256),
         
     spect_method : dict
         Details for the spectral analysis. Per default, we use 
-    
+
+    phase_zero : float
+        zero order phase correction 
 
     Returns
     -------
@@ -147,7 +153,6 @@ def get_spectra(data, filt_method = dict(lb=0.1, filt_order=256),
     2. Apodizing/windowing.
     3. Spectral analysis.
 
-    
     """
     filtered = nta.FilterAnalyzer(data, **filt_method).fir
     apodized = ut.apodize(filtered)
@@ -157,8 +162,8 @@ def get_spectra(data, filt_method = dict(lb=0.1, filt_order=256),
                              BW=spect_method['BW'])
     
     f, c = S.spectrum_fourier
-    
-    return f, np.real(c)
+
+    return f, c
 
 def normalize_water(w_sig, nonw_sig, idx):
     """
