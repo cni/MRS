@@ -117,7 +117,7 @@ def coil_combine(data, w_idx=[1,2,3]):
 
 def get_spectra(data, filt_method = dict(lb=0.1, filt_order=256),
                 spect_method=dict(NFFT=1024, n_overlap=1023, BW=2),
-                phase_zero=None, phase_first=None):
+                phase_zero=None, line_broadening=None):
     """
     Derive the spectra from MRS data
 
@@ -135,7 +135,10 @@ def get_spectra(data, filt_method = dict(lb=0.1, filt_order=256),
         Details for the spectral analysis. Per default, we use 
 
     phase_zero : float
-        zero order phase correction 
+        zero order phase correction
+
+    line_broadening : float
+        Linewidth for apodization (in Hz).
 
     Returns
     -------
@@ -150,12 +153,25 @@ def get_spectra(data, filt_method = dict(lb=0.1, filt_order=256),
     This function performs the following operations:
 
     1. Filtering.
-    2. Apodizing/windowing.
+    2. Apodizing/windowing. Optionally, this is done with line-broadening (see
+    page 92 of Keeler2005_.
     3. Spectral analysis.
+    
+    Notes
+    -----
+
+    .. [Keeler2005] Keeler, J (2005). Understanding NMR spectroscopy, second
+       edition. Wiley (West Sussex, UK).
 
     """
     filtered = nta.FilterAnalyzer(data, **filt_method).fir
-    apodized = ut.apodize(filtered)
+    if line_broadening is not None: 
+       lbr_time = line_broadening * np.pi  # Coversion from Hz to
+                                        # time-constant, see Keeler page 94 
+    else:
+       lbr_time = None
+       
+    apodized = ut.apodize(filtered, lbr_time)
     S = nta.SpectralAnalyzer(apodized,
                              method=dict(NFFT=spect_method['NFFT'],
                                          n_overlap=spect_method['n_overlap']),

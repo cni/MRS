@@ -27,7 +27,9 @@ def test_apodize():
     arr = np.random.rand(10,10,10,1024) * np.exp(1j * np.pi)
     ts = nts.TimeSeries(data=arr, sampling_rate=5000.)
 
+    lbr = 1000. 
+
     for n in [None, 256]:
-        new_ts = ut.apodize(ts)
+        new_ts = ut.apodize(ts, lbr, n)
         npt.assert_equal(new_ts.shape, ts.shape)
     

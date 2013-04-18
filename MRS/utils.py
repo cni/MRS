@@ -320,37 +320,42 @@ def zero_pad(ts, n_zeros):
 
     return nts.TimeSeries(new_data, sampling_rate=ts.sampling_rate)
 
-def apodize(ts, window=np.hanning, n=None):
+
+def apodize(ts, lbr, n=None):
     """
-    Window the time-series in each of its channels
+    Window the time-series in each of its channels with a decaying exponential
+    function 
 
     Parameters
     ----------
     ts : a nitime.TimeSeries class instance
 
-    window : callable.
-       A function that returns a window. Default np.hanning
-
     n : int
-        The size of the windowing function (the rest is padded to zero).
+        The size of the windowing function (the rest is padded to
+        zero). Default: None (set to the same length as the ts).
 
     Returns
     -------
     nts.TimeSeries class instance, with data windowed.
+
+    Notes
+    -----
+
+    For details, see page 92 of Keeler2005_.
+
+    .. [Keeler2005] Keeler, J (2005). Understanding NMR spectroscopy, second
+       edition. Wiley (West Sussex, UK).
     
     """
     # We'll need to broadcast into this many dims:
     n_dims = len(ts.shape)
+    
+    win = np.exp(- lbr * ts.time/np.float(ts.time._conversion_factor))
+    if n is not None:
+        win = np.hstack([win[:n], np.zeros(ts.shape[-1]-n)])
 
-    if n is None:
-        # The window is the length of the time-dimension, but we only take half
-        # of it, so that it starts at 1 and decays towards the end:
-        win = window(ts.shape[-1] * 2)[ts.shape[-1]:]
-    else:
-        win = np.hstack([window(n*2)[n:], np.zeros(ts.shape[-1])-n])
-
-    for d in range(n_dims-1):
-        win = win[np.newaxis,...]
+    ## for d in range(n_dims-1):
+    ##     win = win[np.newaxis,...]
 
     new_data = ts.data * win
     return nts.TimeSeries(new_data, sampling_rate=ts.sampling_rate)
