@@ -431,3 +431,13 @@ def phase_correct_first(spec, freq, k):
     c_factor = np.exp(-1j * k * freq)
     c_factor = c_factor.reshape((len(spec.shape) -1) * (1,) + c_factor.shape)
     return spec * c_factor
+
+def lorentzian(freq, freq0, area, hwhm, phase, baseline0, baseline1):
+   """
+   """
+   oo2pi = 1/(2*np.pi)
+   df = freq - freq0
+   absorptive = oo2pi * area * np.ones(freq.shape[0])*(hwhm / (df**2 + hwhm**2))
+   dispersive = oo2pi * area * df/(df**2 + hwhm**2)
+   return (absorptive * np.cos(phase) + dispersive * np.sin(phase) + baseline0 +
+   baseline1 * df)

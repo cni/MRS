@@ -32,4 +32,16 @@ def test_apodize():
     for n in [None, 256]:
         new_ts = ut.apodize(ts, lbr, n)
         npt.assert_equal(new_ts.shape, ts.shape)
-    
+
+def test_lorentzian():
+    """
+    Test the lorentzian function
+    """
+    freq = np.linspace(0,6,100)
+    freq0 = 3
+    area = 1
+    hwhm = 1
+    phase = np.pi
+    baseline0 = 1
+    baseline1 = 0
+    ut.lorentzian(freq, freq0, area, hwhm, phase, baseline0, baseline1)
