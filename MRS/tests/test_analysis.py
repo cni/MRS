@@ -62,6 +62,6 @@ def test_mrs_analyze():
     mrs_path = MRS.__path__[0]
     out_name = tempfile.NamedTemporaryFile().name
     # Check that it runs through:
-    cmd = '../../bin/mrs-analyze.py %s %s.csv'%(file_name, out_name)
+    cmd = '%s/../bin/mrs-analyze.py %s %s.csv'%(mrs_path, file_name, out_name)
     npt.assert_equal(os.system(cmd),0)
     # XXX We might want to analyze the output file here...
