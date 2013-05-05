@@ -356,10 +356,6 @@ def apodize(ts, lbr, n=None):
     win = np.exp(- lbr * ts.time/np.float(ts.time._conversion_factor))
     if n is not None:
         win = np.hstack([win[:n], np.zeros(ts.shape[-1]-n)])
-
-    ## for d in range(n_dims-1):
-    ##     win = win[np.newaxis,...]
-
     new_data = ts.data * win
     return nts.TimeSeries(new_data, sampling_rate=ts.sampling_rate)
 
@@ -369,7 +365,6 @@ def freq_to_ppm(f, water_hz=0.0, water_ppm=4.7, hz_per_ppm=127.680):
     Convert a set of numbers from frequeny in hertz to chemical shift in ppm
     """
     return water_ppm - (f - water_hz)/hz_per_ppm
-    
 
 def phase_correct_zero(spec, phi):
     """
@@ -431,13 +426,30 @@ def phase_correct_first(spec, freq, k):
     c_factor = np.exp(-1j * k * freq)
     c_factor = c_factor.reshape((len(spec.shape) -1) * (1,) + c_factor.shape)
     return spec * c_factor
-
-def lorentzian(freq, freq0, area, hwhm, phase, baseline0, baseline1):
+    
+def lorentzian(freq, freq0, area, hwhm, phase, offset, drift):
    """
+   Lorentzian line-shape function
+
+   Parameters
+   ----------
+   freq : float or float array
+      The frequencies for which the function is evaluated
+   freq0 : float
+      The center frequency of the function
+   area : float
+      ??? 
+   hwhm: float
+      Half-width at half-max       
    """
    oo2pi = 1/(2*np.pi)
    df = freq - freq0
    absorptive = oo2pi * area * np.ones(freq.shape[0])*(hwhm / (df**2 + hwhm**2))
    dispersive = oo2pi * area * df/(df**2 + hwhm**2)
-   return (absorptive * np.cos(phase) + dispersive * np.sin(phase) + baseline0 +
-   baseline1 * df)
+   return (absorptive * np.cos(phase) + dispersive * np.sin(phase) + offset +
+   drift * df)
+
+def gaussian(freq, freq0, sigma, amp, offset, drift):
+    """
+    """
+    
