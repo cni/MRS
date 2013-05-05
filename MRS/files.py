@@ -143,4 +143,4 @@ def get_data(file_name, header=None):
                              passidx] = dr[0] + dr[1] * 1j
 
 
-    return data
+    return data.squeeze()
