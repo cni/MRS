@@ -330,6 +330,9 @@ def apodize(ts, lbr, n=None):
     ----------
     ts : a nitime.TimeSeries class instance
 
+    lbr : float
+      The line-broadening (in sec)
+
     n : int
         The size of the windowing function (the rest is padded to
         zero). Default: None (set to the same length as the ts).

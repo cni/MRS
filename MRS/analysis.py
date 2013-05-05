@@ -117,7 +117,7 @@ def coil_combine(data, w_idx=[1,2,3]):
 
 def get_spectra(data, filt_method = dict(lb=0.1, filt_order=256),
                 spect_method=dict(NFFT=1024, n_overlap=1023, BW=2),
-                phase_zero=None, line_broadening=None):
+                phase_zero=None, line_broadening=None, zerofill=None):
     """
     Derive the spectra from MRS data
 
@@ -169,9 +169,12 @@ def get_spectra(data, filt_method = dict(lb=0.1, filt_order=256),
        lbr_time = line_broadening * np.pi  # Coversion from Hz to
                                         # time-constant, see Keeler page 94 
     else:
-       lbr_time = None
+       lbr_time = 0
+
+    if zerofill is None:
+       zerofill = 0
        
-    apodized = ut.apodize(filtered, lbr_time)
+    apodized = ut.apodize(filtered, lbr_time, filtered.shape[-1] - zerofill)
     S = nta.SpectralAnalyzer(apodized,
                              method=dict(NFFT=spect_method['NFFT'],
                                          n_overlap=spect_method['n_overlap']),
