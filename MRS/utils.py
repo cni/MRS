@@ -354,12 +354,34 @@ def line_broadening(ts, width):
     return nts.TimeSeries(new_data, sampling_rate=ts.sampling_rate)
 
 
-
 def freq_to_ppm(f, water_hz=0.0, water_ppm=4.7, hz_per_ppm=127.680):
     """
     Convert a set of numbers from frequeny in hertz to chemical shift in ppm
     """
     return water_ppm - (f - water_hz)/hz_per_ppm
+
+
+def ppm_idx(f_ppm, lb, ub):
+    """
+    Create a slice object according to the ppm scale
+
+    Parameters
+    ----------
+    f_ppm : float array
+        The frequency bins (in the ppm scale). Assumed to be descending
+
+    lb,ub : float
+        The lower/upper bounds for indexing
+        
+    Returns
+    -------
+    idx : slice object which can be used to index 
+    """
+    idx0 = np.argmin(np.abs(f_ppm - lb))
+    idx1 = np.argmin(np.abs(f_ppm - ub))
+    return slice(idx1, idx0)    
+
+
 
 def phase_correct_zero(spec, phi):
     """
@@ -430,12 +452,16 @@ def lorentzian(freq, freq0, area, hwhm, phase, offset, drift):
    ----------
    freq : float or float array
       The frequencies for which the function is evaluated
+
    freq0 : float
       The center frequency of the function
+
    area : float
       ??? 
+
    hwhm: float
       Half-width at half-max       
+
    """
    oo2pi = 1/(2*np.pi)
    df = freq - freq0
@@ -447,4 +473,6 @@ def lorentzian(freq, freq0, area, hwhm, phase, offset, drift):
 def gaussian(freq, freq0, sigma, amp, offset, drift):
     """
     """
+    
+    
     

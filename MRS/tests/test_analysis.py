@@ -81,5 +81,6 @@ def test_fit_lorentzian():
     """
     Test fitting of Lorentzian function to creatine peak
     """
-    
-    pass
+    data = io.get_data(file_name)
+    w_data, w_supp_data = ana.coil_combine(data)
+    f, s = ana.get_spectra(w_supp_data, line_broadening=2, zerofill=100)

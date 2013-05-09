@@ -127,11 +127,12 @@ def coil_combine(data, w_idx=[1,2,3]):
     weighted_w_data = np.sum(fft.ifft(w[na, na, :, na] * fft_w), axis=2)
     weighted_w_supp_data = np.sum(fft.ifft(w[na, na, :, na] * fft_w_supp),
                                   axis=2)
-    
-    # Normalize to sum to number of measurements:
-    for x in [weighted_w_data, weighted_w_supp_data]:
-       x = x * (x.shape[-1] / np.sum(x))
-    
+
+    def normalize_this(x):
+       return  x * (x.shape[-1] / np.sum(x))
+
+    weighted_w_data = normalize_this(weighted_w_data)
+    weighted_w_supp_data = normalize_this(weighted_w_supp_data)
     return weighted_w_data, weighted_w_supp_data 
 
 
@@ -189,8 +190,8 @@ def get_spectra(data, filt_method = dict(lb=0.1, filt_order=256),
        data = nt.TimeSeries(data, sampling_rate=5000.0)  
     filtered = nta.FilterAnalyzer(data, **filt_method).fir
     if line_broadening is not None: 
-       lbr_time = line_broadening * np.pi  # Coversion from Hz to
-                                        # time-constant, see Keeler page 94 
+       lbr_time = line_broadening * np.pi  # Conversion from Hz to
+                                           # time-constant, see Keeler page 94 
     else:
        lbr_time = 0
 
