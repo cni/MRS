@@ -16,7 +16,17 @@ import MRS.files as io
 test_path = os.path.join(MRS.__path__[0], 'tests')
 file_name = os.path.join(test_path, 'pure_gaba_P64024.7')
 
-
+def test_separate_signals():
+    """
+    Test separation of signals for water-suppressed and other signals
+    """
+    data = io.get_data(file_name)
+    w_data, w_supp_data = ana.separate_signals(data)
+    # Very simple sanity checks
+    npt.assert_equal(w_data.shape[-1], data.shape[-1])
+    npt.assert_equal(w_supp_data.shape[-1], data.shape[-1])
+    npt.assert_array_equal(data[1], w_data[0])
+    
 def test_coil_combine():
     """
     Test combining of information from different coils
@@ -24,8 +34,8 @@ def test_coil_combine():
     data = io.get_data(file_name)
     w_data, w_supp_data = ana.coil_combine(data)
     # Make sure that the time-dimension is still correct: 
-    npt.assert_equal(w_data.shape[-1], data.shape[0])
-    npt.assert_equal(w_supp_data.shape[-1], data.shape[0])
+    npt.assert_equal(w_data.shape[-1], data.shape[-1])
+    npt.assert_equal(w_supp_data.shape[-1], data.shape[-1])
 
     # Check that the phase for the first frequency point is approximately the
     # same and approximately 0 for all the water-channels:
@@ -65,3 +75,11 @@ def test_mrs_analyze():
     cmd = '%s/../bin/mrs-analyze.py %s %s.csv'%(mrs_path, file_name, out_name)
     npt.assert_equal(os.system(cmd),0)
     # XXX We might want to analyze the output file here...
+
+
+def test_fit_lorentzian():
+    """
+    Test fitting of Lorentzian function to creatine peak
+    """
+    
+    pass

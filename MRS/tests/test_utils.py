@@ -22,16 +22,14 @@ def test_phase_correct_first():
     corr_arr = ut.phase_correct_first(arr, freqs, 1)
     
     
-def test_apodize():
+def test_line_broadening():
     # Complex time series:
     arr = np.random.rand(10,10,10,1024) * np.exp(1j * np.pi)
     ts = nts.TimeSeries(data=arr, sampling_rate=5000.)
-
     lbr = 1000. 
+    new_ts = ut.line_broadening(ts, lbr)
+    npt.assert_equal(new_ts.shape, ts.shape)
 
-    for n in [None, 256]:
-        new_ts = ut.apodize(ts, lbr, n)
-        npt.assert_equal(new_ts.shape, ts.shape)
 
 def test_lorentzian():
     """
@@ -45,3 +43,4 @@ def test_lorentzian():
     baseline0 = 1
     baseline1 = 0
     ut.lorentzian(freq, freq0, area, hwhm, phase, baseline0, baseline1)
+    

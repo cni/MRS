@@ -321,25 +321,20 @@ def zero_pad(ts, n_zeros):
     return nts.TimeSeries(new_data, sampling_rate=ts.sampling_rate)
 
 
-def apodize(ts, lbr, n=None):
+def line_broadening(ts, width):
     """
-    Window the time-series in each of its channels with a decaying exponential
-    function 
+    Apply line-broadening to a time-series
 
     Parameters
     ----------
     ts : a nitime.TimeSeries class instance
 
-    lbr : float
-      The line-broadening (in sec)
-
-    n : int
-        The size of the windowing function (the rest is padded to
-        zero). Default: None (set to the same length as the ts).
+    width : float
+        The exponential decay time-constant (in seconds)
 
     Returns
     -------
-    nts.TimeSeries class instance, with data windowed.
+    A nitime.TimeSeries class instance with windowed data
 
     Notes
     -----
@@ -348,16 +343,16 @@ def apodize(ts, lbr, n=None):
 
     .. [Keeler2005] Keeler, J (2005). Understanding NMR spectroscopy, second
        edition. Wiley (West Sussex, UK).
-    
-    """
+
+    """ 
     # We'll need to broadcast into this many dims:
     n_dims = len(ts.shape)
+    # We use the information in the TimeSeries.time attribute to get it:
+    win = np.exp(- width * ts.time/np.float(ts.time._conversion_factor))
     
-    win = np.exp(- lbr * ts.time/np.float(ts.time._conversion_factor))
-    if n is not None:
-        win = np.hstack([win[:n], np.zeros(ts.shape[-1]-n)])
     new_data = ts.data * win
     return nts.TimeSeries(new_data, sampling_rate=ts.sampling_rate)
+
 
 
 def freq_to_ppm(f, water_hz=0.0, water_ppm=4.7, hz_per_ppm=127.680):
