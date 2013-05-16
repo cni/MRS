@@ -340,9 +340,9 @@ class DataHolder(object):
                             filt_method = dict(lb=cutoff, filt_order=256))
 
         # The first echo (off-resonance) is in the first output 
-        self.echo1 = self.spec[0]
+        self.echo1 = self.spec[:,0]
         # The on-resonance is in the second:
-        self.echo2 = self.spec[1]
+        self.echo2 = self.spec[:,1]
         f_ppm = ut.freq_to_ppm(self.f)
         idx0 = np.argmin(np.abs(f_ppm - min_ppm))
         idx1 = np.argmin(np.abs(f_ppm - max_ppm))
