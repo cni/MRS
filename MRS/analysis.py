@@ -12,6 +12,42 @@ import scipy.fftpack as fft
 import MRS.utils as ut
 
 
+def separate_signals(data, w_idx=[1,2,3]):
+   """
+   Separate the water and non-water data from each other
+
+   Parameters
+   ----------
+   data : nd array
+      FID signal with shape (transients, echos, coils, time-points)
+
+   w_idx : list (optional)
+      Indices into the 'transients' (0th) dimension of the data for the signal
+      that is not water-suppressed
+
+   Returns
+   -------
+   water_data, w_supp_data : tuple
+       The first element is an array with the transients in the data in which
+       no water suppression was applied. The second element is an array with
+       the transients in which water suppression was applied
+   """
+
+   # The transients are the first dimension in the data
+   idxes_w = np.zeros(data.shape[0], dtype=bool)
+   idxes_w[w_idx] = True
+   # Data with water unsuppressed (first four transients - we throw away the
+   # first one which is probably crap):
+   w_data = data[np.where(idxes_w)]
+   # Data with water suppressed (the rest of the transients):
+   idxes_nonw = np.zeros(data.shape[0], dtype=bool)
+   idxes_nonw[np.where(~idxes_w)] = True
+   idxes_nonw[0] = False
+   w_supp_data = data[np.where(idxes_nonw)]
+
+   return w_data, w_supp_data
+
+
 def coil_combine(data, w_idx=[1,2,3]):
     """
     Combine data across coils based on the amplitude of the water peak,
@@ -64,68 +100,54 @@ def coil_combine(data, w_idx=[1,2,3]):
        edition. Wiley (West Sussex, UK).
     
     """
-    # The transients are the second dimension in the data
-    idxes_w = np.zeros(data.shape[1], dtype=bool)
-    idxes_w[w_idx] = True
-    # Data with water unsuppressed (first four transients - we throw away the
-    # first one which is probably crap):
-    w_data = data[:,np.where(idxes_w),:,:]
-    # Data with water suppressed (the rest of the transients):
-    idxes_nonw = np.zeros(data.shape[1], dtype=bool)
-    idxes_nonw[np.where(~idxes_w)] = True
-    idxes_nonw[0] = False
-    w_supp_data = data[:,np.where(idxes_nonw),:,:]
-    
-    fft_w = fft.fft(w_data).squeeze()
-    fft_w_supp = fft.fft(w_supp_data).squeeze()
+    w_data, w_supp_data = separate_signals(data, w_idx)     
+    fft_w = fft.fft(w_data)
+    fft_w_supp = fft.fft(w_supp_data)
 
-    # We use the water peak (the 0th frequency) as the reference:
-    zero_freq_w = np.abs(fft_w[0])
-
+    # We use the water peak (the 0th frequency) as the reference (averaging
+    # across transients and echos):
+    zero_freq_w = np.mean(np.mean(np.abs(fft_w[..., 0]), 0), 0)
+   
     # This is the weighting by SNR (equation 29 in the Wald paper):
-    zero_freq_w_across_coils = np.sqrt(np.sum(zero_freq_w**2,-1))
+    zero_freq_w_across_coils = np.sqrt(np.sum(zero_freq_w**2, -1))
     w = zero_freq_w/zero_freq_w_across_coils[...,np.newaxis]
-
-    # We average across echos and repeats:
-    w = np.mean(np.mean(w,0),0)
 
     # Next, we make sure that all the coils have the same phase. We will use
     # the phase of this peak to align the phases: 
-    zero_phi_w = np.angle(fft_w[0])
+    zero_phi_w = np.angle(fft_w[..., 0])
     zero_phi_w = np.mean(np.mean(zero_phi_w, 0), 0)
 
     # This recalculates the weight with the phase alignment (see page 397 in
     # Wald paper):
     w = w * np.exp(-1j * zero_phi_w) 
 
-    # Multiply each one of them by it's weight and ifft back into the time-domain
-    na = np.newaxis # Short-hand
-    weighted_w_data = np.sum(fft.ifft(w[na, na, na, :] * fft_w), axis=-1)
-    weighted_w_supp_data = np.sum(fft.ifft(w[na, na, na, :] * fft_w_supp),
-                                  axis=-1)
-    
-    # Transpose, so that the time dimension is last:
-    w_out = np.squeeze(weighted_w_data).T
-    w_supp_out = np.squeeze(weighted_w_supp_data).T
-    
-    # Normalize to sum to number of measurements:
-    w_out = w_out * (w_out.shape[-1] / np.sum(w_out))
-    w_supp_out = w_supp_out * (w_supp_out.shape[-1] / np.sum(w_supp_out))
-    
-    return w_out, w_supp_out 
+    # Multiply each one of them by it's weight, sum across coils (2nd dim) and
+    # ifft back into the time-domain:
+    na = np.newaxis  # Short-hand
+    weighted_w_data = np.sum(fft.ifft(w[na, na, :, na] * fft_w), axis=2)
+    weighted_w_supp_data = np.sum(fft.ifft(w[na, na, :, na] * fft_w_supp),
+                                  axis=2)
+
+    def normalize_this(x):
+       return  x * (x.shape[-1] / np.sum(x))
+
+    weighted_w_data = normalize_this(weighted_w_data)
+    weighted_w_supp_data = normalize_this(weighted_w_supp_data)
+    return weighted_w_data, weighted_w_supp_data 
 
 
 def get_spectra(data, filt_method = dict(lb=0.1, filt_order=256),
                 spect_method=dict(NFFT=1024, n_overlap=1023, BW=2),
-                phase_zero=None, phase_first=None):
+                phase_zero=None, line_broadening=None, zerofill=None):
     """
     Derive the spectra from MRS data
 
     Parameters
     ----------
-    data : nitime TimeSeries class instance
+    data : nitime TimeSeries class instance or array
         Time-series object with data of shape (echos, transients, time-points),
-        containing the FID data.
+        containing the FID data. If an array is provided, we will assume that a
+        sampling rate of 5000.0 Hz was used
 
     filt_method : dict
         Details for the filtering method. A FIR zero phase-delay method is used
@@ -134,9 +156,12 @@ def get_spectra(data, filt_method = dict(lb=0.1, filt_order=256),
     spect_method : dict
         Details for the spectral analysis. Per default, we use 
 
-    phase_zero : float
-        zero order phase correction 
+    line_broadening : float
+        Linewidth for apodization (in Hz).
 
+    zerofill : int
+        Number of bins to zero fill with.
+        
     Returns
     -------
     f, spectrum_water, spectrum_water_suppressed :
@@ -150,12 +175,35 @@ def get_spectra(data, filt_method = dict(lb=0.1, filt_order=256),
     This function performs the following operations:
 
     1. Filtering.
-    2. Apodizing/windowing.
+    2. Apodizing/windowing. Optionally, this is done with line-broadening (see
+    page 92 of Keeler2005_.
     3. Spectral analysis.
+    
+    Notes
+    -----
+    
+    .. [Keeler2005] Keeler, J (2005). Understanding NMR spectroscopy, second
+       edition. Wiley (West Sussex, UK).
 
     """
+    if not isinstance(data, nt.TimeSeries):
+       data = nt.TimeSeries(data, sampling_rate=5000.0)  
     filtered = nta.FilterAnalyzer(data, **filt_method).fir
-    apodized = ut.apodize(filtered)
+    if line_broadening is not None: 
+       lbr_time = line_broadening * np.pi  # Conversion from Hz to
+                                           # time-constant, see Keeler page 94 
+    else:
+       lbr_time = 0
+
+    apodized = ut.line_broadening(filtered, lbr_time)
+   
+    if zerofill is not None:
+         new_apodized = np.concatenate([apodized.data,
+                    np.zeros(apodized.shape[:-1] + (zerofill,))], -1)
+
+         apodized = nt.TimeSeries(new_apodized,
+                                  sampling_rate=apodized.sampling_rate)
+
     S = nta.SpectralAnalyzer(apodized,
                              method=dict(NFFT=spect_method['NFFT'],
                                          n_overlap=spect_method['n_overlap']),
@@ -177,6 +225,6 @@ def normalize_water(w_sig, nonw_sig, idx):
     corrected = nonw_sig - approx
     return corrected
 
-if __name__ == "__main__":
-    # There will be some testing in here
-    pass
+
+def fit_lorentzian():
+   pass
