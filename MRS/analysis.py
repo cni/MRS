@@ -156,12 +156,12 @@ def get_spectra(data, filt_method = dict(lb=0.1, filt_order=256),
     spect_method : dict
         Details for the spectral analysis. Per default, we use 
 
-    phase_zero : float
-        zero order phase correction
-
     line_broadening : float
         Linewidth for apodization (in Hz).
 
+    zerofill : int
+        Number of bins to zero fill with.
+        
     Returns
     -------
     f, spectrum_water, spectrum_water_suppressed :

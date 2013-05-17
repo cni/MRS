@@ -470,9 +470,24 @@ def lorentzian(freq, freq0, area, hwhm, phase, offset, drift):
    return (absorptive * np.cos(phase) + dispersive * np.sin(phase) + offset +
    drift * df)
 
+def two_lorentzian(freq, freq0_1, freq0_2, area1, area2, hwhm1, hwhm2, phase1,
+                   phase2, offset, drift):
+   """
+   A two-Lorentzian model.
+
+   This is simply the sum of two lorentzian functions in some part of the
+   spectrum. Each individual Lorentzian has its own peak frequency, area, hwhm
+   and phase, but they share common offset and drift parameters.
+   
+   """
+   return (lorentzian(freq, freq0_1, area1, hwhm1, phase1, offset, drift) +
+           lorentzian(freq, freq0_2, area2, hwhm2, phase2, offset, drift))
+ 
+
 def gaussian(freq, freq0, sigma, amp, offset, drift):
     """
-    """
     
+    """
+    pass    
     
     
