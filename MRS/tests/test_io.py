@@ -1,9 +1,14 @@
+import os
+
 import numpy.testing as npt
 import scipy.io as sio
 
+import MRS
 import MRS.files as io
 
-file_name = 'pure_gaba_P64024.7'
+test_path = os.path.join(MRS.__path__[0], 'tests')
+
+file_name = os.path.join(test_path, 'pure_gaba_P64024.7')
 
 def test_get_header():
     """

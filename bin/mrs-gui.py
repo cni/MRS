@@ -52,105 +52,6 @@ class MainWindow(QtGui.QMainWindow):
         self.update_ui()
         self.on_show()
 
-    def load_file(self, filename=None):
-        # PySide: filename now a tuple ([0]) added throughout below
-        filename = QtGui.QFileDialog.getOpenFileName(self,
-            'Open a data file', '.', 'P files (*.7)')
-        
-        if filename:
-            self.data.load_from_file(filename)
-            self.fill_series_list(self.data.series_names())
-            self.status_text.setText("Loaded " + filename[0])
-            self.update_ui()
-    
-    def update_ui(self):
-        if self.data.series_count() > 0 and self.data.series_len() > 0:
-            self.phase_spin.setValue(0)
-            self.phase_spin.setRange(-np.pi, np.pi)
-            self.phase_spin.setEnabled(True)
-            
-            self.line_spin.setRange(0, 100)
-            self.line_spin.setEnabled(True)
-
-        else:
-            for w in [self.phase_spin, self.first_spin]:
-                w.setEnabled(False)
-    
-    def on_show(self):
-        self.axes.clear()
-        self.axes.set_xlabel('ppm')
-        self.axes.grid(True)
-        has_series = False
-        
-        for row in range(self.series_list_model.rowCount()):
-            model_index = self.series_list_model.index(row, 0)
-            checked = self.series_list_model.data(model_index,
-                QtCore.Qt.CheckStateRole) == QtCore.Qt.Checked 
-            name = str(self.series_list_model.data(model_index))
-            
-            if checked:
-                has_series = True
-                phase_zero = self.phase_spin.value()
-                line_width = self.line_spin.value()
-                series = self.data.get_series_data(name)
-                series = ut.phase_correct_zero(series, phase_zero)
-                self.axes.plot(self.data.f_ppm, series, label=name)
-        
-        if has_series and self.legend_cb.isChecked():
-            self.axes.legend()
-        self.canvas.draw()
-
-    def on_fit(self):
-        """
-
-        """
-        print "This is where fitting data will go"
-        
-
-    def on_auc(self):
-        """
-
-        """
-        xlim = self.axes.get_xlim()
-        line_list = self.axes.get_lines()
-        txt = ''
-        for row in range(self.series_list_model.rowCount()):
-            model_index = self.series_list_model.index(row, 0)
-            checked = self.series_list_model.data(model_index,
-                QtCore.Qt.CheckStateRole) == QtCore.Qt.Checked 
-            name = str(self.series_list_model.data(model_index))
-
-            if checked:
-                xy = line_list[row].get_xydata()
-                idx = np.where(np.logical_and(xy[:,0]>=np.min(xlim),
-                                              xy[:,0]<=np.max(xlim)))
-                this_y = xy[idx, 1].squeeze()
-                # Use both sides to find the baseline:
-                baseline = np.mean([this_y[0], this_y[1]])
-                this_y -= baseline
-                # Integrate as sum * d(f_ppm)
-                txt = txt + "%s AUC: %2.2f \n"%(name, np.sum(this_y))
-
-        self.axes.text(0.05, 0.95, txt, horizontalalignment='left',
-                       verticalalignment='top',
-                       transform = self.axes.transAxes)
-        self.canvas.draw()
-
-    def on_about(self):
-        msg = __doc__
-        QMessageBox.about(self, "About the demo", msg.strip())
-
-    def fill_series_list(self, names):
-        self.series_list_model.clear()
-        
-        for name in names:
-            item = QtGui.QStandardItem(name)
-            item.setCheckState(QtCore.Qt.Unchecked)
-            item.setCheckable(True)
-            self.series_list_model.appendRow(item)
-
-        
-        
     def create_main_frame(self):
         self.main_frame = QtGui.QWidget()
         plot_frame = QtGui.QWidget()
@@ -172,7 +73,7 @@ class MainWindow(QtGui.QMainWindow):
         spin_label1 = QtGui.QLabel('Phase:')
         self.phase_spin = QtGui.QDoubleSpinBox(singleStep=0.1)
         spin_label2 = QtGui.QLabel('Linewidth:')
-        self.line_spin = QtGui.QDoubleSpinBox(singleStep=0.5)
+        self.line_spin = QtGui.QDoubleSpinBox(singleStep=0.1)
         spin_label3 = QtGui.QLabel('Cutoff:')
         self.cutoff_spin = QtGui.QDoubleSpinBox(singleStep=0.5)
         
@@ -267,6 +168,118 @@ class MainWindow(QtGui.QMainWindow):
         return action
 
 
+    def load_file(self, filename=None):
+        filename = QtGui.QFileDialog.getOpenFileName(self,
+            'Open a data file', '.', 'P files (*.7)')
+        
+        if filename:
+            self.data.load_from_file(filename)
+            self.data.get_spectra(self.line_spin.value(),
+                                  self.cutoff_spin.value())
+            self.fill_series_list(self.data.series_names())
+            self.status_text.setText("Loaded " + filename[0])
+            self.update_ui()
+    
+    def update_ui(self):
+        if self.data.series_count() > 0 and self.data.series_len() > 0:
+            self.phase_spin.setValue(0)
+            self.phase_spin.setRange(-np.pi, np.pi)
+            self.phase_spin.setEnabled(True)
+            
+            self.line_spin.setRange(0, 100)
+            self.line_spin.setEnabled(True)
+            self.line_spin.setValue(5.0)
+
+            self.cutoff_spin.setRange(0, 1000)
+            self.cutoff_spin.setEnabled(True)
+            self.cutoff_spin.setValue(1)
+
+        else:
+            for w in [self.phase_spin, self.first_spin]:
+                w.setEnabled(False)
+    
+    def on_show(self):
+        self.axes.clear()
+        self.axes.set_xlabel('ppm')
+        self.axes.grid(True)
+        has_series = False
+        self.data.get_spectra(self.line_spin.value(),
+                              self.cutoff_spin.value())
+        
+        for row in range(self.series_list_model.rowCount()):
+            model_index = self.series_list_model.index(row, 0)
+            checked = self.series_list_model.data(model_index,
+                QtCore.Qt.CheckStateRole) == QtCore.Qt.Checked 
+            name = str(self.series_list_model.data(model_index))
+            
+            if checked:
+                has_series = True
+                phase_zero = self.phase_spin.value()
+                series = self.data.get_series_data(name)
+                series = ut.phase_correct_zero(series, phase_zero)
+                self.axes.plot(self.data.f_ppm, series, label=name)
+        
+        if has_series and self.legend_cb.isChecked():
+            self.axes.legend()
+        self.canvas.draw()
+
+    def on_fit(self):
+        """
+
+        """
+        print "This is where fitting data will go"
+        # XXX Need to continue here:
+
+        # Need to update the series list in the GUI to show the fit: 
+        ## self.fill_series_list(self.data.series_names())
+        ## self.update_ui()
+
+
+    def on_auc(self):
+        """
+
+        """
+        xlim = self.axes.get_xlim()
+        line_list = self.axes.get_lines()
+        txt = ''
+        for row in range(self.series_list_model.rowCount()):
+            model_index = self.series_list_model.index(row, 0)
+            checked = self.series_list_model.data(model_index,
+                QtCore.Qt.CheckStateRole) == QtCore.Qt.Checked 
+            name = str(self.series_list_model.data(model_index))
+
+            if checked:
+                xy = line_list[row].get_xydata()
+                idx = np.where(np.logical_and(xy[:,0]>=np.min(xlim),
+                                              xy[:,0]<=np.max(xlim)))
+                this_y = xy[idx, 1].squeeze()
+                # Use both sides to find the baseline:
+                baseline = np.mean([this_y[0], this_y[1]])
+                this_y -= baseline
+                # Integrate as sum * d(f_ppm)
+                txt = txt + "%s AUC: %2.2f \n"%(name, np.sum(this_y))
+
+        self.axes.text(0.05, 0.95, txt, horizontalalignment='left',
+                       verticalalignment='top',
+                       transform = self.axes.transAxes)
+        self.canvas.draw()
+
+    def on_about(self):
+        msg = __doc__
+        QMessageBox.about(self, "About the demo", msg.strip())
+
+    def fill_series_list(self, names):
+        self.series_list_model.clear()
+        
+        for name in names:
+            item = QtGui.QStandardItem(name)
+            item.setCheckState(QtCore.Qt.Unchecked)
+            item.setCheckable(True)
+            self.series_list_model.appendRow(item)
+            
+        
+
+
 class DataHolder(object):
     """ Just a thin wrapper over a dictionary that holds integer 
         data series. Each series has a name and a list of numbers 
@@ -281,51 +294,55 @@ class DataHolder(object):
         self.load_from_file(filename)
     
     def load_from_file(self, filename=None):
-        self.data = {}
-        self.names = []
         if filename:
-            d, ppm = self.get_mrs_data(filename[0])
-            for k,v in d.items():
-                self.names.append(k)
-                self.data[k] =  v
-                self.datalen = len(v)
-            self.ppm = ppm        
+            # Get data from file: 
+            data = fi.get_data(filename[0])
+            # Use the water unsuppressed data to combine over coils:
+            w_data, w_supp_data = ana.coil_combine(data.squeeze())
+            self.timeseries = w_supp_data
 
     def series_names(self):
         """ Names of the data series
         """
         return self.names
-    
+
+        
+    def series_count(self):
+        return len(self.data)
+
+
     def series_len(self):
         """ Length of a data series
         """
         return self.datalen
-    
-    def series_count(self):
-        return len(self.data)
+
 
     def get_series_data(self, name):
         return self.data[name]
 
-    def get_spectra(self, cutoff, linewidth):
-        """
-        Spectral analysis given data was read from file
-        """
         
-    def get_mrs_data(self, in_file,
-                     sampling_rate=5000,
-                     min_ppm=-0.7, max_ppm=4.3):
-        # Get data from file: 
-        data = fi.get_data(in_file)
-        # Use the water unsuppressed data to combine over coils:
-        w_data, w_supp_data = ana.coil_combine(data.squeeze())
+    def get_spectra(self, lbr, cutoff):
+        self.data = {}
+        self.names = []
+        d, ppm = self.calc_spectra(lbr, cutoff)
+        for k,v in d.items():
+            self.names.append(k)
+            self.data[k] =  v
+            self.datalen = len(v)
+        self.ppm = ppm
+
+    def calc_spectra(self, lbr, cutoff,
+                     sampling_rate=5000, min_ppm=-0.7, max_ppm=4.3):
         # Once we've done that, we only care about the water-suppressed data
-        self.f, self.spec = ana.get_spectra(nt.TimeSeries(w_supp_data,
-                                                sampling_rate=sampling_rate))
+        self.f, self.spec = ana.get_spectra(nt.TimeSeries(self.timeseries,
+                                            sampling_rate=sampling_rate),
+                                            line_broadening=lbr,
+                            filt_method = dict(lb=cutoff, filt_order=256))
+
         # The first echo (off-resonance) is in the first output 
-        self.echo1 = self.spec[0]
+        self.echo1 = self.spec[:,0]
         # The on-resonance is in the second:
-        self.echo2 = self.spec[1]
+        self.echo2 = self.spec[:,1]
         f_ppm = ut.freq_to_ppm(self.f)
         idx0 = np.argmin(np.abs(f_ppm - min_ppm))
         idx1 = np.argmin(np.abs(f_ppm - max_ppm))
@@ -337,6 +354,7 @@ class DataHolder(object):
         m_e1 = np.mean(self.echo1[:,idx], 0)
         m_e2 = np.mean(self.echo2[:,idx], 0)
         self.diff = m_e2 - m_e1
+        
         return dict(echo1=m_e1, echo2=m_e2, diff=self.diff), f_ppm
 
 if __name__ == "__main__":

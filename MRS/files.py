@@ -87,6 +87,10 @@ def get_data(file_name, header=None):
     ----------
     file_name : str
        The full path to a P file containing data
+
+    Returns
+    -------
+    data : numpy array with shape: (transients, echos, coils, time-points)
     """
 
     if header is None:
@@ -142,5 +146,5 @@ def get_data(file_name, header=None):
                              coilidx,
                              passidx] = dr[0] + dr[1] * 1j
 
-
-    return data
+    # Get rid of excess dimensions and make time the last dimension:
+    return np.rollaxis(data.squeeze(), 0, 4)
