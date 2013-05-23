@@ -102,8 +102,6 @@ def coil_combine(data, w_idx=[1,2,3]):
     """
     w_data, w_supp_data = separate_signals(data, w_idx)     
     fft_w = fft.fft(w_data)
-    fft_w_supp = fft.fft(w_supp_data)
-
     # We use the water peak (the 0th frequency) as the reference (averaging
     # across transients and echos):
     zero_freq_w = np.mean(np.mean(np.abs(fft_w[..., 0]), 0), 0)
@@ -114,20 +112,17 @@ def coil_combine(data, w_idx=[1,2,3]):
 
     # Next, we make sure that all the coils have the same phase. We will use
     # the phase of this peak to align the phases: 
-    zero_phi_w = np.angle(fft_w[..., 0])
+    zero_phi_w = np.angle(w_data[..., 0])
     zero_phi_w = np.mean(np.mean(zero_phi_w, 0), 0)
-
     # This recalculates the weight with the phase alignment (see page 397 in
     # Wald paper):
     w = w * np.exp(-1j * zero_phi_w) 
-
-    # Multiply each one of them by it's weight, sum across coils (2nd dim) and
-    # ifft back into the time-domain:
+    # Multiply each one of them by it's weight and average across coils (2nd
+    # dim). This makes sure that you are roughly 0 phased for the water peak
     na = np.newaxis  # Short-hand
-    weighted_w_data = np.sum(fft.ifft(w[na, na, :, na] * fft_w), axis=2)
-    weighted_w_supp_data = np.sum(fft.ifft(w[na, na, :, na] * fft_w_supp),
-                                  axis=2)
-
+    weighted_w_data = np.mean(w[na, na, :, na] * w_data, axis=2)
+    weighted_w_supp_data = np.mean(w[na, na, :, na] * w_supp_data, axis=2)
+    
     def normalize_this(x):
        return  x * (x.shape[-1] / np.sum(x))
 
@@ -188,7 +183,10 @@ def get_spectra(data, filt_method = dict(lb=0.1, filt_order=256),
     """
     if not isinstance(data, nt.TimeSeries):
        data = nt.TimeSeries(data, sampling_rate=5000.0)  
-    filtered = nta.FilterAnalyzer(data, **filt_method).fir
+    if filt_method is not None:
+        filtered = nta.FilterAnalyzer(data, **filt_method).fir
+    else:
+        filtered = data
     if line_broadening is not None: 
        lbr_time = line_broadening * np.pi  # Conversion from Hz to
                                            # time-constant, see Keeler page 94 
@@ -213,13 +211,20 @@ def get_spectra(data, filt_method = dict(lb=0.1, filt_order=256),
 
     return f, c
 
-def normalize_water(w_sig, nonw_sig, idx):
+def subtract_water(w_sig, nonw_sig, idx):
     """
+    Subtract the residual water signal from the 
     Normalize the water-suppressed signal by the signal that is not
     water-suppressed, to get rid of the residual water peak.
 
-    Might not be necessary if appropriate filtering is applied to the signal.
     """
+    mean_water = np.mean(w_sig, 0)
+
+    non_w_sig
+
+    water_only = mean_water - mean_supp
+    scale_factor = np.sum(water_only)/np.sum(mean_supp)
+
     scale_fac = np.mean(w_sig[idx]/nonw_sig[idx])
     approx = w_sig/scale_fac
     corrected = nonw_sig - approx
