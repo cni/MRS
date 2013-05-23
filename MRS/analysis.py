@@ -113,18 +113,23 @@ def coil_combine(data, w_idx=[1,2,3]):
     # Next, we make sure that all the coils have the same phase. We will use
     # the phase of this peak to align the phases: 
     zero_phi_w = np.angle(w_data[..., 0])
-    zero_phi_w = np.mean(np.mean(zero_phi_w, 0), 0)
     # This recalculates the weight with the phase alignment (see page 397 in
     # Wald paper):
-    w = w * np.exp(-1j * zero_phi_w) 
+    w = w * np.exp(-1j * zero_phi_w)
     # Multiply each one of them by it's weight and average across coils (2nd
     # dim). This makes sure that you are roughly 0 phased for the water peak
     na = np.newaxis  # Short-hand
-    weighted_w_data = np.mean(w[na, na, :, na] * w_data, axis=2)
-    weighted_w_supp_data = np.mean(w[na, na, :, na] * w_supp_data, axis=2)
+
+    weighted_w_data = w[..., na] * w_data
+    weighted_w_data = np.mean(weighted_w_data, 2)
+    
+    weighted_w_supp_data =np.mean(
+       np.mean(np.mean(w,0),0)[na, na, :, na] * w_supp_data, axis=2)
+
+    #return weighted_w_data, weighted_w_supp_data 
     
     def normalize_this(x):
-       return  x * (x.shape[-1] / np.sum(x))
+       return  x * (x.shape[-1] / np.sum(np.abs(x)))
 
     weighted_w_data = normalize_this(weighted_w_data)
     weighted_w_supp_data = normalize_this(weighted_w_supp_data)
@@ -211,23 +216,33 @@ def get_spectra(data, filt_method = dict(lb=0.1, filt_order=256),
 
     return f, c
 
-def subtract_water(w_sig, nonw_sig, idx):
+def subtract_water(w_sig, w_supp_sig):
     """
     Subtract the residual water signal from the 
     Normalize the water-suppressed signal by the signal that is not
     water-suppressed, to get rid of the residual water peak.
 
+    Parameters
+    ----------
+    w_sig : array with shape (n_reps, n_echos, n_points)
+       A signal with water unsupressed
+
+    w_supp_sig :array with shape (n_reps, n_echos, n_points)
+       A signal with water suppressed.
+
+    Returns
+    -------
+    The water suppressed signal with the additional subtraction of a scaled
+    version of the signal that is presumably just due to water.
+
     """
+    mean_nw = np.mean(w_supp_sig,0)
+    water_only = np.mean(w_sig - mean_nw, 0)
     mean_water = np.mean(w_sig, 0)
 
-    non_w_sig
+    scale_factor = water_only/mean_nw
 
-    water_only = mean_water - mean_supp
-    scale_factor = np.sum(water_only)/np.sum(mean_supp)
-
-    scale_fac = np.mean(w_sig[idx]/nonw_sig[idx])
-    approx = w_sig/scale_fac
-    corrected = nonw_sig - approx
+    corrected = w_supp_sig - water_only/scale_factor[:,0,np.newaxis]
     return corrected
 
 
