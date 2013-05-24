@@ -58,7 +58,7 @@ if __name__ == "__main__":
     # Do spectral analysis:
     f_nonw, nonw_sig = ana.get_spectra(w_supp_data,
                                        line_broadening=float(in_args.broadening),
-                                       zerofill=in_args.zero_fill,
+                                       zerofill=float(in_args.zero_fill),
                                        filt_method=None)
 
     f_ppm = ut.freq_to_ppm(f_nonw)
