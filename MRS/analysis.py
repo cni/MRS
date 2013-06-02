@@ -9,8 +9,9 @@ import nitime.timeseries as nts
 import nitime.analysis as nta
 import scipy.fftpack as fft
 
+import MRS.leastsqbound as lsq
 import MRS.utils as ut
-
+import MRS.optimize as mopt
 
 def separate_signals(data, w_idx=[1,2,3]):
    """
@@ -246,6 +247,70 @@ def subtract_water(w_sig, w_supp_sig):
     return corrected
 
 
-def fit_lorentzian():
-   pass
+def fit_lorentzian(spectra, f_ppm, lb=2.6, ub=3.6):
+   """
+   Fit a lorentzian function to the sum spectra to be used for estimation of
+   the creatine peak, for phase correction of the difference spectra and for
+   outlier rejection.
+   
+   Parameters
+   ----------
+   spectra : array of shape (n_transients, n_points)
+      Typically the sum of the on/off spectra in each transient.
 
+   f_ppm : array
+
+   lb, ub: floats
+      In ppm, the range over which optimization is bounded
+   
+   """
+   # We are only going to look at the interval between lb and ub
+   idx0 = np.argmin(np.abs(f_ppm - lb))
+   idx1 = np.argmin(np.abs(f_ppm - ub))
+   idx = slice(idx1, idx0)
+   n_points = idx.stop - idx.start
+   n_params = 6
+   fit_func = ut.lorentzian
+   # Set the bounds for the optimization
+   bounds = [(lb,ub),
+             (0,None),
+             (0,None),
+             (-np.pi, np.pi),
+             (None,None),
+             (None, None)]
+
+   model = np.empty((spectra.shape[0], n_points))
+   signal = np.empty((spectra.shape[0], n_points))
+   params = np.empty((spectra.shape[0], n_params))
+   for ii, xx in enumerate(spectra):
+      # We fit to the real spectrum:
+      signal[ii] = np.real(xx[idx])
+      # Use the signal for a rough estimate of the parameters for
+      # initialization :
+      max_idx = np.argmax(signal[ii])
+      max_sig = np.max(signal[ii])
+      initial_f0 = f_ppm[idx][max_idx]
+      half_max_idx = np.argmin(np.abs(signal[ii] - max_sig/2))
+      initial_hwhm = np.abs(initial_f0 - f_ppm[idx][half_max_idx])
+      initial_ph = 0
+      initial_off = np.min(signal[ii])
+      initial_drift = 0
+      initial_a = (np.sum(signal[ii][max_idx:max_idx +
+                                    np.abs(half_max_idx)*2]) ) * 2
+      
+      initial = (initial_f0,
+                 initial_a,
+                 initial_hwhm,
+                 initial_ph,
+                 initial_off,
+                 initial_drift)
+      
+      params[ii], _ = lsq.leastsqbound(mopt.err_func,
+                                       initial,
+                                       args=(f_ppm[idx],
+                                             np.real(signal[ii]),
+                                             fit_func), bounds=bounds)
+
+      model[ii] = fit_func(f_ppm[idx], *params[ii])
+   
+   return model, signal, params
