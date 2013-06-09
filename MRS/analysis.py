@@ -130,7 +130,7 @@ def coil_combine(data, w_idx=[1,2,3]):
     #return weighted_w_data, weighted_w_supp_data 
     
     def normalize_this(x):
-       return  x * (x.shape[-1] / (10 *np.sum(np.abs(x))))
+       return  x * (x.shape[-1] / (np.sum(np.abs(x))))
 
     weighted_w_data = normalize_this(weighted_w_data)
     weighted_w_supp_data = normalize_this(weighted_w_supp_data)
