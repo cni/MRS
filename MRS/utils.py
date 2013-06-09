@@ -485,9 +485,9 @@ def two_lorentzian(freq, freq0_1, freq0_2, area1, area2, hwhm1, hwhm2, phase1,
 
 def gaussian(freq, freq0, sigma, amp, offset, drift):
     """
-    
+    A Gaussian function with flexible offset, drift and amplitude
     """
+    return (amp * np.exp(- ((freq - freq0)**2) / (sigma**2) ) +
+            drift * (freq-freq0) + offset)
 
-    return (amp * np.exp( ((freq - freq0)**2) / (sigma**2) ) +
-            drift * (freq-freq0) + offset
-    
+

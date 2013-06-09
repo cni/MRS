@@ -12,7 +12,7 @@ class GABA(object):
 
     def __init__(self, in_file, line_broadening=5, zerofill=100,
                  filt_method=None, min_ppm=-0.7, max_ppm=4.3,
-                 fit_lb=2.8, fit_ub=3.6):
+                 fit_lb=2.8, fit_ub=3.2):
         """
         Parameters
         ----------
@@ -66,6 +66,8 @@ class GABA(object):
         self.sum_spectra = self.echo2 + self.echo1
         self.fit_lb=fit_lb
         self.fit_ub=fit_ub  
+
+
     def fit_creatine(self, reject_outliers=3.0):
         """
         Fit a model to the portion of the summed spectra containing the
@@ -83,10 +85,10 @@ class GABA(object):
            
 
         """
-        model, signal, params= ana.fit_lorentzian(self.sum_spectra,
-                                                  self.f_ppm,
-                                                  lb=self.fit_lb,
-                                                  ub=self.fit_ub)
+        model, signal, params, fit_idx = ana.fit_lorentzian(self.sum_spectra,
+                                                            self.f_ppm,
+                                                            lb=self.fit_lb,
+                                                            ub=self.fit_ub)
 
         # Reject outliers:
         if reject_outliers:
@@ -106,21 +108,24 @@ class GABA(object):
         self.creatine_model = model
         self.creatine_signal = signal
         self.creatine_params = params
+        self.fit_idx = fit_idx
         
     def fit_gaba(self):
         """
-        
+        Fit a Gaussian function to the GABA peak at ~ 3 ppm.
         """
-
+        # We need to fit the creatine, so that we know which transients to
+        # exclude in fitting the GABA peak:
         if not hasattr(self, 'creatine_params'):
             self.fit_creatine()
-        self.creatine_params
+
         fit_spectra = self.diff_spectra[self._fit_transients]
-        for ii, this_spec in enumerate(fit_spectra):
-            # Correct the phase, according to the residual creatine phase
-            # distortion: 
-            fit_spectra[ii] = ut.phase_correct_zero(this_spec,
-                                                   self.creatine_params[ii, 3])
-            
-        return fit_spectra
-                    
+        # fit_idx should already be set from fitting the creatine params:
+        model, signal, params, _ = ana.fit_gaussian(fit_spectra,
+                                                    self.f_ppm,
+                                                    lb=self.fit_lb,
+                                                    ub=self.fit_ub)
+
+        self.gaba_model = model
+        self.gaba_signal = signal
+        self.gaba_params = params

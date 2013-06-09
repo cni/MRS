@@ -130,7 +130,7 @@ def coil_combine(data, w_idx=[1,2,3]):
     #return weighted_w_data, weighted_w_supp_data 
     
     def normalize_this(x):
-       return  x * (x.shape[-1] / np.sum(np.abs(x)))
+       return  x * (x.shape[-1] / (10 *np.sum(np.abs(x))))
 
     weighted_w_data = normalize_this(weighted_w_data)
     weighted_w_supp_data = normalize_this(weighted_w_supp_data)
@@ -313,4 +313,70 @@ def fit_lorentzian(spectra, f_ppm, lb=2.6, ub=3.6):
 
       model[ii] = fit_func(f_ppm[idx], *params[ii])
    
-   return model, signal, params
+   return model, signal, params, idx
+
+
+def fit_gaussian(spectra, f_ppm, lb=2.6, ub=3.6):
+   """
+   Fit a gaussian function to the difference spectra to be used for estimation of
+   the GABA peak.
+   
+   Parameters
+   ----------
+   spectra : array of shape (n_transients, n_points)
+      Typically the difference of the on/off spectra in each transient.
+
+   f_ppm : array
+
+   lb, ub: floats
+      In ppm, the range over which optimization is bounded
+   
+   """
+   # We are only going to look at the interval between lb and ub
+   idx0 = np.argmin(np.abs(f_ppm - lb))
+   idx1 = np.argmin(np.abs(f_ppm - ub))
+   idx = slice(idx1, idx0)
+   n_points = idx.stop - idx.start
+   n_params = 5
+   fit_func = ut.gaussian
+   # Set the bounds for the optimization
+   bounds = [(lb,ub), # peak location
+             (0,None), # sigma
+             (0,None), # amp
+             (None, None), # offset
+             (None, None)  # rift
+             ]
+
+   model = np.empty((spectra.shape[0], n_points))
+   signal = np.empty((spectra.shape[0], n_points))
+   params = np.empty((spectra.shape[0], n_params))
+   for ii, xx in enumerate(spectra):
+      # We fit to the real spectrum:
+      signal[ii] = np.real(xx[idx])
+      # Use the signal for a rough estimate of the parameters for
+      # initialization :
+      max_idx = np.argmax(signal[ii])
+      max_sig = np.max(signal[ii])
+      initial_f0 = f_ppm[idx][max_idx]
+      half_max_idx = np.argmin(np.abs(signal[ii] - max_sig/2))
+      # We estimate sigma as the hwhm:
+      initial_sigma = np.abs(initial_f0 - f_ppm[idx][half_max_idx])
+      initial_off = np.min(signal[ii])
+      initial_drift = 0
+      initial_amp = max_sig
+      
+      initial = (initial_f0,
+                 initial_sigma,
+                 initial_amp,
+                 initial_off,
+                 initial_drift)
+      
+      params[ii], _ = lsq.leastsqbound(mopt.err_func,
+                                       initial,
+                                       args=(f_ppm[idx],
+                                             np.real(signal[ii]),
+                                             fit_func), bounds=bounds)
+
+      model[ii] = fit_func(f_ppm[idx], *params[ii])
+   
+   return model, signal, params, idx
