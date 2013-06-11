@@ -457,7 +457,6 @@ def lorentzian(freq, freq0, area, hwhm, phase, offset, drift):
       The center frequency of the function
 
    area : float
-      ??? 
 
    hwhm: float
       Half-width at half-max       
@@ -486,8 +485,13 @@ def two_lorentzian(freq, freq0_1, freq0_2, area1, area2, hwhm1, hwhm2, phase1,
 
 def gaussian(freq, freq0, sigma, amp, offset, drift):
     """
-    
+    A Gaussian function with flexible offset, drift and amplitude
     """
-    pass    
-    
-    
+    return (amp * np.exp(- ((freq - freq0)**2) / (sigma**2) ) +
+            drift * (freq-freq0) + offset)
+
+def auc_gaussian(amp, sigma):
+    """
+    Calculate the area under the curve for Gaussian function 
+    """
+    return amp/np.sqrt(-(1/(2*sigma**2)))*np.sqrt(np.pi)
