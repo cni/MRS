@@ -37,11 +37,10 @@ def test_coil_combine():
     npt.assert_equal(w_data.shape[-1], data.shape[-1])
     npt.assert_equal(w_supp_data.shape[-1], data.shape[-1])
 
-    # Check that the phase for the first frequency point is approximately the
+    # Check that the phase for the first data point is approximately the
     # same and approximately 0 for all the water-channels:
-    fft_w = np.fft.fft(w_data)
-    npt.assert_array_almost_equal(np.angle(fft_w)[:,:,0],
-                                  np.zeros_like(fft_w[:,:,0]),
+    npt.assert_array_almost_equal(np.angle(w_data)[:,:,0],
+                                  np.zeros_like(w_data[:,:,0]),
                                   decimal=1)  # We're not being awfully strict
                                               # about it.
         
@@ -72,15 +71,8 @@ def test_mrs_analyze():
     mrs_path = MRS.__path__[0]
     out_name = tempfile.NamedTemporaryFile().name
     # Check that it runs through:
-    cmd = '%s/../bin/mrs-analyze.py %s %s.csv'%(mrs_path, file_name, out_name)
+    cmd = '%s/../bin/mrs-analyze.py %s '%(mrs_path, file_name)
     npt.assert_equal(os.system(cmd),0)
     # XXX We might want to analyze the output file here...
 
 
-def test_fit_lorentzian():
-    """
-    Test fitting of Lorentzian function to creatine peak
-    """
-    data = io.get_data(file_name)
-    w_data, w_supp_data = ana.coil_combine(data)
-    f, s = ana.get_spectra(w_supp_data, line_broadening=2, zerofill=100)
