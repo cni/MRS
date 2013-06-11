@@ -490,4 +490,8 @@ def gaussian(freq, freq0, sigma, amp, offset, drift):
     return (amp * np.exp(- ((freq - freq0)**2) / (sigma**2) ) +
             drift * (freq-freq0) + offset)
 
-
+def auc_gaussian(amp, sigma):
+    """
+    Calculate the area under the curve for Gaussian function 
+    """
+    return amp/np.sqrt(-(1/(2*sigma**2)))*np.sqrt(np.pi)

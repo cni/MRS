@@ -35,7 +35,7 @@ parser.add_argument('--max_ppm', action='store', metavar='Float',
                     default=4.3)
 
 parser.add_argument('--broadening', action='store', metavar='Float',
-                    help='Line broadening (Hz; default: 2)', default=2.0)
+                    help='Line broadening (Hz; default: 2)', default=5.0)
 
 parser.add_argument('--zero_fill', action='store', metavar='Float',
                     help='Zero filling (number of points; default=100',
@@ -71,11 +71,15 @@ if __name__ == "__main__":
         # And save to output:
         mlab.rec2csv(out_array, in_args.out_file)
 
+    G.fit_gaba()
+    
     if in_args.plot:
         fig, ax = plt.subplots(3)
         ax[0].plot(G.f_ppm, m_e1)
+        ax[0].plot(G.f_ppm[G.cr_idx], np.mean(G.creatine_model, 0), 'r')
         ax[1].plot(G.f_ppm, m_e2)
         ax[2].plot(G.f_ppm, diff)
+        ax[2].plot(G.f_ppm[G.gaba_idx], np.mean(G.gaba_model, 0), 'r')
         for a in ax:
             a.invert_xaxis()
             a.set_xlabel('ppm')
