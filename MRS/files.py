@@ -147,4 +147,5 @@ def get_data(file_name, header=None):
                              passidx] = dr[0] + dr[1] * 1j
 
     # Get rid of excess dimensions and make time the last dimension:
-    return np.rollaxis(data.squeeze(), 0, 4)
+    sq_data = data.squeeze()
+    return np.rollaxis(sq_data, 0, len(sq_data.shape))
