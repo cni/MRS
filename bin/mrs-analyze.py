@@ -65,7 +65,7 @@ if __name__ == "__main__":
 
     if in_args.out_file:
         prep_arr = [(G.f_ppm[i], m_e1[i], m_e2[i], diff[i])
-                              for i in range(len(f_ppm))]
+                              for i in range(len(G.f_ppm))]
         out_array = np.array(prep_arr, dtype=dt)
 
         # And save to output:
