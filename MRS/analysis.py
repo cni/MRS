@@ -69,7 +69,7 @@ def coil_combine(data, w_idx=[1,2,3]):
     ----------
     data : float array
        The data as it comes from the scanner (read using the functions in
-       files.py), with dimensions time x transients x off-/on-resonance x coils
+       files.py), with shape (transients, echos, coils, time points)
     
     w_idx : tuple
        The indices to the non-water-suppressed transients. Per default we take
@@ -105,7 +105,7 @@ def coil_combine(data, w_idx=[1,2,3]):
     fft_w = fft.fft(w_data)
     # We use the water peak (the 0th frequency) as the reference (averaging
     # across transients and echos):
-    zero_freq_w = np.mean(np.mean(np.abs(fft_w[..., 0]), 0), 0)
+    zero_freq_w = np.mean(np.abs(fft_w[..., 0]), axis = (0,1))
    
     # This is the weighting by SNR (equation 29 in the Wald paper):
     zero_freq_w_across_coils = np.sqrt(np.sum(zero_freq_w**2, -1))
@@ -125,7 +125,7 @@ def coil_combine(data, w_idx=[1,2,3]):
     weighted_w_data = np.mean(weighted_w_data, 2)
     
     weighted_w_supp_data =np.mean(
-       np.mean(np.mean(w,0),0)[na, na, :, na] * w_supp_data, axis=2)
+       np.mean(w, axis = (0,1))[na, na, :, na] * w_supp_data, axis=2)
 
     #return weighted_w_data, weighted_w_supp_data 
     
