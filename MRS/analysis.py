@@ -49,7 +49,7 @@ def separate_signals(data, w_idx=[1,2,3]):
    return w_data, w_supp_data
 
 
-def coil_combine(data, w_idx=[1,2,3]):
+def coil_combine(data, w_idx=[1,2,3], coil_dim=2):
     """
     Combine data across coils based on the amplitude of the water peak,
     according to:
@@ -122,10 +122,16 @@ def coil_combine(data, w_idx=[1,2,3]):
     na = np.newaxis  # Short-hand
 
     weighted_w_data = w[..., na] * w_data
-    weighted_w_data = np.mean(weighted_w_data, 2)
+    weighted_w_data = np.mean(weighted_w_data, coil_dim)
+
+    # Need to create a flexible indexer that knows to index into all of items
+    # on the dimension after the coil dimension. This is done by concatenating
+    # some tuples here and using the total tuple for indexing below:
+    idxer = coil_dim * (na, ) + (slice(0,None), na)
     
     weighted_w_supp_data =np.mean(
-       np.mean(w, axis = (0,1))[na, na, :, na] * w_supp_data, axis=2)
+       np.mean(w, axis = tuple(range(coil_dim)))[idxer] * w_supp_data,
+       axis=coil_dim)
 
     #return weighted_w_data, weighted_w_supp_data 
     
@@ -134,7 +140,9 @@ def coil_combine(data, w_idx=[1,2,3]):
 
     weighted_w_data = normalize_this(weighted_w_data)
     weighted_w_supp_data = normalize_this(weighted_w_supp_data)
-    return weighted_w_data, weighted_w_supp_data 
+    # Squeeze in case that some extraneous dimensions were introduced (can
+    # happen for SV data, for example)
+    return weighted_w_data.squeeze(), weighted_w_supp_data.squeeze()
 
 
 def get_spectra(data, filt_method = dict(lb=0.1, filt_order=256),
@@ -243,7 +251,7 @@ def subtract_water(w_sig, w_supp_sig):
 
     scale_factor = water_only/mean_nw
 
-    corrected = w_supp_sig - water_only/scale_factor[:,0,np.newaxis]
+    corrected = w_supp_sig - water_only/scale_factor[...,0,np.newaxis]
     return corrected
 
 
