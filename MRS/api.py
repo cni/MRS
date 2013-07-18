@@ -161,3 +161,59 @@ class GABA(object):
         self.gaba_signal = signal
         self.gaba_params = params
         self.gaba_idx = gaba_idx
+
+
+class SingleVoxel(object):
+    """
+    Class for representation and analysis of single voxel experiments.
+    """
+
+    
+
+    def __init__(self, in_file, line_broadening=5, zerofill=100,
+                 filt_method=None, min_ppm=-0.7, max_ppm=4.3):
+        """
+        Parameters
+        ----------
+
+        in_file : str
+            Path to a P file containing MRS data.
+
+        line_broadening : float
+           How much to broaden the spectral line-widths (Hz)
+           
+        zerofill : int
+           How many zeros to add to the spectrum for additional spectral
+           resolution
+
+        min_ppm, max_ppm : float
+           The limits of the spectra that are represented
+
+        fit_lb, fit_ub : float
+           The limits for the part of the spectrum for which we fit the
+           creatine and GABA peaks. 
+        
+        """
+        self.raw_data =  io.get_data(in_file)
+        w_data, w_supp_data = ana.coil_combine(self.raw_data, w_idx = range(8),
+                                               coil_dim=1)
+        # We keep these around for reference, as private attrs
+        self._water_data = w_data
+        self._w_supp_data = w_supp_data
+        # This is the time-domain signal of interest, combined over coils:
+        self.data = ana.subtract_water(w_data, w_supp_data)
+
+        f_hz, spectra = ana.get_spectra(self.data,
+                                        line_broadening=line_broadening,
+                                        zerofill=zerofill,
+                                        filt_method=filt_method)
+                                           
+        self.f_hz = f_hz
+        # Convert from Hz to ppm and extract the part you are interested in.
+        f_ppm = ut.freq_to_ppm(self.f_hz)
+        idx0 = np.argmin(np.abs(f_ppm - min_ppm))
+        idx1 = np.argmin(np.abs(f_ppm - max_ppm))
+        self.idx = slice(idx1, idx0)
+        self.f_ppm = f_ppm[self.idx]
+        self.spectra = spectra[:,self.idx]
+    
