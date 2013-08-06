@@ -3,14 +3,14 @@ freesurfer tools
 """ 
 
 import os
-import argparse
+import re
 import nipype.pipeline.engine as pe
 import nipype.interfaces.io as nio
 import nipype.interfaces.freesurfer as fs
 import nipype.interfaces.utility as util
 import nipype.interfaces.fsl as fsl
 
-def reconall(subjfile,*args): 
+def reconall(subjfile,subjID=None,subjdir=None): 
     """
     Carries out Freesurfer's reconall on T1 nifti file
     http://nipy.sourceforge.net/nipype/users/examples/smri_freesurfer.html
@@ -20,38 +20,44 @@ def reconall(subjfile,*args):
     subjfile: nifti file
         Path to subject's T1 nifti file
     
-    args: the directory to where segmentation results should be saved can be enetered as an optional second input parameter. Defaults to same directory as subjfile.  
+    subjID: string
+        optional name for subject's output folder
+
+    subjdir: the directory to where segmentation results should be saved. Defaults to same directory as subjfile.  
     """  
-    parser = argparse.ArgumentParser()
 
     T1dir = os.path.dirname(subjfile)
     filename = os.path.basename(subjfile)
 
     # Tell freesurfer what subjects directory to use
-    if len(args)>0:
-        subjdir=args[0]
-    else:
+    if subjdir==None:
         subjdir=T1dir
     fs.FSCommand.set_default_subjects_dir(subjdir)
     print 'saving to ' + subjdir
+
+    # subject ID
+    if subjID==None:
+        m=re.search('(\w+?)_*_',subjfile)
+        subjID=m.group(0) + 'seg'        
+        
 
     # check if file exists
     if os.path.isfile(subjfile):
         print 'running recon-all on ' + filename
     else:
-        parser.error('File doesn\'t exist')
+        raise ValueError("File: %s does not exist!"%filename)
 
     # check if nifti format
     ext = os.path.splitext(filename)[-1].lower()
     if ext != ".nii":
-        parser.error('File needs to be nifti format.')
+        raise ValueError("File: %s is not a nifti file!"%filename)
 
     wf = pe.Workflow(name="segment")
     wf.base_dir = T1dir
 
     # run recon-all
     reconall = pe.Node(interface=fs.ReconAll(), name='reconall')
-    reconall.inputs.subject_id = filename[:4]
+    reconall.inputs.subject_id = subjID 
     reconall.inputs.directive = 'all'
     reconall.inputs.subjects_dir = subjdir
     reconall.inputs.T1_files = subjfile
@@ -59,16 +65,15 @@ def reconall(subjfile,*args):
     wf.add_nodes([reconall])
     result = wf.run()
 
-
 	
-def cubicMaskStats(subjectID, center, length, basedir):
+def cubicMaskStats(subjT1, center, length=25.0, subjID=None, segdir=None):
     """
     define a cubic mask, returns grey/white/CSF content within mask
 
     Parameters
     ----------
-    subjectID: string
-        subject identifier
+    subjT1: nifti file
+        path to subject's T1 file
 
     center : integer array
         [x,y,z] where x, y and z are the coordinates of the point of interest
@@ -76,16 +81,24 @@ def cubicMaskStats(subjectID, center, length, basedir):
     length : float
         length of cube in mm
 
-    basedir: directory 
-        where segmentation results are, and where results will be stored
+    subjID: string
+        optional subject identifier. Defaults to nims scan number
+
+    segdir: directory 
+        where segmentation results are, and where results will be stored. Defaults to directory where T1 is.
     
     See http://miykael.github.io/nipype-beginner-s-guide/regionOfInterest.html
 
     """
+    # subject ID
+    if subjID==None:
+        m=re.search('(\w+?)_*_',subjT1)
+        subjID=m.group(0)[:-1] 
+
 
     # get data
     datasource = pe.Node(interface=nio.DataGrabber(infields=['subject_id']),name='datasource')
-    datasource.inputs.base_directory=basedir
+    datasource.inputs.base_directory=segdir
     
 
     # calculate beginning corner of cubic ROI
@@ -99,12 +112,14 @@ def cubicMaskStats(subjectID, center, length, basedir):
     cubeValues = (corner[0],length,corner[1],length,corner[2],length)
     cubemask.inputs.op_string = '-mul 0 -add 1 -roi %d %d %d %d %d %d 0 1'%cubeValues
     cubemask.inputs.out_data_type = 'float'
-    cubemask.inputs.in_file=subjectID+'_*_.nii'	
+    cubemask.inputs.in_file=subjT1	
 
     # extract stats from a given segmentation
     segstat = pe.Node(interface=fs.SegStats(),name='segstat')
 
     #Create a datasink node to store important outputs
     datasink = pe.Node(interface=nio.DataSink(), name="datasink")
-    datasink.inputs.base_directory = experiment_dir + '/results'
-    datasink.inputs.container = fROIOutput
+    datasink.inputs.base_directory = segdir + '/maskStats'
+    datasink.inputs.container = subjID+'_maskStats'
+
+
