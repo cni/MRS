@@ -3,7 +3,6 @@ freesurfer tools
 """ 
 
 import os
-import argparse
 import re
 import nipype.pipeline.engine as pe
 import nipype.interfaces.io as nio
@@ -26,7 +25,6 @@ def reconall(subjfile,subjID=None,subjdir=None):
 
     subjdir: the directory to where segmentation results should be saved. Defaults to same directory as subjfile.  
     """  
-    parser = argparse.ArgumentParser()
 	
     T1dir = os.path.dirname(subjfile)
     filename = os.path.basename(subjfile)
@@ -47,12 +45,12 @@ def reconall(subjfile,subjID=None,subjdir=None):
     if os.path.isfile(subjfile):
         print 'running recon-all on ' + filename
     else:
-        parser.error('File doesn\'t exist')
+        raise ValueError("File: %s does not exist!"%filename)
 
     # check if nifti format
     ext = os.path.splitext(filename)[-1].lower()
     if ext != ".nii":
-        parser.error('File needs to be nifti format.')
+        raise ValueError("File: %s is not a nifti file!"%filename)
 
     wf = pe.Workflow(name="segment")
     wf.base_dir = T1dir
