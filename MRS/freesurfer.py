@@ -8,8 +8,9 @@ import nipype.pipeline.engine as pe
 import nipype.interfaces.io as nio
 import nipype.interfaces.freesurfer as fs
 import nipype.interfaces.utility as util
+import nipype.interfaces.fsl as fsl   
 
-def reconall(subjfile):
+def reconall(subjfile,*args): 
     """
     Carries out Freesurfer's reconall on T1 nifti file
     http://nipy.sourceforge.net/nipype/users/examples/smri_freesurfer.html
@@ -18,8 +19,8 @@ def reconall(subjfile):
     ----------
     subjfile: nifti file
         Path to subject's T1 nifti file
-  
-        http://nipy.sourceforge.net/nipype/interfaces/generated/nipype.interfaces.freesurfer.preprocess.html#reconall
+    
+    args: the directory to where segmentation results should be saved can be enetered as an optional second input parameter. Defaults to same directory as subjfile.  
     """  
     parser = argparse.ArgumentParser()
 	
@@ -27,8 +28,12 @@ def reconall(subjfile):
     filename = os.path.basename(subjfile)
 
     # Tell freesurfer what subjects directory to use
-    subjects_dir = T1dir
-    fs.FSCommand.set_default_subjects_dir(subjects_dir)
+    if len(args)>0:
+        subjdir=args[0]
+    else:
+        subjdir=T1dir
+    fs.FSCommand.set_default_subjects_dir(subjdir)
+    print 'saving to ' + subjdir
 
     # check if file exists
     if os.path.isfile(subjfile):
@@ -48,11 +53,9 @@ def reconall(subjfile):
     reconall = pe.Node(interface=fs.ReconAll(), name='reconall')
     reconall.inputs.subject_id = filename[:4]
     reconall.inputs.directive = 'all'
-    reconall.inputs.subjects_dir = T1dir
+    reconall.inputs.subjects_dir = subjdir
     reconall.inputs.T1_files = subjfile
 
     wf.add_nodes([reconall])
     result = wf.run()
 
-	
-	
