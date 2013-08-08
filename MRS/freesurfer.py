@@ -113,13 +113,36 @@ def cubicMaskStats(subjT1, center, length=25.0, subjID=None, segdir=None):
     cubemask.inputs.op_string = '-mul 0 -add 1 -roi %d %d %d %d %d %d 0 1'%cubeValues
     cubemask.inputs.out_data_type = 'float'
     cubemask.inputs.in_file=subjT1	
+    #cubemask.inputs.out_file=subjID+'_cubeMask'
+    
+    #mask_wf=pe.Workflow(name="cubemask")
+    #mask_wf.add_nodes([cubemask])
+    #mask_wf.run()
+
+    # mask the ROI with a subject specific T-map, create seg file for seg stats
+    #tmapmask = pe.Node(interface=fsl.ImageMaths(),name="tmapmask")
+    #tmapmask.inputs.out_data_type = 'float'
+
 
     # extract stats from a given segmentation
     segstat = pe.Node(interface=fs.SegStats(),name='segstat')
+    segstat.inputs.in_file=subjT1 # use segmentation to report stats on this volume
+    segstat.inputs.summary_file=subjID+'segStatsSummary'
+    #segstat.inputs.segmentation_file=subjID+'cubeMask'
+    #seg_wf=pe.Workflow(name="seg")
+    #seg_wf.add_nodes([segstat])
+    #seg_wf.run()
 
     #Create a datasink node to store important outputs
     datasink = pe.Node(interface=nio.DataSink(), name="datasink")
     datasink.inputs.base_directory = segdir + '/maskStats'
-    datasink.inputs.container = subjID+'_maskStats'
+    #datasink.inputs.container = subjID+'_maskStats'
 
+    # begin workflow
+    wf = pe.Workflow(name='ROIflow')
+    wf.base_dir = segdir + '/maskStats'
 
+    wf.connect([(cubemask,segstat,['out_file','segmentation_file']),
+                (segstat,datasink,['summary_file','statistic']),
+               ])
+    result=wf.run()
