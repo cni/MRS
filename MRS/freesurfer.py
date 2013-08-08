@@ -64,4 +64,4 @@ def reconall(subjfile,subjID=None,subjdir=None):
 
     wf.add_nodes([reconall])
     result = wf.run()
-
+    return result
