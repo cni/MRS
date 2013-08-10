@@ -64,6 +64,9 @@ def reconall(subjfile,subjID=None,subjdir=None):
     reconall.inputs.subjects_dir = subjdir
     reconall.inputs.T1_files = subjfile
 
+    wf2.add_nodes([reconall])
+    result = wf.run()
+
     # convert ribbon.mgz to nii
     convertmgz = pe.Node(interface=fs.MRIConvert(), name='convertmgz')
     convertmgz.inputs.in_file = segdir+'mri/ribbon.mgz'
