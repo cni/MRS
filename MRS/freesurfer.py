@@ -118,27 +118,33 @@ def cubicMaskStats(subjT1, center, length=25.0, subjID=None, segdir=None):
     mask_wf=pe.Workflow(name="cubemask")
     mask_wf.add_nodes([cubemask])
     mask_wf.run()
-
+    
     # mask the ROI with a subject specific T-map, create seg file for seg stats
-    tmapmask = pe.Node(interface=fsl.ImageMaths(),name="tmapmask")
-    tmapmask.inputs.out_data_type = 'float'
-    tmapmask.inputs.in_file = segdir+subjID+'_cubeMask.nii.gz'
-    tmapmask.inputs.out_file = segdir+subjID+'_tmap.nii.gz'
+#    tmapmask = pe.Node(interface=fsl.ImageMaths(),name="tmapmask")
+#    tmapmask.inputs.out_data_type = 'float'
+#    tmapmask.inputs.in_file = segdir+subjID+'_cubeMask.nii.gz'
+#    tmapmask.inputs.out_file = segdir+subjID+'_tmap.nii.gz'
+#
+#    tmap_wf=pe.Workflow(name="tmapmask")
+#    tmap_wf.add_nodes([tmapmask])
+#    tmap_wf.run()
 
-    tmap_wf=pe.Workflow(name="tmapmask")
-    tmap_wf.add_nodes([tmapmask])
-    tmap_wf.run()
+    
 
-    # extract stats from a given segmentation
-    #segstat = pe.Node(interface=fs.SegStats(),name='segstat')
-    #segstat.inputs.in_file=subjT1 # use segmentation to report stats on this volume
-    segstat.inputs.args='surf-ctxgmwm' # gray and white matter volumes?
-    segstat.inputs.summary_file=segdir+subjID+'_segStatsSummary.stats'
-    segstat.inputs.segmentation_file=segdir + subjID+'_tmap.nii.gz'
 
-    #seg_wf=pe.Workflow(name="seg")
-    #seg_wf.add_nodes([segstat])
-    #seg_wf.run()
+#    # extract stats from a given segmentation
+#    segstat = pe.Node(interface=fs.SegStats(),name='segstat')
+#    segstat.inputs.in_file=subjT1 # use segmentation to report stats on this volume
+#    segstat.inputs.brain_vol='brainmask'
+#    segstat.inputs.mask_file=segdir+subjID+'_cubeMask.nii.gz'
+#    segstat.inputs.summary_file=segdir+subjID+'_segStatsSummary.stats'
+#    segstat.inputs.segmentation_file=segdir + subjID+'_tmap.nii.gz'
+#    #segstat.inputs.args='--surf-ctxgmwm' # gray and white matter volumes?
+## aseg.stats has info on gray/white matter volume
+#
+#    seg_wf=pe.Workflow(name="seg")
+#    seg_wf.add_nodes([segstat])
+#    seg_wf.run()
 
     #Create a datasink node to store important outputs
   #  datasink = pe.Node(interface=nio.DataSink(), name="datasink")
