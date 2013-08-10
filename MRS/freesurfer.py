@@ -65,7 +65,7 @@ def reconall(subjfile,subjID=None,subjdir=None):
     reconall.inputs.T1_files = subjfile
 
     wf.add_nodes([reconall])
-    #result = wf.run()
+    result = wf.run()
 
     # convert ribbon.mgz to nii
     convertmgz = pe.Node(interface=fs.MRIConvert(), name='convertmgz')
@@ -81,4 +81,4 @@ def reconall(subjfile,subjID=None,subjdir=None):
 
     wf2.add_nodes([convertmgz])
     result2 = wf2.run()
-    #return (result, result2)
+    return (result, result2)
