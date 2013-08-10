@@ -64,13 +64,13 @@ def reconall(subjfile,subjID=None,subjdir=None):
     reconall.inputs.subjects_dir = subjdir
     reconall.inputs.T1_files = subjfile
 
-    wf2.add_nodes([reconall])
-    result = wf.run()
+    wf.add_nodes([reconall])
+    #result = wf.run()
 
     # convert ribbon.mgz to nii
     convertmgz = pe.Node(interface=fs.MRIConvert(), name='convertmgz')
     convertmgz.inputs.in_file = segdir+'mri/ribbon.mgz'
-    convertmgz.inputs.out_orientation='RAS'
+    convertmgz.inputs.out_orientation='LPS'
     convertmgz.inputs.resample_type= 'nearest'
     convertmgz.inputs.reslice_like= subjfile
     convertmgz.inputs.out_file=segdir+subjID+'_gmwm.nii.gz'
@@ -81,4 +81,4 @@ def reconall(subjfile,subjID=None,subjdir=None):
 
     wf2.add_nodes([convertmgz])
     result2 = wf2.run()
-    return (result, result2)
+    #return (result, result2)
