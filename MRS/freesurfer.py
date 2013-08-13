@@ -120,29 +120,33 @@ def MRSvoxelStats(segfile, center, dim=[25.0,25.0,25.0], subjID=None):
     gmwm_data = gmwm.get_data().squeeze()
     segdir = os.path.dirname(segfile)
 
-    # calculate beginning corner of cubic ROI
-    print 'Creating cubic mask with center '+str(center[0])+', '+str(center[1])+', '+str(center[2])+', dimensions '+str(dim[0]) + ', '+str(dim[1]) +','+str(dim[2]) +'mm.'
+    # calculate beginning corner of MRS voxel
+    print 'Creating mask with center '+str(center[0])+', '+str(center[1])+', '+str(center[2])+', dimensions '+str(dim[0]) + ', '+str(dim[1]) +', '+str(dim[2]) +'mm.'
 
     corner = [center[0]-dim[0]/2,
               center[1]-dim[1]/2,
               center[2]-dim[2]/2]
 
-    cubemask = pe.Node(interface=fsl.ImageMaths(),name="cubemask")
-    cubeValues = (corner[0],dim[0],corner[1],dim[1],corner[2],dim[2])
-    cubemask.inputs.op_string = '-mul 0 -add 1 -roi %d %d %d %d %d %d 0 1'%cubeValues
-    cubemask.inputs.out_data_type = 'float'
-    cubemask.inputs.in_file=segfile	
-    cubemask.inputs.out_file=segdir+subjID+'_cubeMask.nii.gz'
+    ROImask = pe.Node(interface=fsl.ImageMaths(),name="ROImask")
+    ROIValues = (corner[0],dim[0],corner[1],dim[1],corner[2],dim[2])
+    ROImask.inputs.op_string = '-mul 0 -add 1 -roi %d %d %d %d %d %d 0 1'%ROIValues
+    ROImask.inputs.out_data_type = 'float'
+    ROImask.inputs.in_file=segfile	
+    ROImask.inputs.out_file=segdir+subjID+'_ROIMask.nii.gz'
     
-    mask_wf=pe.Workflow(name="cubemask")
-    mask_wf.add_nodes([cubemask])
+    mask_wf=pe.Workflow(name="ROImask")
+    mask_wf.add_nodes([ROImask])
     mask_wf.run()
     
-    # multiply cubic ROI with segfile
-    masked=np.multiply(cube_data,gmwm_data)
+    # multiply voxel ROI with segfile
+    roifile=segdir+subjID+'_ROIMask.nii.gz'
+    roi = nib.load(roifile)
+    roi_data = roi.get_data().squeeze()
+
+    masked=np.multiply(roi_data,gmwm_data)
 
     # extract stats from a given segmentation
-    total = size(nonzero(cube_data==1))
+    total = size(nonzero(roi_data==1))
     white = size(nonzero(masked==42)) + size(nonzero(masked==3))
     grey = size(nonzero(masked==41)) + size(nonzero(masked==2))
     other = total - white - grey
