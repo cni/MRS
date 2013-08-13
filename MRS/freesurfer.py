@@ -87,9 +87,9 @@ def reconall(subjfile,subjID=None,subjdir=None):
     return (result, result2)
 
 	
-def cubicMaskStats(segfile, center, length=25.0, subjID=None):
+def MRSvoxelStats(segfile, center, dim=[25.0,25.0,25.0], subjID=None):
     """
-    returns grey/white/CSF content within cubic mask
+    returns grey/white/CSF content within MRS voxel
 
     Parameters
     ----------
@@ -99,8 +99,8 @@ def cubicMaskStats(segfile, center, length=25.0, subjID=None):
     center : integer array
         [x,y,z] where x, y and z are the coordinates of the point of interest
     
-    length : float
-        length of cube in mm
+    dim : float array
+        dimensions of voxel in mm
 
     subjID: string
         optional subject identifier. Defaults to nims scan number
@@ -121,14 +121,14 @@ def cubicMaskStats(segfile, center, length=25.0, subjID=None):
     segdir = os.path.dirname(segfile)
 
     # calculate beginning corner of cubic ROI
-    print 'Creating cubic mask with center '+str(center[0])+', '+str(center[1])+', '+str(center[2])+', length '+str(length) + 'mm.'
-    halflen = length/2
-    corner = [center[0]-halflen,
-              center[1]-halflen,
-              center[2]-halflen]
+    print 'Creating cubic mask with center '+str(center[0])+', '+str(center[1])+', '+str(center[2])+', dimensions '+str(dim[0]) + ', '+str(dim[1]) +','+str(dim[2]) +'mm.'
+
+    corner = [center[0]-dim[0]/2,
+              center[1]-dim[1]/2,
+              center[2]-dim[2]/2]
 
     cubemask = pe.Node(interface=fsl.ImageMaths(),name="cubemask")
-    cubeValues = (corner[0],length,corner[1],length,corner[2],length)
+    cubeValues = (corner[0],dim[0],corner[1],dim[1],corner[2],dim[2])
     cubemask.inputs.op_string = '-mul 0 -add 1 -roi %d %d %d %d %d %d 0 1'%cubeValues
     cubemask.inputs.out_data_type = 'float'
     cubemask.inputs.in_file=segfile	
