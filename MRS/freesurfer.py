@@ -4,6 +4,7 @@ freesurfer tools
 
 import os
 import re
+import numpy as np
 import nibabel as nib
 import nipype.pipeline.engine as pe
 import nipype.interfaces.io as nio
@@ -146,15 +147,15 @@ def MRSvoxelStats(segfile, center, dim=[25.0,25.0,25.0], subjID=None):
     masked=np.multiply(roi_data,gmwm_data)
 
     # extract stats from a given segmentation
-    total = size(nonzero(roi_data==1))
-    white = size(nonzero(masked==42)) + size(nonzero(masked==3))
-    grey = size(nonzero(masked==41)) + size(nonzero(masked==2))
+    total = np.size(np.nonzero(roi_data==1))
+    white = np.size(np.nonzero(masked==42)) + np.size(np.nonzero(masked==3))
+    grey = np.size(np.nonzero(masked==41)) + np.size(np.nonzero(masked==2))
     other = total - white - grey
     
     # proportions
-    pWhite = white/total
-    pGrey = grey/total
-    pOther = other/total
+    pWhite = 1.0*white/total
+    pGrey = 1.0*grey/total
+    pOther = 1.0*other/total
 
     return (total, grey, white, other, pGrey, pWhite, pOther)
 
