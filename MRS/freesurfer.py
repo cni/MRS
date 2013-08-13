@@ -13,6 +13,9 @@ import nipype.interfaces.fsl as fsl
 def reconall(subjfile,subjID=None,subjdir=None): 
     """
     Carries out Freesurfer's reconall on T1 nifti file
+    
+    WARNING: Reconall takes very long to run!!
+
     http://nipy.sourceforge.net/nipype/users/examples/smri_freesurfer.html
 
     Parameters
