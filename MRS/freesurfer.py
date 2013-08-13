@@ -112,7 +112,7 @@ def MRSvoxelStats(segfile, center, dim=[25.0,25.0,25.0], subjID=None):
     """
     # subject ID
     if subjID==None:
-        m=re.search('(\w+?)_*_',subjT1)
+        m=re.search('(\w+?)_*_',segfile)
         subjID=m.group(0)[:-1] 
 
     # get segmentation file
