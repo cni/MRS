@@ -146,7 +146,12 @@ def cubicMaskStats(segfile, center, length=25.0, subjID=None):
     white = size(nonzero(masked==42)) + size(nonzero(masked==3))
     grey = size(nonzero(masked==41)) + size(nonzero(masked==2))
     other = total - white - grey
+    
+    # proportions
+    pWhite = white/total
+    pGrey = grey/total
+    pOther = other/total
 
-    return (total, grey, white, other)
+    return (total, grey, white, other, pGrey, pWhite, pOther)
 
     
