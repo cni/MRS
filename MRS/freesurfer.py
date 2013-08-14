@@ -30,7 +30,7 @@ def reconall(subjfile,subjID=None,subjdir=None, runreconall=True):
 
     subjdir: the directory to where segmentation results should be saved. Defaults to same directory as subjfile.  
     runreconall: boolean
-        If set to true, runs reconall, otherwise just converts ribbon.mgz and norm.mgz to nii
+        If set to true, runs reconall, otherwise just converts assorted mgz files to nii
     """  
 
     T1dir = os.path.dirname(subjfile)
@@ -92,11 +92,11 @@ def reconall(subjfile,subjID=None,subjdir=None, runreconall=True):
     wf3.base_dir = T1dir
 
     convertmgz2 = pe.Node(interface=fs.MRIConvert(), name='convertmgz2')
-    convertmgz2.inputs.in_file = segdir+'mri/norm.mgz'
+    convertmgz2.inputs.in_file = segdir+'mri/aseg.auto.mgz'
     convertmgz2.inputs.out_orientation='LPS'
     convertmgz2.inputs.resample_type= 'nearest'
     convertmgz2.inputs.reslice_like= subjfile
-    convertmgz2.inputs.out_file=segdir+subjID+'_subcort.nii.gz'
+    convertmgz2.inputs.out_file=segdir+subjID+'_aseg.nii.gz'
 
     wf3.add_nodes([convertmgz2])
     result3 = wf3.run()
@@ -105,7 +105,7 @@ def reconall(subjfile,subjID=None,subjdir=None, runreconall=True):
     else:
         return (result2,result3)
 
-def MRSvoxelStats(segfile, pfile=None, center=None, dim=None, subjID=None):
+def MRSvoxelStats(segfile, pfile=None, center=None, dim=None, subjID=None, gareas=[3,42,11,12,13,26,50,51,52,58,9,10,48,49],wareas=[2,41],csfareas=[4,5,14,15,24,43,44,72]):
     """
     returns grey/white/CSF content within MRS voxel
 
@@ -126,6 +126,9 @@ def MRSvoxelStats(segfile, pfile=None, center=None, dim=None, subjID=None):
     subjID: string
         optional subject identifier. Defaults to nims scan number
 
+    gareas, wareas, csfareas: arrays of integers
+        arrays of freesurfer labels for gray, white, and csf areas respectively.
+    
     See http://miykael.github.io/nipype-beginner-s-guide/regionOfInterest.html
 
     """
