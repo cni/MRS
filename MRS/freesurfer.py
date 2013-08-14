@@ -12,7 +12,7 @@ import nipype.interfaces.freesurfer as fs
 import nipype.interfaces.utility as util
 import nipype.interfaces.fsl as fsl   
 
-def reconall(subjfile,subjID=None,subjdir=None): 
+def reconall(subjfile,subjID=None,subjdir=None, runreconall=True): 
     """
     Carries out Freesurfer's reconall on T1 nifti file
     
@@ -29,6 +29,8 @@ def reconall(subjfile,subjID=None,subjdir=None):
         optional name for subject's output folder
 
     subjdir: the directory to where segmentation results should be saved. Defaults to same directory as subjfile.  
+    runreconall: boolean
+        If set to true, runs reconall, otherwise just converts ribbon.mgz and norm.mgz to nii
     """  
 
     T1dir = os.path.dirname(subjfile)
@@ -61,16 +63,16 @@ def reconall(subjfile,subjID=None,subjdir=None):
     wf = pe.Workflow(name="segment")
     wf.base_dir = T1dir
 
-
-    # run recon-all
-    reconall = pe.Node(interface=fs.ReconAll(), name='reconall')
-    reconall.inputs.subject_id = subjID 
-    reconall.inputs.directive = 'all'
-    reconall.inputs.subjects_dir = subjdir
-    reconall.inputs.T1_files = subjfile
-
-    wf.add_nodes([reconall])
-    result = wf.run()
+    if runreconall:
+        # run recon-all
+        reconall = pe.Node(interface=fs.ReconAll(), name='reconall')
+        reconall.inputs.subject_id = subjID 
+        reconall.inputs.directive = 'all'
+        reconall.inputs.subjects_dir = subjdir
+        reconall.inputs.T1_files = subjfile
+    
+        wf.add_nodes([reconall])
+        result = wf.run()
 
     wf2 = pe.Workflow(name="convertmgz")
     wf2.base_dir = T1dir
@@ -85,10 +87,25 @@ def reconall(subjfile,subjID=None,subjdir=None):
 
     wf2.add_nodes([convertmgz])
     result2 = wf2.run()
-    return (result, result2)
 
-	
-def MRSvoxelStats(segfile, center, dim=[25.0,25.0,25.0], subjID=None):
+    wf3 = pe.Workflow(name="convertmgz2")
+    wf3.base_dir = T1dir
+
+    convertmgz2 = pe.Node(interface=fs.MRIConvert(), name='convertmgz2')
+    convertmgz2.inputs.in_file = segdir+'mri/norm.mgz'
+    convertmgz2.inputs.out_orientation='LPS'
+    convertmgz2.inputs.resample_type= 'nearest'
+    convertmgz2.inputs.reslice_like= subjfile
+    convertmgz2.inputs.out_file=segdir+subjID+'_subcort.nii.gz'
+
+    wf3.add_nodes([convertmgz2])
+    result3 = wf3.run()
+    if runreconall:
+        return (result, result2, result3)
+    else:
+        return (result2,result3)
+
+def MRSvoxelStats(segfile, pfile=None, center=None, dim=None, subjID=None):
     """
     returns grey/white/CSF content within MRS voxel
 
@@ -97,17 +114,18 @@ def MRSvoxelStats(segfile, center, dim=[25.0,25.0,25.0], subjID=None):
     segfile:  nifti file
         path to segmentation file with grey/white matter labels.
 
+    pfile: nifti file
+        path to pfile of MRS voxel. provide either this or center + dim
+
     center : integer array
-        [x,y,z] where x, y and z are the coordinates of the point of interest
+        [x,y,z] where x, y and z are the coordinates of the point of interest. Provide either pfile or center+dim
     
     dim : float array
-        dimensions of voxel in mm
+        dimensions of voxel in mm. Provide either pfile or center+dim
 
     subjID: string
         optional subject identifier. Defaults to nims scan number
 
-   
-    
     See http://miykael.github.io/nipype-beginner-s-guide/regionOfInterest.html
 
     """
@@ -119,7 +137,25 @@ def MRSvoxelStats(segfile, center, dim=[25.0,25.0,25.0], subjID=None):
     # get segmentation file
     gmwm = nib.load(segfile)
     gmwm_data = gmwm.get_data().squeeze()
+    gmwm_aff = gmwm.get_affine()
     segdir = os.path.dirname(segfile)
+
+    # get pfile of MRS voxel if one is provided
+    if pfile!=None:
+        if center != None or dim != None:
+            raise ValueError('provide EITHER pfile OR center and dim, not both!')
+        mrs = nib.load(pfile)
+        mrs_data = mrs.get_data().squeeze()
+        mrs_aff = mrs.get_affine()
+        tmp=mrs_aff.copy()
+        mrs_aff[0,3]=tmp[1,3]
+        mrs_aff[1,3]=-1.0*tmp[0,3]
+        center = np.round(np.dot(np.dot(np.linalg.pinv(gmwm_aff), mrs_aff), [0,0,0,1]))[:3].astype(int)
+
+        dim=np.diagonal(mrs_aff)[:3]
+    else: # no pfile
+        if center==None or dim==None:
+            raise ValueError('if no pfile is provided, provide center and dimensions of voxel')    
 
     # calculate beginning corner of MRS voxel
     print 'Creating mask with center '+str(center[0])+', '+str(center[1])+', '+str(center[2])+', dimensions '+str(dim[0]) + ', '+str(dim[1]) +', '+str(dim[2]) +'mm.'
@@ -133,14 +169,14 @@ def MRSvoxelStats(segfile, center, dim=[25.0,25.0,25.0], subjID=None):
     ROImask.inputs.op_string = '-mul 0 -add 1 -roi %d %d %d %d %d %d 0 1'%ROIValues
     ROImask.inputs.out_data_type = 'float'
     ROImask.inputs.in_file=segfile	
-    ROImask.inputs.out_file=segdir+subjID+'_ROIMask.nii.gz'
+    ROImask.inputs.out_file=segdir+'/'+subjID+'_ROIMask.nii.gz'
     
     mask_wf=pe.Workflow(name="ROImask")
     mask_wf.add_nodes([ROImask])
     mask_wf.run()
     
     # multiply voxel ROI with segfile
-    roifile=segdir+subjID+'_ROIMask.nii.gz'
+    roifile=segdir+'/'+subjID+'_ROIMask.nii.gz'
     roi = nib.load(roifile)
     roi_data = roi.get_data().squeeze()
 
