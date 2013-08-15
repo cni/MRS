@@ -74,36 +74,23 @@ def reconall(subjfile,subjID=None,subjdir=None, runreconall=True):
         wf.add_nodes([reconall])
         result = wf.run()
 
+    # convert mgz to nii
     wf2 = pe.Workflow(name="convertmgz")
     wf2.base_dir = T1dir
 
-    # convert ribbon.mgz to nii
     convertmgz = pe.Node(interface=fs.MRIConvert(), name='convertmgz')
-    convertmgz.inputs.in_file = segdir+'mri/ribbon.mgz'
+    convertmgz.inputs.in_file = segdir+'mri/aseg.auto.mgz'
     convertmgz.inputs.out_orientation='LPS'
     convertmgz.inputs.resample_type= 'nearest'
     convertmgz.inputs.reslice_like= subjfile
-    convertmgz.inputs.out_file=segdir+subjID+'_gmwm.nii.gz'
+    convertmgz.inputs.out_file=segdir+subjID+'_aseg.nii.gz'
 
     wf2.add_nodes([convertmgz])
     result2 = wf2.run()
-
-    wf3 = pe.Workflow(name="convertmgz2")
-    wf3.base_dir = T1dir
-
-    convertmgz2 = pe.Node(interface=fs.MRIConvert(), name='convertmgz2')
-    convertmgz2.inputs.in_file = segdir+'mri/aseg.auto.mgz'
-    convertmgz2.inputs.out_orientation='LPS'
-    convertmgz2.inputs.resample_type= 'nearest'
-    convertmgz2.inputs.reslice_like= subjfile
-    convertmgz2.inputs.out_file=segdir+subjID+'_aseg.nii.gz'
-
-    wf3.add_nodes([convertmgz2])
-    result3 = wf3.run()
     if runreconall:
-        return (result, result2, result3)
+        return (result, result2)
     else:
-        return (result2,result3)
+        return (result2)
 
 def MRSvoxelStats(segfile, pfile=None, center=None, dim=None, subjID=None, gareas=[3,42,11,12,13,26,50,51,52,58,9,10,48,49],wareas=[2,41],csfareas=[4,5,14,15,24,43,44,72]):
     """
@@ -112,7 +99,7 @@ def MRSvoxelStats(segfile, pfile=None, center=None, dim=None, subjID=None, garea
     Parameters
     ----------
     segfile:  nifti file
-        path to segmentation file with grey/white matter labels.
+        path to segmentation file with grey/white matter labels (freesurfer aseg file converted from mgz).
 
     pfile: nifti file
         path to pfile of MRS voxel. provide either this or center + dim
@@ -127,8 +114,13 @@ def MRSvoxelStats(segfile, pfile=None, center=None, dim=None, subjID=None, garea
         optional subject identifier. Defaults to nims scan number
 
     gareas, wareas, csfareas: arrays of integers
-        arrays of freesurfer labels for gray, white, and csf areas respectively.
-    
+        arrays of freesurfer labels for gray, white, and csf areas respectively. Determines which areas are considered grey/white/csf
+   
+    Returns
+    -------
+
+    raw number of voxels and proportions of grey, white, csf and non-grey-or-white-matter
+     
     See http://miykael.github.io/nipype-beginner-s-guide/regionOfInterest.html
 
     """
@@ -138,10 +130,11 @@ def MRSvoxelStats(segfile, pfile=None, center=None, dim=None, subjID=None, garea
         subjID=m.group(0)[:-1] 
 
     # get segmentation file
-    gmwm = nib.load(segfile)
-    gmwm_data = gmwm.get_data().squeeze()
-    gmwm_aff = gmwm.get_affine()
+    aseg = nib.load(segfile)
+    aseg_data = aseg.get_data().squeeze()
+    aseg_aff = aseg.get_affine()
     segdir = os.path.dirname(segfile)
+    segvoxdim=np.diagonal(aseg_aff)[:3]
 
     # get pfile of MRS voxel if one is provided
     if pfile!=None:
@@ -153,7 +146,7 @@ def MRSvoxelStats(segfile, pfile=None, center=None, dim=None, subjID=None, garea
         tmp=mrs_aff.copy()
         mrs_aff[0,3]=tmp[1,3]
         mrs_aff[1,3]=-1.0*tmp[0,3]
-        center = np.round(np.dot(np.dot(np.linalg.pinv(gmwm_aff), mrs_aff), [0,0,0,1]))[:3].astype(int)
+        center = np.round(np.dot(np.dot(np.linalg.pinv(aseg_aff), mrs_aff), [0,0,0,1]))[:3].astype(int)
 
         dim=np.diagonal(mrs_aff)[:3]
     else: # no pfile
@@ -162,13 +155,21 @@ def MRSvoxelStats(segfile, pfile=None, center=None, dim=None, subjID=None, garea
 
     # calculate beginning corner of MRS voxel
     print 'Creating mask with center '+str(center[0])+', '+str(center[1])+', '+str(center[2])+', dimensions '+str(dim[0]) + ', '+str(dim[1]) +', '+str(dim[2]) +'mm.'
+    
+    # assuming 0 1 2 corresponds to x y x
+    # convert dimensions in mm to voxel units
+    voxdimX=dim[0]/segvoxdim[0]
+    voxdimY=dim[1]/segvoxdim[1]
+    voxdimZ=dim[2]/segvoxdim[2]
 
-    corner = [center[0]-dim[0]/2,
-              center[1]-dim[1]/2,
-              center[2]-dim[2]/2]
+    print 'MRS voxel dimensions in T1 voxel units: '+str(voxdimX)+', '+str(voxdimY)+', '+str(voxdimZ)
+ 
+    corner = [center[0]-voxdimX/2,
+              center[1]-voxdimY/2,
+              center[2]-voxdimZ/2]
 
     ROImask = pe.Node(interface=fsl.ImageMaths(),name="ROImask")
-    ROIValues = (corner[0],dim[0],corner[1],dim[1],corner[2],dim[2])
+    ROIValues = (corner[0],voxdimX,corner[1],voxdimY,corner[2],voxdimZ)
     ROImask.inputs.op_string = '-mul 0 -add 1 -roi %d %d %d %d %d %d 0 1'%ROIValues
     ROImask.inputs.out_data_type = 'float'
     ROImask.inputs.in_file=segfile	
@@ -178,24 +179,48 @@ def MRSvoxelStats(segfile, pfile=None, center=None, dim=None, subjID=None, garea
     mask_wf.add_nodes([ROImask])
     mask_wf.run()
     
-    # multiply voxel ROI with segfile
+    # calculate grey/white/csf from freesurfer labels
+    gdata=np.zeros(aseg_data.shape)
+    for area in gareas:
+        gdata=np.add(gdata,aseg_data[:,:,:]==area)
+
+    wdata=np.zeros(aseg_data.shape)
+    for area in wareas:
+        wdata=np.add(wdata,aseg_data[:,:,:]==area)
+    
+    csfdata=np.zeros(aseg_data.shape)
+    for area in csfareas:
+        csfdata=np.add(csfdata,aseg_data[:,:,:]==area)
+
+
+
+    # multiply voxel ROI with seg data
     roifile=segdir+'/'+subjID+'_ROIMask.nii.gz'
     roi = nib.load(roifile)
     roi_data = roi.get_data().squeeze()
 
-    masked=np.multiply(roi_data,gmwm_data)
-
-    # extract stats from a given segmentation
-    total = np.size(np.nonzero(roi_data==1))
-    white = np.size(np.nonzero(masked==42)) + np.size(np.nonzero(masked==3))
-    grey = np.size(np.nonzero(masked==41)) + np.size(np.nonzero(masked==2))
-    other = total - white - grey
+    #masked=np.multiply(roi_data,aseg_data)
+    gmasked=np.multiply(roi_data,gdata)
+    wmasked=np.multiply(roi_data,wdata)
+    csfmasked=np.multiply(roi_data,csfdata)
     
+    # extract stats from a given segmentation
+    total = np.sum(roi_data)
+    #white = np.size(np.nonzero(masked==42)) + np.size(np.nonzero(masked==3))
+    #grey = np.size(np.nonzero(masked==41)) + np.size(np.nonzero(masked==2))
+    #other = total - white - grey
+    
+    white = np.sum(wmasked)
+    grey = np.sum(gmasked)
+    csf = np.sum(csfmasked)
+    nongmwm = total-grey-white
+
     # proportions
     pWhite = 1.0*white/total
     pGrey = 1.0*grey/total
-    pOther = 1.0*other/total
+    pCSF = 1.0*csf/total 
+    pNongmwm = 1.0*nongmwm/total
 
-    return (total, grey, white, other, pGrey, pWhite, pOther)
+    return (total, grey, white, csf,nongmwm, pGrey, pWhite,pCSF, pNongmwm)
 
     
