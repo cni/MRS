@@ -92,7 +92,7 @@ def reconall(subjfile,subjID=None,subjdir=None, runreconall=True):
     else:
         return (result2)
 
-def MRSvoxelStats(segfile, pfile=None, center=None, dim=None, subjID=None, gareas=[3,42,11,12,13,26,50,51,52,58,9,10,48,49],wareas=[2,41],csfareas=[4,5,14,15,24,43,44,72]):
+def MRSvoxelStats(segfile, MRSfile=None, center=None, dim=None, subjID=None, gareas=[3,42,11,12,13,26,50,51,52,58,9,10,48,49],wareas=[2,41],csfareas=[4,5,14,15,24,43,44,72]):
     """
     returns grey/white/CSF content within MRS voxel
 
@@ -101,14 +101,14 @@ def MRSvoxelStats(segfile, pfile=None, center=None, dim=None, subjID=None, garea
     segfile:  nifti file
         path to segmentation file with grey/white matter labels (freesurfer aseg file converted from mgz).
 
-    pfile: nifti file
-        path to pfile of MRS voxel. provide either this or center + dim
+    MRSfile: nifti file
+        path to MRSfile of MRS voxel. provide either this or center + dim
 
     center : integer array
-        [x,y,z] where x, y and z are the coordinates of the point of interest. Provide either pfile or center+dim
+        [x,y,z] where x, y and z are the coordinates of the point of interest. Provide either MRSfile or center+dim
     
     dim : float array
-        dimensions of voxel in mm. Provide either pfile or center+dim
+        dimensions of voxel in mm. Provide either MRSfile or center+dim
 
     subjID: string
         optional subject identifier. Defaults to nims scan number
@@ -136,11 +136,11 @@ def MRSvoxelStats(segfile, pfile=None, center=None, dim=None, subjID=None, garea
     segdir = os.path.dirname(segfile)
     segvoxdim=np.diagonal(aseg_aff)[:3]
 
-    # get pfile of MRS voxel if one is provided
-    if pfile!=None:
+    # get nifti file of MRS voxel if one is provided
+    if MRSfile!=None:
         if center != None or dim != None:
-            raise ValueError('provide EITHER pfile OR center and dim, not both!')
-        mrs = nib.load(pfile)
+            raise ValueError('provide EITHER MRSfile OR center and dim, not both!')
+        mrs = nib.load(MRSfile)
         mrs_data = mrs.get_data().squeeze()
         mrs_aff = mrs.get_affine()
         tmp=mrs_aff.copy()
@@ -149,35 +149,40 @@ def MRSvoxelStats(segfile, pfile=None, center=None, dim=None, subjID=None, garea
         center = np.round(np.dot(np.dot(np.linalg.pinv(aseg_aff), mrs_aff), [0,0,0,1]))[:3].astype(int)
 
         dim=np.diagonal(mrs_aff)[:3]
-    else: # no pfile
+    else: # no MRSfile
         if center==None or dim==None:
-            raise ValueError('if no pfile is provided, provide center and dimensions of voxel')    
+            raise ValueError('if no MRSfile is provided, provide center and dimensions of voxel')    
 
     # calculate beginning corner of MRS voxel
     print 'Creating mask with center '+str(center[0])+', '+str(center[1])+', '+str(center[2])+', dimensions '+str(dim[0]) + ', '+str(dim[1]) +', '+str(dim[2]) +'mm.'
     
     # assuming 0 1 2 corresponds to x y x
     # convert dimensions in mm to voxel units
-    voxdimX=dim[0]/segvoxdim[0]
-    voxdimY=dim[1]/segvoxdim[1]
-    voxdimZ=dim[2]/segvoxdim[2]
+#    voxdimX=dim[0]/segvoxdim[0]
+#    voxdimY=dim[1]/segvoxdim[1]
+#    voxdimZ=dim[2]/segvoxdim[2]
+#
+#    print 'MRS voxel dimensions in T1 voxel units: '+str(voxdimX)+', '+str(voxdimY)+', '+str(voxdimZ)
+# 
+#    corner = [center[0]-voxdimX/2,
+#              center[1]-voxdimY/2,
+#              center[2]-voxdimZ/2]
+#
+#    ROImask = pe.Node(interface=fsl.ImageMaths(),name="ROImask")
+#    ROIValues = (corner[0],voxdimX,corner[1],voxdimY,corner[2],voxdimZ)
+#    ROImask.inputs.op_string = '-mul 0 -add 1 -roi %d %d %d %d %d %d 0 1'%ROIValues
+#    ROImask.inputs.out_data_type = 'float'
+#    ROImask.inputs.in_file=segfile	
+#    ROImask.inputs.out_file=segdir+'/'+subjID+'_ROIMask.nii.gz'
+#    
+#    mask_wf=pe.Workflow(name="ROImask")
+#    mask_wf.add_nodes([ROImask])
+#    mask_wf.run()
 
-    print 'MRS voxel dimensions in T1 voxel units: '+str(voxdimX)+', '+str(voxdimY)+', '+str(voxdimZ)
- 
-    corner = [center[0]-voxdimX/2,
-              center[1]-voxdimY/2,
-              center[2]-voxdimZ/2]
-
-    ROImask = pe.Node(interface=fsl.ImageMaths(),name="ROImask")
-    ROIValues = (corner[0],voxdimX,corner[1],voxdimY,corner[2],voxdimZ)
-    ROImask.inputs.op_string = '-mul 0 -add 1 -roi %d %d %d %d %d %d 0 1'%ROIValues
-    ROImask.inputs.out_data_type = 'float'
-    ROImask.inputs.in_file=segfile	
-    ROImask.inputs.out_file=segdir+'/'+subjID+'_ROIMask.nii.gz'
+    # calculate roi mask with numpy instead of fsl
+    # 
     
-    mask_wf=pe.Workflow(name="ROImask")
-    mask_wf.add_nodes([ROImask])
-    mask_wf.run()
+
     
     # calculate grey/white/csf from freesurfer labels
     gdata=np.zeros(aseg_data.shape)
