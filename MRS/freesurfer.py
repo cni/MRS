@@ -156,32 +156,29 @@ def MRSvoxelStats(segfile, MRSfile=None, center=None, dim=None, subjID=None, gar
     # calculate beginning corner of MRS voxel
     print 'Creating mask with center '+str(center[0])+', '+str(center[1])+', '+str(center[2])+', dimensions '+str(dim[0]) + ', '+str(dim[1]) +', '+str(dim[2]) +'mm.'
     
-    # assuming 0 1 2 corresponds to x y x
-    # convert dimensions in mm to voxel units
-#    voxdimX=dim[0]/segvoxdim[0]
-#    voxdimY=dim[1]/segvoxdim[1]
-#    voxdimZ=dim[2]/segvoxdim[2]
-#
-#    print 'MRS voxel dimensions in T1 voxel units: '+str(voxdimX)+', '+str(voxdimY)+', '+str(voxdimZ)
-# 
-#    corner = [center[0]-voxdimX/2,
-#              center[1]-voxdimY/2,
-#              center[2]-voxdimZ/2]
-#
-#    ROImask = pe.Node(interface=fsl.ImageMaths(),name="ROImask")
-#    ROIValues = (corner[0],voxdimX,corner[1],voxdimY,corner[2],voxdimZ)
-#    ROImask.inputs.op_string = '-mul 0 -add 1 -roi %d %d %d %d %d %d 0 1'%ROIValues
-#    ROImask.inputs.out_data_type = 'float'
-#    ROImask.inputs.in_file=segfile	
-#    ROImask.inputs.out_file=segdir+'/'+subjID+'_ROIMask.nii.gz'
-#    
-#    mask_wf=pe.Workflow(name="ROImask")
-#    mask_wf.add_nodes([ROImask])
-#    mask_wf.run()
 
-    # calculate roi mask with numpy instead of fsl
-    # 
-    
+    # calculate roi mask with numpy
+    # round up to nearest number of voxel units
+    voxdim=np.zeros(3)
+    voxdim[0]=np.ceil(np.abs(dim[0]/segvoxdim[0]))
+    voxdim[1]=np.ceil(np.abs(dim[1]/segvoxdim[1]))
+    voxdim[2]=np.ceil(np.abs(dim[2]/segvoxdim[2]))
+
+    print 'MRS voxel dimensions in T1 voxel units: '+str(voxdim[0])+', '+str(voxdim[1])+', '+str(voxdim[2])
+
+    # corners
+    lcorner = [center[0]-voxdim[0]/2,
+              center[1]-voxdim[1]/2,
+              center[2]-voxdim[2]/2]
+    ucorner = [center[0]+voxdim[0]/2,
+              center[1]+voxdim[1]/2,
+              center[2]+voxdim[2]/2]
+    # create mask
+    mdata=np.ones(aseg_data.shape) * np.nan
+    for i in range(int(lcorner[0]),int(ucorner[0])):
+        for j in range(int(lcorner[1]),int(ucorner[1])):
+            for k in range(int(lcorner[2]),int(ucorner[2])):
+                mdata[i,j,k]=1
 
     
     # calculate grey/white/csf from freesurfer labels
@@ -200,17 +197,12 @@ def MRSvoxelStats(segfile, MRSfile=None, center=None, dim=None, subjID=None, gar
 
 
     # multiply voxel ROI with seg data
-    roifile=segdir+'/'+subjID+'_ROIMask.nii.gz'
-    roi = nib.load(roifile)
-    roi_data = roi.get_data().squeeze()
-
-    #masked=np.multiply(roi_data,aseg_data)
-    gmasked=np.multiply(roi_data,gdata)
-    wmasked=np.multiply(roi_data,wdata)
-    csfmasked=np.multiply(roi_data,csfdata)
+    gmasked=np.multiply(mdata,gdata)
+    wmasked=np.multiply(mdata,wdata)
+    csfmasked=np.multiply(mdata,csfdata)
     
     # extract stats from a given segmentation
-    total = np.sum(roi_data)
+    total = np.sum(mdata)
     #white = np.size(np.nonzero(masked==42)) + np.size(np.nonzero(masked==3))
     #grey = np.size(np.nonzero(masked==41)) + np.size(np.nonzero(masked==2))
     #other = total - white - grey
