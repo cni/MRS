@@ -56,9 +56,10 @@ def reconall(subjfile,subjID=None,subjdir=None, runreconall=True):
         raise ValueError("File: %s does not exist!"%filename)
 
     # check if nifti format
-    ext = os.path.splitext(filename)[-1].lower()
-    if ext != ".nii":
+    ext=filename.split('.')[1].lower()
+    if ext != "nii":
         raise ValueError("File: %s is not a nifti file!"%filename)
+
 
     wf = pe.Workflow(name="segment")
     wf.base_dir = T1dir
@@ -92,7 +93,7 @@ def reconall(subjfile,subjID=None,subjdir=None, runreconall=True):
     else:
         return (result2)
 
-def MRSvoxelStats(segfile, MRSfile=None, center=None, dim=None, subjID=None, gareas=[3,42,11,12,13,26,50,51,52,58,9,10,48,49],wareas=[2,41],csfareas=[4,5,14,15,24,43,44,72]):
+def MRSvoxelStats(segfile, MRSfile=None, center=None, dim=None, subjID=None, gareas=[3,8,42,17,18,53,54,11,12,13,26,50,51,52,58,9,10,47,48,49,16,28,60],wareas=[2,7,41,46],csfareas=[4,5,14,15,24,43,44,72]):
     """
     returns grey/white/CSF content within MRS voxel
 
@@ -114,7 +115,7 @@ def MRSvoxelStats(segfile, MRSfile=None, center=None, dim=None, subjID=None, gar
         optional subject identifier. Defaults to nims scan number
 
     gareas, wareas, csfareas: arrays of integers
-        arrays of freesurfer labels for gray, white, and csf areas respectively. Determines which areas are considered grey/white/csf
+        arrays of freesurfer labels for gray, white, and csf areas respectively. Determines which areas are considered grey/white/csf. Some areas like brainstem were lumped with grey matter. Did not include hypointensities
    
     Returns
     -------
