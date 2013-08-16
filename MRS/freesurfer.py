@@ -49,8 +49,8 @@ def reconall(subjfile,subjID=None,subjdir=None):
         raise ValueError("File: %s does not exist!"%filename)
 
     # check if nifti format
-    ext = os.path.splitext(filename)[-1].lower()
-    if ext != ".nii":
+    ext=filename.split('.')[1].lower()
+    if ext != "nii":
         raise ValueError("File: %s is not a nifti file!"%filename)
 
     wf = pe.Workflow(name="segment")
