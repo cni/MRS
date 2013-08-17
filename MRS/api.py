@@ -1,8 +1,8 @@
 import numpy as np
+import nibabel as nib
+
 import MRS.analysis as ana
 import MRS.utils as ut
-import MRS.files as io
-
 
 class GABA(object):
     """
@@ -34,7 +34,11 @@ class GABA(object):
            creatine and GABA peaks. 
         
         """
-        self.raw_data =  io.get_data(in_file)
+        # The nifti files follow the strange nifti convention, but we want to
+        # use our own logic, which is transients on dim 0 and time on dim -1:
+        self.raw_data = np.transpose(nib.load(in_file).get_data(),
+                                     [1,2,3,4,5,0]).squeeze()
+
         w_data, w_supp_data = ana.coil_combine(self.raw_data)
         # We keep these around for reference, as private attrs
         self._water_data = w_data
@@ -177,7 +181,7 @@ class SingleVoxel(object):
         ----------
 
         in_file : str
-            Path to a P file containing MRS data.
+            Path to a nifti file with SV-PROBE MRS data.
 
         line_broadening : float
            How much to broaden the spectral line-widths (Hz)
@@ -194,7 +198,9 @@ class SingleVoxel(object):
            creatine and GABA peaks. 
         
         """
-        self.raw_data =  io.get_data(in_file)
+        self.raw_data = np.transpose(nib.load(in_file).get_data(),
+                                     [1,2,3,4,5,0]).squeeze()
+
         w_data, w_supp_data = ana.coil_combine(self.raw_data, w_idx = range(8),
                                                coil_dim=1)
         # We keep these around for reference, as private attrs

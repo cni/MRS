@@ -1,26 +1,16 @@
 import os
+import numpy as np
 
 import numpy.testing as npt
 import scipy.io as sio
 
+import nibabel as nib
+
 import MRS
-import MRS.files as io
 
 test_path = os.path.join(MRS.__path__[0], 'tests')
 
-file_name = os.path.join(test_path, 'pure_gaba_P64024.7')
-
-def test_get_header():
-    """
-    Test that the header we get has the same information as was read by the
-    matlab code.
-    """
-    mat_header = sio.loadmat('header.mat', squeeze_me=True)['header']
-    hdr = io.get_header(file_name)
-
-    for x in hdr:
-        npt.assert_(mat_header[x]==hdr[x], "hdr['%s'] = %s, not %s "%(
-            x, hdr[x], mat_header[x]))
+file_name = os.path.join(test_path, 'pure_gaba_P64024.nii.gz')
 
 def test_get_data():
     """
@@ -28,7 +18,8 @@ def test_get_data():
 
     """ 
     matlab_data = sio.loadmat('data.mat', squeeze_me=True)['data']
-    mrs_data = io.get_data(file_name)
+    mrs_data = np.transpose(nib.load(file_name).get_data(),
+                            [1,2,3,4,5,0]).squeeze()
 
     # There are differences in the data because the numbers are very large, so
     # we check that the differences are minscule in relative terms:

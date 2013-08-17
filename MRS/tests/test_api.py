@@ -3,7 +3,7 @@ import MRS
 import MRS.api as api
 
 test_path = os.path.join(MRS.__path__[0], 'tests')
-file_name = os.path.join(test_path, 'pure_gaba_P64024.7')
+file_name = os.path.join(test_path, 'pure_gaba_P64024.nii.gz')
 
 
 

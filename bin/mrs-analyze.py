@@ -9,7 +9,6 @@ import matplotlib.pyplot as plt
 
 import nitime as nt
 
-import MRS.files as fi
 import MRS.analysis as ana
 import MRS.utils as ut
 import MRS.api as mrs
