@@ -17,7 +17,7 @@ class GABA(object):
         ----------
 
         in_file : str
-            Path to a P file containing MRS data.
+            Path to a nifti file containing MRS data.
 
         line_broadening : float
            How much to broaden the spectral line-widths (Hz)
