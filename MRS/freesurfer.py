@@ -13,6 +13,9 @@ import nipype.interfaces.fsl as fsl
 def reconall(subjfile,subjID=None,subjdir=None): 
     """
     Carries out Freesurfer's reconall on T1 nifti file
+    
+    WARNING: Reconall takes very long to run!!
+
     http://nipy.sourceforge.net/nipype/users/examples/smri_freesurfer.html
 
     Parameters
@@ -33,6 +36,7 @@ def reconall(subjfile,subjID=None,subjdir=None):
     if subjdir==None:
         subjdir=T1dir
     fs.FSCommand.set_default_subjects_dir(subjdir)
+    segdir=subjdir+'/'+subjID+'/'
     print 'saving to ' + subjdir
 
     # subject ID
@@ -55,6 +59,7 @@ def reconall(subjfile,subjID=None,subjdir=None):
     wf = pe.Workflow(name="segment")
     wf.base_dir = T1dir
 	
+
     # run recon-all
     reconall = pe.Node(interface=fs.ReconAll(), name='reconall')
     reconall.inputs.subject_id = subjID 
@@ -64,4 +69,18 @@ def reconall(subjfile,subjID=None,subjdir=None):
 
     wf.add_nodes([reconall])
     result = wf.run()
-    return result
+
+    wf2 = pe.Workflow(name="convertmgz")
+    wf2.base_dir = T1dir
+
+    # convert ribbon.mgz to nii
+    convertmgz = pe.Node(interface=fs.MRIConvert(), name='convertmgz')
+    convertmgz.inputs.in_file = segdir+'mri/ribbon.mgz'
+    convertmgz.inputs.out_orientation='LPS'
+    convertmgz.inputs.resample_type= 'nearest'
+    convertmgz.inputs.reslice_like= subjfile
+    convertmgz.inputs.out_file=segdir+subjID+'_gmwm.nii.gz'
+
+    wf2.add_nodes([convertmgz])
+    result2 = wf2.run()
+    return (result, result2)
