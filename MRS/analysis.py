@@ -8,6 +8,7 @@ import nitime as nt
 import nitime.timeseries as nts
 import nitime.analysis as nta
 import scipy.fftpack as fft
+import scipy.integrate as spi
 
 import MRS.leastsqbound as lsq
 import MRS.utils as ut
@@ -388,3 +389,44 @@ def fit_gaussian(spectra, f_ppm, lb=2.6, ub=3.6):
       model[ii] = fit_func(f_ppm[idx], *params[ii])
    
    return model, signal, params, idx
+
+
+def integrate(func, x, args=(), offset=0, drift=0):
+   """
+   Integrate a function over the domain x
+
+   Parameters
+   ----------
+   func : callable
+       A function from the domain x to floats. The first input to this function
+       has to be x, an array with values to evaluate for, running in monotonic
+       order  
+
+   x : float array
+      The domain over which to integrate, as sampled. This can be monotonically
+      decreasing or monotonically increasing.
+      
+   args : tuple
+       The parameters of func after x.
+
+   offset : 
+
+   Notes
+   -----
+   We apply the trapezoid rule for integration here, using
+   scipy.integrate.trapz.
+
+   See: http://en.wikipedia.org/wiki/Trapezoidal_rule
+   
+   """
+   # If it's monotonically decreasing (as is often the case here), we invert
+   # it, so that our results are strictly positive
+   if x[1]<x[0]:
+      x = x[::-1]
+   y = func(x, *args)
+   # Correct for offset and drift, if those are present and specified
+   # (otherwise default to 0 on both):
+   y = y - offset
+   y = y - drift * x
+   # Use trapezoidal integration on the corrected function: 
+   return spi.trapz(y, x)
