@@ -7,20 +7,20 @@ import matplotlib
 matplotlib.use('agg')
 
 import nitime as nt
+import nibabel as nib
 
 import MRS
 import MRS.utils as ut
 import MRS.analysis as ana
-import MRS.files as io
 
 test_path = os.path.join(MRS.__path__[0], 'tests')
-file_name = os.path.join(test_path, 'pure_gaba_P64024.7')
+file_name = os.path.join(test_path, 'pure_gaba_P64024.nii.gz')
 
 def test_separate_signals():
     """
     Test separation of signals for water-suppressed and other signals
     """
-    data = io.get_data(file_name)
+    data = np.transpose(nib.load(file_name).get_data(), [1,2,3,4,5,0]).squeeze()
     w_data, w_supp_data = ana.separate_signals(data)
     # Very simple sanity checks
     npt.assert_equal(w_data.shape[-1], data.shape[-1])
@@ -31,7 +31,7 @@ def test_coil_combine():
     """
     Test combining of information from different coils
     """
-    data = io.get_data(file_name)
+    data = np.transpose(nib.load(file_name).get_data(), [1,2,3,4,5,0]).squeeze()
     w_data, w_supp_data = ana.coil_combine(data)
     # Make sure that the time-dimension is still correct: 
     npt.assert_equal(w_data.shape[-1], data.shape[-1])
@@ -48,7 +48,7 @@ def test_get_spectra():
     """
     Test the function that does the spectral analysis
     """
-    data = io.get_data(file_name)
+    data = np.transpose(nib.load(file_name).get_data(), [1,2,3,4,5,0]).squeeze()
     w_data, w_supp_data = ana.coil_combine(data)
 
     # XXX Just basic smoke-testing for now:

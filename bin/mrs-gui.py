@@ -31,7 +31,6 @@ from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt4agg import NavigationToolbar2QTAgg as NavigationToolbar
 from matplotlib.figure import Figure
 
-import MRS.files as fi
 import MRS.analysis as ana
 import MRS.utils as ut
 import nitime as nt
@@ -296,7 +295,9 @@ class DataHolder(object):
     def load_from_file(self, filename=None):
         if filename:
             # Get data from file: 
-            data = fi.get_data(filename[0])
+            data = np.transpose(nib.load(filename[0]).get_data(),
+                                [1,2,3,4,5,0]).squeeze()
+
             # Use the water unsuppressed data to combine over coils:
             w_data, w_supp_data = ana.coil_combine(data.squeeze())
             self.timeseries = w_supp_data
