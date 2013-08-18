@@ -467,7 +467,7 @@ def lorentzian(freq, freq0, area, hwhm, phase, offset, drift):
    absorptive = oo2pi * area * np.ones(freq.shape[0])*(hwhm / (df**2 + hwhm**2))
    dispersive = oo2pi * area * df/(df**2 + hwhm**2)
    return (absorptive * np.cos(phase) + dispersive * np.sin(phase) + offset +
-   drift * df)
+   drift * freq)
 
 def two_lorentzian(freq, freq0_1, freq0_2, area1, area2, hwhm1, hwhm2, phase1,
                    phase2, offset, drift):
@@ -488,7 +488,7 @@ def gaussian(freq, freq0, sigma, amp, offset, drift):
     A Gaussian function with flexible offset, drift and amplitude
     """
     return (amp * np.exp(- ((freq - freq0)**2) / (sigma**2) ) +
-            drift * (freq-freq0) + offset)
+            drift * freq + offset)
 
 def auc_gaussian(amp, sigma):
     """

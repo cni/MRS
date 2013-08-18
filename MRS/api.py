@@ -119,6 +119,13 @@ class GABA(object):
         self.creatine_signal = signal
         self.creatine_params = params
         self.cr_idx = fit_idx
+        mean_params = np.mean(params, 0)
+        self.creatine_auc = ana.integrate(ut.lorentzian,
+                                          self.f_ppm[self.idx],
+                                          tuple(mean_params),
+                                          offset = mean_params[-2],
+                                          drift = mean_params[-1])
+
         
     def fit_gaba(self, reject_outliers=3.0, fit_lb=2.8, fit_ub=3.4,
                  phase_correct=True):
@@ -165,8 +172,15 @@ class GABA(object):
         self.gaba_signal = signal
         self.gaba_params = params
         self.gaba_idx = gaba_idx
+        mean_params = np.mean(params, 0)
+        # Calculate AUC over the entire domain:
+        self.gaba_auc = ana.integrate(ut.gaussian,
+                                      self.f_ppm[self.idx],
+                                      tuple(mean_params),
+                                      offset = mean_params[-2],
+                                      drift = mean_params[-1])
 
-
+        
 class SingleVoxel(object):
     """
     Class for representation and analysis of single voxel experiments.
