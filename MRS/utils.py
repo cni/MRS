@@ -320,26 +320,178 @@ def zero_pad(ts, n_zeros):
 
     return nts.TimeSeries(new_data, sampling_rate=ts.sampling_rate)
 
-def apodize(ts, window=np.hanning):
+
+def line_broadening(ts, width):
     """
-    Window the time-series in each of its channels
+    Apply line-broadening to a time-series
 
     Parameters
     ----------
     ts : a nitime.TimeSeries class instance
 
-    window : callable.
-       A function that returns a window. Default np.hamming
-    
-    """
+    width : float
+        The exponential decay time-constant (in seconds)
+
+    Returns
+    -------
+    A nitime.TimeSeries class instance with windowed data
+
+    Notes
+    -----
+
+    For details, see page 92 of Keeler2005_.
+
+    .. [Keeler2005] Keeler, J (2005). Understanding NMR spectroscopy, second
+       edition. Wiley (West Sussex, UK).
+
+    """ 
     # We'll need to broadcast into this many dims:
     n_dims = len(ts.shape)
-
-    # The window is the length of the time-dimension:
-    win = window(ts.shape[-1])
-
-    for d in range(n_dims-1):
-        win = win[np.newaxis,...]
-
+    # We use the information in the TimeSeries.time attribute to get it:
+    win = np.exp(- width * ts.time/np.float(ts.time._conversion_factor))
+    
     new_data = ts.data * win
     return nts.TimeSeries(new_data, sampling_rate=ts.sampling_rate)
+
+
+def freq_to_ppm(f, water_hz=0.0, water_ppm=4.7, hz_per_ppm=127.680):
+    """
+    Convert a set of numbers from frequeny in hertz to chemical shift in ppm
+    """
+    return water_ppm - (f - water_hz)/hz_per_ppm
+
+
+def ppm_idx(f_ppm, lb, ub):
+    """
+    Create a slice object according to the ppm scale
+
+    Parameters
+    ----------
+    f_ppm : float array
+        The frequency bins (in the ppm scale). Assumed to be descending
+
+    lb,ub : float
+        The lower/upper bounds for indexing
+        
+    Returns
+    -------
+    idx : slice object which can be used to index 
+    """
+    idx0 = np.argmin(np.abs(f_ppm - lb))
+    idx1 = np.argmin(np.abs(f_ppm - ub))
+    return slice(idx1, idx0)    
+
+
+
+def phase_correct_zero(spec, phi):
+    """
+    Correct the phases of a spectrum by phi radians
+
+    Parameters
+    ----------
+    spec : float array of complex dtype
+        The spectrum to be corrected. 
+       
+    phi : float
+
+    Returns
+    -------
+    spec : float array
+         The phase corrected spectrum
+
+    Notes
+    -----
+    [Keeler2005] Keeler, J (2005). Understanding NMR Spectroscopy, 2nd
+        edition. Wiley. Page 88.  
+
+    """
+    c_factor = np.exp(-1j * phi)
+    # If it's an array, we need to reshape it and broadcast across the
+    # frequency bands in the spectrum. Otherwise, we assume it's a scalar and
+    # apply it to all the dimensions of the spec array:
+    if hasattr(phi, 'shape'):
+        c_factor = c_factor.reshape(c_factor.shape + (1,))
+
+    return spec * c_factor
+
+
+def phase_correct_first(spec, freq, k):
+    """
+    First order phase correction.
+
+    Parameters
+    ----------
+    spec : float array
+        The spectrum to be corrected.
+
+    freq : float array
+        The frequency axis.
+
+    k : float
+        The slope of the phase correction as a function of frequency.
+
+    Returns
+    -------
+    The phase-corrected spectrum.
+
+    Notes
+    -----
+    [Keeler2005] Keeler, J (2005). Understanding NMR Spectroscopy, 2nd
+        edition. Wiley. Page 88
+
+    """
+    c_factor = np.exp(-1j * k * freq)
+    c_factor = c_factor.reshape((len(spec.shape) -1) * (1,) + c_factor.shape)
+    return spec * c_factor
+    
+def lorentzian(freq, freq0, area, hwhm, phase, offset, drift):
+   """
+   Lorentzian line-shape function
+
+   Parameters
+   ----------
+   freq : float or float array
+      The frequencies for which the function is evaluated
+
+   freq0 : float
+      The center frequency of the function
+
+   area : float
+
+   hwhm: float
+      Half-width at half-max       
+
+   """
+   oo2pi = 1/(2*np.pi)
+   df = freq - freq0
+   absorptive = oo2pi * area * np.ones(freq.shape[0])*(hwhm / (df**2 + hwhm**2))
+   dispersive = oo2pi * area * df/(df**2 + hwhm**2)
+   return (absorptive * np.cos(phase) + dispersive * np.sin(phase) + offset +
+   drift * freq)
+
+def two_lorentzian(freq, freq0_1, freq0_2, area1, area2, hwhm1, hwhm2, phase1,
+                   phase2, offset, drift):
+   """
+   A two-Lorentzian model.
+
+   This is simply the sum of two lorentzian functions in some part of the
+   spectrum. Each individual Lorentzian has its own peak frequency, area, hwhm
+   and phase, but they share common offset and drift parameters.
+   
+   """
+   return (lorentzian(freq, freq0_1, area1, hwhm1, phase1, offset, drift) +
+           lorentzian(freq, freq0_2, area2, hwhm2, phase2, offset, drift))
+ 
+
+def gaussian(freq, freq0, sigma, amp, offset, drift):
+    """
+    A Gaussian function with flexible offset, drift and amplitude
+    """
+    return (amp * np.exp(- ((freq - freq0)**2) / (sigma**2) ) +
+            drift * freq + offset)
+
+def auc_gaussian(amp, sigma):
+    """
+    Calculate the area under the curve for Gaussian function 
+    """
+    return amp/np.sqrt(-(1/(2*sigma**2)))*np.sqrt(np.pi)
