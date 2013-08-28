@@ -182,7 +182,7 @@ def MRSvoxelStats(segfile, MRSfile=None, center=None, dim=None, subjID=None,
     # calculate beginning corner of MRS voxel
     print('Creating mask with center: [%s, %s, %s]'%(center[0],
                                                     center[1],
-                                                    str(center[2]))
+                                                    str(center[2])))
 
     print('and dimensions: [%s, %s, %s] mm'%(dim[0], dim[1], dim[2]))
     
@@ -193,7 +193,7 @@ def MRSvoxelStats(segfile, MRSfile=None, center=None, dim=None, subjID=None,
     voxdim[1]=np.ceil(np.abs(dim[1] / segvoxdim[1]))
     voxdim[2]=np.ceil(np.abs(dim[2] / segvoxdim[2]))
 
-    print 'MRS voxel dimensions in T1 voxel units: [%s, %s, %s]'%(voxdim[0],
+    print ('MRS voxel dimensions in T1 voxel units: [%s, %s, %s]'%(voxdim[0],
                                                                   voxdim[1],
                                                                   voxdim[2]))
 
