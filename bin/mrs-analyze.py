@@ -34,14 +34,14 @@ parser.add_argument('--max_ppm', action='store', metavar='Float',
                     default=4.3)
 
 parser.add_argument('--broadening', action='store', metavar='Float',
-                    help='Line broadening (Hz; default: 2)', default=5.0)
+                    help='Line broadening (Hz; default: 5)', default=5.0)
 
 parser.add_argument('--zero_fill', action='store', metavar='Float',
                     help='Zero filling (number of points; default=100',
                     default=100)
 
 parser.add_argument('--plot', action='store', metavar='Bool',
-                    help='Whethere to produce a plot',
+                    help='Whether to produce a plot',
                     default=False)
 
 in_args = parser.parse_args()
