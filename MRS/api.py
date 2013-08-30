@@ -180,7 +180,20 @@ class GABA(object):
                                       offset = mean_params[-2],
                                       drift = mean_params[-1])
 
+    def est_gaba_conc(self):
+	"""
+	Estimate gaba concentration based on equation adapted from Sanacora 1999, p1045
+	"""
+	# need gaba_auc and creatine_auc
+	if not hasattr(self, 'gaba_params'):
+	    self.fit_gaba()
+
+	# estimate [GABA] according to equation9
+	gaba_conc_est = self.gaba_auc / self.creatine_auc * 1.5 * 9.0
+	
+	self.gaba_conc_est = gaba_conc_est
         
+
 class SingleVoxel(object):
     """
     Class for representation and analysis of single voxel experiments.
