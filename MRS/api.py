@@ -3,6 +3,7 @@ import nibabel as nib
 
 import MRS.analysis as ana
 import MRS.utils as ut
+import MRS.freesurfer as fs
 
 class GABA(object):
     """
@@ -180,6 +181,7 @@ class GABA(object):
                                       offset = mean_params[-2],
                                       drift = mean_params[-1])
 
+
     def est_gaba_conc(self):
 	"""
 	Estimate gaba concentration based on equation adapted from Sanacora 1999, p1045
@@ -193,6 +195,26 @@ class GABA(object):
 	
 	self.gaba_conc_est = gaba_conc_est
         
+
+    def voxel_seg(self, segfile, MRSfile):
+	"""
+	add voxel segmentation info
+	
+	Parameters
+	----------
+	
+	segfile : str
+	    Path to nifti file with segmentation info (e.g. XXXX_aseg.nii.gz)
+ 
+	MRSfile : str
+	    Path to MRS nifti file 
+	"""
+	total, grey, white, csf, nongmwm, pGrey, pWhite, pCSF, pNongmwm = fs.MRSvoxelStats(segfile, MRSfile)
+	
+	self.pGrey = pGrey
+	self.pWhite = pWhite
+	self.pCSF = pCSF
+	self.pNongmwm = pNongmwm
 
 class SingleVoxel(object):
     """
