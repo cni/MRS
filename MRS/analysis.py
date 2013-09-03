@@ -106,8 +106,8 @@ def coil_combine(data, w_idx=[1,2,3], coil_dim=2):
     fft_w = fft.fft(w_data)
     # We use the water peak (the 0th frequency) as the reference (averaging
     # across transients and echos):
-#    zero_freq_w = np.mean(np.abs(fft_w[..., 0]), axis = (0,1))
-    zero_freq_w = np.mean(np.mean(np.abs(fft_w[..., 0]), axis = 0),axis=0)
+    zero_freq_w = np.mean(np.abs(fft_w[..., 0]), axis = (0,1))
+#    zero_freq_w = np.mean(np.mean(np.abs(fft_w[..., 0]), axis = 0),axis=0)
    
     # This is the weighting by SNR (equation 29 in the Wald paper):
     zero_freq_w_across_coils = np.sqrt(np.sum(zero_freq_w**2, -1))
@@ -132,8 +132,8 @@ def coil_combine(data, w_idx=[1,2,3], coil_dim=2):
     idxer = coil_dim * (na, ) + (slice(0,None), na)
     
     weighted_w_supp_data =np.mean(
-#       np.mean(w, axis = tuple(range(coil_dim)))[idxer] * w_supp_data,
-       np.mean(np.mean(w,axis=0), axis =0)[idxer] * w_supp_data,
+       np.mean(w, axis = tuple(range(coil_dim)))[idxer] * w_supp_data,
+#       np.mean(np.mean(w,axis=0), axis =0)[idxer] * w_supp_data,
        axis=coil_dim)
 
     #return weighted_w_data, weighted_w_supp_data 
