@@ -20,6 +20,11 @@ def motioncheck(ref_file, end_file):
     end_file: nifti
 	nifti file of the localizer acquired at the end of the session	
 
+    Returns
+    -------
+    rms : float
+	root mean square of xyz translation
+
     """        
 
     ref = nib.load(ref_file)
@@ -56,5 +61,13 @@ def motioncheck(ref_file, end_file):
     mcflt = fsl.MCFLIRT(in_file=in_file, ref_file=ref_file, save_mats=True,cost='mutualinfo')
     res = mcflt.run() 
 
-    print 'realignment affine matrix saved in mat_file'
-    print res.outputs
+    print 'realignment affine matrix saved in mat_file: '+res.outputs.mat_file
+
+    aff_file=res.outputs.mat_file
+    aff = np.loadtxt(aff_file, dtype=float)
+
+    # compute RMS as indicator of motion
+    rel=aff[0:3,3]
+    rms = sqrt(mean(rel**2))
+    
+    return rms
