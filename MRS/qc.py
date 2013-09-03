@@ -7,7 +7,7 @@ import numpy as np
 import nipype.pipeline.engine as pe
 from nipype.interfaces import fsl
 
-def motioncheck(ref_file, end_file):
+def motioncheck(ref_file, end_file, thres=5.0):
     """
     Checks motion between structural scans of the same modality. 
     Ideally obtained at the beginning and end of a scanning session.
@@ -20,11 +20,16 @@ def motioncheck(ref_file, end_file):
     end_file: nifti
 	nifti file of the localizer acquired at the end of the session	
 
+    thres: float
+	threshold in mm of maximum allowed motion. Default 5mm
+
     Returns
     -------
     rms : float
 	root mean square of xyz translation
 
+    passed: boolean
+	indicates if motion passed threshold: 1 if passed, 0 if failed.
     """        
 
     ref = nib.load(ref_file)
@@ -68,6 +73,11 @@ def motioncheck(ref_file, end_file):
 
     # compute RMS as indicator of motion
     rel=aff[0:3,3]
-    rms = sqrt(mean(rel**2))
-    
-    return rms
+    rms = np.sqrt(np.mean(rel**2))
+  
+    if rms>=thres:
+	passed=False
+    else:
+	passed=True
+
+    return rms,passed
