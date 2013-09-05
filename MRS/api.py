@@ -69,6 +69,27 @@ class GABA(object):
         self.diff_spectra = self.echo2 - self.echo1
         self.sum_spectra = self.echo2 + self.echo1
 
+    def naa_correct(self):
+
+        """
+        Correct ppm shifts in the spectra, using NAA peak at 2.0ppm as a guide
+        WARNING!! Replaces existing f_ppm values! 
+
+        Parameters
+        ----------
+        
+        """
+        # calculate diff
+        diff = np.mean(self.diff_spectra, 0)
+        # find index of NAA peak in diff spectrum
+        idx = np.where(diff==np.min(diff))[0][0]
+        NAA_ppm = np.max(self.f_ppm)-(float(idx)/len(diff))*(np.max(self.f_ppm)-np.min(self.f_ppm))
+        
+        # determine how far spectrum is shifted
+        NAA_shift = 2.0-NAA_ppm
+        
+        # correct
+        self.f_ppm = self.f_ppm + NAA_shift
 
     def fit_creatine(self, reject_outliers=3.0, fit_lb=2.7, fit_ub=3.2):
         """
