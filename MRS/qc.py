@@ -15,21 +15,21 @@ def motioncheck(ref_file, end_file, thres=5.0):
     Parameters
     ----------
     ref_file: nifti file 
-	Nifti file of first localizer acquired at the beginning of the session
+        Nifti file of first localizer acquired at the beginning of the session
 
     end_file: nifti
-	nifti file of the localizer acquired at the end of the session	
+        nifti file of the localizer acquired at the end of the session	
 
     thres: float
-	threshold in mm of maximum allowed motion. Default 5mm
+        threshold in mm of maximum allowed motion. Default 5mm
 
     Returns
     -------
     rms : float
-	root mean square of xyz translation
+        root mean square of xyz translation
 
     passed: boolean
-	indicates if motion passed threshold: 1 if passed, 0 if failed.
+        indicates if motion passed threshold: 1 if passed, 0 if failed.
     """        
 
     ref = nib.load(ref_file)
@@ -43,9 +43,9 @@ def motioncheck(ref_file, end_file, thres=5.0):
     end_aff=end.get_affine()
 
     if np.array_equal(ref_aff,end_aff):
-	print 'affines match'
+        print 'affines match'
     else:
-	raise ValueError("Affines of start and end images do not match")
+        raise ValueError("Affines of start and end images do not match")
 
     # save only axials
     refax = ref_data[:,:,:,0,np.newaxis]
@@ -76,8 +76,8 @@ def motioncheck(ref_file, end_file, thres=5.0):
     rms = np.sqrt(np.mean(rel**2))
   
     if rms>=thres:
-	passed=False
+        passed=False
     else:
-	passed=True
+        passed=True
 
     return rms,passed

@@ -82,7 +82,7 @@ class GABA(object):
         # calculate diff
         diff = np.mean(self.diff_spectra, 0)
         # find index of NAA peak in diff spectrum
-        idx = np.where(diff==np.min(diff))[0][0]
+        idx = np.argmin(diff)
         NAA_ppm = np.max(self.f_ppm)-(float(idx)/len(diff))*(np.max(self.f_ppm)-np.min(self.f_ppm))
         
         # determine how far spectrum is shifted
@@ -206,6 +206,9 @@ class GABA(object):
     def est_gaba_conc(self):
 	"""
 	Estimate gaba concentration based on equation adapted from Sanacora 1999, p1045
+
+	Ref: Sanacora, G., Mason, G. F., Rothman, D. L., Behar, K. L., Hyder, F., Petroff, O. A., ... & Krystal, J. H. (1999). Reduced cortical {gamma}-aminobutyric acid levels in depressed patients determined by proton magnetic resonance spectroscopy. Archives of general psychiatry, 56(11), 1043.
+
 	"""
 	# need gaba_auc and creatine_auc
 	if not hasattr(self, 'gaba_params'):
@@ -215,27 +218,26 @@ class GABA(object):
 	gaba_conc_est = self.gaba_auc / self.creatine_auc * 1.5 * 9.0
 	
 	self.gaba_conc_est = gaba_conc_est
-        
 
     def voxel_seg(self, segfile, MRSfile):
-	"""
-	add voxel segmentation info
-	
-	Parameters
-	----------
-	
-	segfile : str
-	    Path to nifti file with segmentation info (e.g. XXXX_aseg.nii.gz)
- 
-	MRSfile : str
-	    Path to MRS nifti file 
-	"""
-	total, grey, white, csf, nongmwm, pGrey, pWhite, pCSF, pNongmwm = fs.MRSvoxelStats(segfile, MRSfile)
-	
-	self.pGrey = pGrey
-	self.pWhite = pWhite
-	self.pCSF = pCSF
-	self.pNongmwm = pNongmwm
+        """
+        add voxel segmentation info
+        
+        Parameters
+        ----------
+        
+        segfile : str
+            Path to nifti file with segmentation info (e.g. XXXX_aseg.nii.gz)
+        
+        MRSfile : str
+            Path to MRS nifti file 
+        """
+        total, grey, white, csf, nongmwm, pGrey, pWhite, pCSF, pNongmwm = fs.MRSvoxelStats(segfile, MRSfile)
+        
+        self.pGrey = pGrey
+        self.pWhite = pWhite
+        self.pCSF = pCSF
+        self.pNongmwm = pNongmwm
 
 class SingleVoxel(object):
     """
