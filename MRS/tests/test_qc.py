@@ -10,4 +10,4 @@ def test_motion():
     """
     test motion detection
     """
-    G.qc(ref_file,end_file, thres=5.0)
+    qcres=qc.motioncheck(ref_file,end_file, thres=5.0)
