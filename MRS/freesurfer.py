@@ -244,4 +244,4 @@ def MRSvoxelStats(segfile, MRSfile=None, center=None, dim=None, subjID=None,
     pCSF = float(csf)/total 
     pNongmwm = float(nongmwm)/total
 
-    return (total, grey, white, csf,nongmwm, pGrey, pWhite,pCSF, pNongmwm)    
+    return (total, grey, white, csf,nongmwm, pGrey, pWhite,pCSF, pNongmwm)

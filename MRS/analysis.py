@@ -9,6 +9,7 @@ import nitime.timeseries as nts
 import nitime.analysis as nta
 import scipy.fftpack as fft
 import scipy.integrate as spi
+from scipy.integrate import trapz, simps
 
 import MRS.leastsqbound as lsq
 import MRS.utils as ut
@@ -430,3 +431,39 @@ def integrate(func, x, args=(), offset=0, drift=0):
    y = y - drift * x
    # Use trapezoidal integration on the corrected function: 
    return spi.trapz(y, x)
+
+
+def simple_auc(spectrum, f_ppm, center=3.00, bandwidth=0.30):
+   """
+   Calculates area under the curve (no fitting)
+
+   Parameters
+   ----------
+   spectrum : array of shape (n_transients, n_points)
+      Typically the difference of the on/off spectra in each transient.
+
+   center, bandwidth : float
+      Determine the limits for the part of the spectrum for which we want
+      to calculate the AUC.
+      e.g. if center = 3.0, bandwidth = 0.3, lower and upper bounds will be
+      2.85 and 3.15 respectively (center +/- bandwidth/2).
+
+   Notes
+   -----
+   Default center and bandwidth are 3.0 and 0.3ppm respectively
+    because of Sanacora 1999 pg 1045:
+   "The GABA signal was integrated over a 0.30-ppm bandwidth at 3.00ppm"
+
+   Ref: Sanacora, G., Mason, G. F., Rothman, D. L., Behar, K. L., Hyder, F., Petroff, O. A., ... & Krystal, J. H. (1999). Reduced cortical {gamma}-aminobutyric acid levels in depressed patients determined by proton magnetic resonance spectroscopy. Archives of general psychiatry, 56(11), 1043.
+
+   """
+   range = np.max(f_ppm)-np.min(f_ppm)
+   dx=float(range)/float(len(f_ppm))
+   
+   lb = np.floor((np.max(f_ppm)-float(center)+float(bandwidth)/2)/dx)
+   ub = np.ceil((np.max(f_ppm)-float(center)-float(bandwidth)/2)/dx)
+
+   auc = trapz(spectrum[ub:lb].real, dx=dx)
+
+   return auc   
+
