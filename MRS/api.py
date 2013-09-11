@@ -74,13 +74,12 @@ class GABA(object):
     def naa_correct(self):
 
         """
-        Correct ppm shifts in the spectra, using NAA peak at 2.0ppm as a guide
-        WARNING!! Replaces existing f_ppm values! 
-
-        Parameters
-        ----------
-        
+        This function resets the fits and corrects shifts in the spectra.
+        It uses uses the NAA peak at 2.0ppm as a guide to replaces the existing
+        f_ppm values! 
         """
+        self.reset_fits()
+
         # calculate diff
         diff = np.mean(self.diff_spectra, 0)
         # find index of NAA peak in diff spectrum
@@ -92,6 +91,18 @@ class GABA(object):
         
         # correct
         self.f_ppm = self.f_ppm + NAA_shift
+        
+    def reset_fits(self):
+        """
+        This is used to restore the original state of the fits.
+        """
+        for attr in ['creatine_params', 'creatine_model', 'creatine_signal',
+                     'cr_idx', 'creatine_auc', 'gaba_params', 'gaba_model',
+                     'gaba_signal', 'gaba_idx', 'gaba_auc', 'glx_params',
+                     'glx_model', 'glx_signal', 'glx_idx', 'glx_auc' ]:
+            if hasattr(self, attr):
+                self.__delattr__(attr)
+
 
     def fit_water(self, line_broadening=5, zerofill=100,
                  filt_method=None, min_ppm=-0.7, max_ppm=5.0):
