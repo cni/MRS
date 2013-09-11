@@ -9,7 +9,11 @@ file_name = os.path.join(test_path, 'pure_gaba_P64024.nii.gz')
 
 def test_fitting():
     """
-    Test fitting of Gaussian function to creatine peak
+    Test fitting functions. This should exercise a lot of the code in the api
+    module.
     """
     G = api.GABA(file_name)
+    G.fit_creatine()
     G.fit_gaba()
+    G.fit_glx()
+    G.fit_water()
