@@ -219,7 +219,7 @@ def MRSvoxelStats(segfile, MRSfile=None, center=None, dim=None, subjID=None,
     csfdata = np.zeros(aseg_data.shape)
 
     for data, areas in zip([gdata, wdata, csfdata], [gareas, wareas, csfareas]):
-        for area in gareas:
+        for area in areas:
             data[np.where(aseg_data==area)] =1
 
     # multiply voxel ROI with seg data
