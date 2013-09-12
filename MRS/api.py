@@ -44,8 +44,8 @@ class GABA(object):
 
         w_data, w_supp_data = ana.coil_combine(self.raw_data)
         # We keep these around for reference, as private attrs
-        self._water_data = w_data
-        self._w_supp_data = w_supp_data
+        self.water_fid = w_data
+        self.w_supp_fid = w_supp_data
         # This is the time-domain signal of interest, combined over coils:
         self.data = ana.subtract_water(w_data, w_supp_data)
 
@@ -84,7 +84,8 @@ class GABA(object):
         diff = np.mean(self.diff_spectra, 0)
         # find index of NAA peak in diff spectrum
         idx = np.argmin(diff)
-        NAA_ppm = np.max(self.f_ppm)-(float(idx)/len(diff))*(np.max(self.f_ppm)-np.min(self.f_ppm))
+        adjust_by=(float(idx)/len(diff))*(np.max(self.f_ppm)-np.min(self.f_ppm))
+        NAA_ppm = np.max(self.f_ppm)-adjust_by 
         
         # determine how far spectrum is shifted
         NAA_shift = 2.0-NAA_ppm
@@ -142,6 +143,18 @@ class GABA(object):
                                           drift = mean_params[-1])
 
 
+    def _calc_auc(self, model, params, idx):
+        """
+        Helper function to calculate the area under the curve of a model for
+        part of the spectrum: 
+        """
+        # Correct for offset and drift:  
+        corrected_model = (model - params[-2] - params[-1] * self.f_ppm[idx])
+        # Integrate with \delta f: 
+        delta_f = np.abs(self.f_ppm[1] - self.f_ppm[0])
+        return np.sum(corrected_model) * delta_f
+
+
     def fit_creatine(self, reject_outliers=3.0, fit_lb=2.7, fit_ub=3.2):
         """
         Fit a model to the portion of the summed spectra containing the
@@ -193,9 +206,9 @@ class GABA(object):
         self.creatine_params = params
         self.cr_idx = fit_idx
         mean_params = stats.nanmean(params, 0)
-        self.creatine_auc = ana.integrate(ut.lorentzian,
-                                          self.f_ppm[self.cr_idx],
-                                          tuple(mean_params), 0, 0)
+        self.creatine_auc = self._calc_auc(stats.nanmean(model, 0),
+                                           mean_params,
+                                           self.cr_idx)
 
 
     def _gaussian_helper(self, reject_outliers, fit_lb, fit_ub, phase_correct):
@@ -294,10 +307,27 @@ class GABA(object):
         self.gaba_params = params
         self.gaba_idx = this_idx
         mean_params = stats.nanmean(params, 0)
-        # Calculate AUC over the entire domain:
-        self.gaba_auc = ana.integrate(ut.gaussian,
-                                      self.f_ppm[self.gaba_idx],
-                                      tuple(mean_params), 0, 0)
+        self.gaba_auc =  self._calc_auc(stats.nanmean(model, 0),
+                                        mean_params,
+                                        self.gaba_idx)
+
+    def fit_glx(self, reject_outliers=3.0, fit_lb=3.5, fit_ub=4.5,
+                 phase_correct=True):
+        """
+        Fit a Gaussian function to the Glu/Gln (GLX) peak at ~ 4 ppm).
+        """
+        choose_transients, model, signal, params, this_idx=self._gaussian_helper(
+            reject_outliers, fit_lb, fit_ub, phase_correct)
+
+        self._glx_transients = choose_transients
+        self.glx_model = model
+        self.glx_signal = signal
+        self.glx_params = params
+        self.glx_idx = this_idx
+        mean_params = stats.nanmean(params, 0)
+        self.glx_auc =  self._calc_auc(stats.nanmean(model, 0),
+                                        mean_params,
+                                        self.glx_idx)
 
 
     def est_gaba_conc(self):
@@ -343,24 +373,7 @@ class GABA(object):
         self.pCSF = pCSF
         self.pNongmwm = pNongmwm
 
-    def fit_glx(self, reject_outliers=3.0, fit_lb=3.5, fit_ub=4.5,
-                 phase_correct=True):
-        """
-        Fit a Gaussian function to the Glu/Gln (GLX) peak at ~ 4 ppm).
-        """
-        choose_transients, model, signal, params, this_idx=self._gaussian_helper(
-            reject_outliers, fit_lb, fit_ub, phase_correct)
 
-        self._glx_transients = choose_transients
-        self.glx_model = model
-        self.glx_signal = signal
-        self.glx_params = params
-        self.glx_idx = this_idx
-        mean_params = stats.nanmean(params, 0)
-        # Calculate AUC over the entire domain:
-        self.glx_auc = ana.integrate(ut.gaussian,
-                                      self.f_ppm[self.glx_idx],
-                                      tuple(mean_params), 0, 0)
 
 
 class SingleVoxel(object):
