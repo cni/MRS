@@ -120,9 +120,10 @@ class GABA(object):
         # We use different limits for the water part:
         idx0 = np.argmin(np.abs(f_ppm - min_ppm))
         idx1 = np.argmin(np.abs(f_ppm - max_ppm))
-        idx = slice(idx1, idx0)
-        f_ppm = f_ppm[idx]
-        self.water_spectra = np.mean(w_spectra, 1)[:, idx]
+        w_idx = slice(idx1, idx0)
+        self.w_idx = w_idx
+        f_ppm = f_ppm[self.w_idx]
+        self.water_spectra = np.mean(w_spectra, 1)[:, w_idx]
         model, signal, params, fit_idx = ana.fit_lorentzian(self.water_spectra,
                                                             f_ppm,
                                                             lb=min_ppm,
@@ -193,10 +194,8 @@ class GABA(object):
         self.cr_idx = fit_idx
         mean_params = stats.nanmean(params, 0)
         self.creatine_auc = ana.integrate(ut.lorentzian,
-                                          self.f_ppm[self.idx],
-                                          tuple(mean_params),
-                                          offset = mean_params[-2],
-                                          drift = mean_params[-1])
+                                          self.f_ppm[self.cr_idx],
+                                          tuple(mean_params), 0, 0)
 
 
     def _gaussian_helper(self, reject_outliers, fit_lb, fit_ub, phase_correct):
@@ -297,10 +296,8 @@ class GABA(object):
         mean_params = stats.nanmean(params, 0)
         # Calculate AUC over the entire domain:
         self.gaba_auc = ana.integrate(ut.gaussian,
-                                      self.f_ppm[self.idx],
-                                      tuple(mean_params),
-                                      offset = mean_params[-2],
-                                      drift = mean_params[-1])
+                                      self.f_ppm[self.gaba_idx],
+                                      tuple(mean_params), 0, 0)
 
 
     def est_gaba_conc(self):
@@ -362,10 +359,8 @@ class GABA(object):
         mean_params = stats.nanmean(params, 0)
         # Calculate AUC over the entire domain:
         self.glx_auc = ana.integrate(ut.gaussian,
-                                      self.f_ppm[self.idx],
-                                      tuple(mean_params),
-                                      offset = mean_params[-2],
-                                      drift = mean_params[-1])
+                                      self.f_ppm[self.glx_idx],
+                                      tuple(mean_params), 0, 0)
 
 
 class SingleVoxel(object):
