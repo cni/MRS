@@ -428,7 +428,7 @@ def integrate(func, x, args=(), offset=0, drift=0):
    # Correct for offset and drift, if those are present and specified
    # (otherwise default to 0 on both):
    y = y - offset
-   y = y - drift * x
+   y = y - drift * (x-x[0])
    # Use trapezoidal integration on the corrected function: 
    return spi.trapz(y, x)
 
