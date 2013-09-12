@@ -136,7 +136,7 @@ class GABA(object):
 
         mean_params = stats.nanmean(params, 0)
         self.water_auc = ana.integrate(ut.lorentzian,
-                                          f_ppm[idx],
+                                          f_ppm[self.w_idx],
                                           tuple(mean_params),
                                           offset = mean_params[-2],
                                           drift = mean_params[-1])
