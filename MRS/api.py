@@ -1,6 +1,7 @@
 import numpy as np
 import scipy.stats as stats
 import nibabel as nib
+import warnings
 
 import MRS.analysis as ana
 import MRS.utils as ut
@@ -111,7 +112,7 @@ class GABA(object):
 
         """
         # Get the water spectrum as well:
-        f_hz, w_spectra = ana.get_spectra(self._water_data,
+        f_hz, w_spectra = ana.get_spectra(self.water_fid,
                                           line_broadening=line_broadening,
                                           zerofill=zerofill,
                                           filt_method=filt_method)
@@ -155,6 +156,29 @@ class GABA(object):
         return np.sum(corrected_model) * delta_f
 
 
+    def _outlier_rejection(self, params, model, signal, ii):
+        """
+        Helper function to reject outliers
+
+        DRY!
+        
+        """
+        # Z score across repetitions:
+        z_score = (params - np.mean(params, 0))/np.std(params, 0)
+        # Silence warnings: 
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            outlier_idx = np.where(np.abs(z_score)>3.0)[0]
+            nan_idx = np.where(np.isnan(params))[0]
+            outlier_idx = np.unique(np.hstack([nan_idx, outlier_idx]))
+            ii[outlier_idx] = 0
+            model[outlier_idx] = np.nan
+            signal[outlier_idx] = np.nan
+            params[outlier_idx] = np.nan
+
+        return model, signal, params, ii
+
+        
     def fit_creatine(self, reject_outliers=3.0, fit_lb=2.7, fit_ub=3.2):
         """
         Fit a model to the portion of the summed spectra containing the
@@ -188,16 +212,11 @@ class GABA(object):
         ii = np.ones(signal.shape[0], dtype=bool)
         # Reject outliers:
         if reject_outliers:
-            # Z score across repetitions:
-            z_score = (params - np.mean(params, 0))/np.std(params, 0)
-            outlier_idx = np.where(np.abs(z_score)>3.0)[0]
-            nan_idx = np.where(np.isnan(params))[0]
-            outlier_idx = np.unique(np.hstack([nan_idx, outlier_idx]))
-            ii[outlier_idx] = 0
-            model[outlier_idx] = np.nan
-            signal[outlier_idx] = np.nan
-            params[outlier_idx] = np.nan
-
+            model, signal, params, ii = self._outlier_rejection(params,
+                                                                model,
+                                                                signal,
+                                                                ii)
+            
         # We'll keep around a private attribute to tell us which transients
         # were good:
         self._cr_transients = np.where(ii)
@@ -259,12 +278,18 @@ class GABA(object):
             self.fit_creatine()
 
         fit_spectra = np.ones(self.diff_spectra.shape) * np.nan
-        fit_spectra[self._cr_transients] =\
-                    self.diff_spectra[self._cr_transients].copy()
+        # Silence warnings: 
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            fit_spectra[self._cr_transients] =\
+                self.diff_spectra[self._cr_transients].copy()
 
         if phase_correct: 
             for ii, this_spec in enumerate(fit_spectra):
-                fit_spectra[ii] = ut.phase_correct_zero(this_spec,
+                # Silence warnings: 
+                with warnings.catch_warnings():
+                    warnings.simplefilter("ignore")
+                    fit_spectra[ii] = ut.phase_correct_zero(this_spec,
                                         self.creatine_params[ii, 3])
 
         # fit_idx should already be set from fitting the creatine params:
@@ -277,17 +302,10 @@ class GABA(object):
         ii = np.ones(signal.shape[0], dtype=bool)
         # Reject outliers:
         if reject_outliers:
-            # Z score across repetitions:
-            z_score = (params - np.mean(params, 0))/np.std(params, 0)
-            outlier_idx = np.where(np.abs(z_score)>3.0)[0]
-            nan_idx = np.where(np.isnan(params))[0]
-            outlier_idx = np.unique(np.hstack([nan_idx, outlier_idx]))
-            # Use an array of ones to index everything but the outliers and nans:
-            ii[outlier_idx] = 0
-            # Set the outlier transients to nan:
-            model[outlier_idx] = np.nan
-            signal[outlier_idx] = np.nan
-            params[outlier_idx] = np.nan
+            model, signal, params, ii = self._outlier_rejection(params,
+                                                                model,
+                                                                signal,
+                                                                ii)
 
         choose_transients = np.where(ii)
         return choose_transients, model, signal, params, this_idx

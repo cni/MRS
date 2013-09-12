@@ -3,6 +3,7 @@ Utility functions for analysis of MRS data.
 
 """ 
 
+import warnings
 import numpy as np
 import scipy.linalg as la
 import scipy.stats as stats
@@ -487,6 +488,8 @@ def gaussian(freq, freq0, sigma, amp, offset, drift):
     """
     A Gaussian function with flexible offset, drift and amplitude
     """
-    return (amp * np.exp(- ((freq - freq0)**2) / (sigma**2) ) +
-            drift * freq + offset)
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        return (amp * np.exp(- ((freq - freq0)**2) / (sigma**2) ) +
+                drift * freq + offset)
 
