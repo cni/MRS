@@ -1,6 +1,7 @@
 import numpy as np
 import scipy.stats as stats
 import nibabel as nib
+import warnings
 
 import MRS.analysis as ana
 import MRS.utils as ut
@@ -44,8 +45,8 @@ class GABA(object):
 
         w_data, w_supp_data = ana.coil_combine(self.raw_data)
         # We keep these around for reference, as private attrs
-        self._water_data = w_data
-        self._w_supp_data = w_supp_data
+        self.water_fid = w_data
+        self.w_supp_fid = w_supp_data
         # This is the time-domain signal of interest, combined over coils:
         self.data = ana.subtract_water(w_data, w_supp_data)
 
@@ -84,7 +85,8 @@ class GABA(object):
         diff = np.mean(self.diff_spectra, 0)
         # find index of NAA peak in diff spectrum
         idx = np.argmin(diff)
-        NAA_ppm = np.max(self.f_ppm)-(float(idx)/len(diff))*(np.max(self.f_ppm)-np.min(self.f_ppm))
+        adjust_by=(float(idx)/len(diff))*(np.max(self.f_ppm)-np.min(self.f_ppm))
+        NAA_ppm = np.max(self.f_ppm)-adjust_by 
         
         # determine how far spectrum is shifted
         NAA_shift = 2.0-NAA_ppm
@@ -110,7 +112,7 @@ class GABA(object):
 
         """
         # Get the water spectrum as well:
-        f_hz, w_spectra = ana.get_spectra(self._water_data,
+        f_hz, w_spectra = ana.get_spectra(self.water_fid,
                                           line_broadening=line_broadening,
                                           zerofill=zerofill,
                                           filt_method=filt_method)
@@ -120,9 +122,10 @@ class GABA(object):
         # We use different limits for the water part:
         idx0 = np.argmin(np.abs(f_ppm - min_ppm))
         idx1 = np.argmin(np.abs(f_ppm - max_ppm))
-        idx = slice(idx1, idx0)
-        f_ppm = f_ppm[idx]
-        self.water_spectra = np.mean(w_spectra, 1)[:, idx]
+        w_idx = slice(idx1, idx0)
+        self.w_idx = w_idx
+        f_ppm = f_ppm[self.w_idx]
+        self.water_spectra = np.mean(w_spectra, 1)[:, w_idx]
         model, signal, params, fit_idx = ana.fit_lorentzian(self.water_spectra,
                                                             f_ppm,
                                                             lb=min_ppm,
@@ -135,12 +138,47 @@ class GABA(object):
 
         mean_params = stats.nanmean(params, 0)
         self.water_auc = ana.integrate(ut.lorentzian,
-                                          f_ppm[idx],
+                                          f_ppm[self.w_idx],
                                           tuple(mean_params),
                                           offset = mean_params[-2],
                                           drift = mean_params[-1])
 
 
+    def _calc_auc(self, model, params, idx):
+        """
+        Helper function to calculate the area under the curve of a model for
+        part of the spectrum: 
+        """
+        # Correct for offset and drift:  
+        corrected_model = (model - params[-2] - params[-1] * self.f_ppm[idx])
+        # Integrate with \delta f: 
+        delta_f = np.abs(self.f_ppm[1] - self.f_ppm[0])
+        return np.sum(corrected_model) * delta_f
+
+
+    def _outlier_rejection(self, params, model, signal, ii):
+        """
+        Helper function to reject outliers
+
+        DRY!
+        
+        """
+        # Z score across repetitions:
+        z_score = (params - np.mean(params, 0))/np.std(params, 0)
+        # Silence warnings: 
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            outlier_idx = np.where(np.abs(z_score)>3.0)[0]
+            nan_idx = np.where(np.isnan(params))[0]
+            outlier_idx = np.unique(np.hstack([nan_idx, outlier_idx]))
+            ii[outlier_idx] = 0
+            model[outlier_idx] = np.nan
+            signal[outlier_idx] = np.nan
+            params[outlier_idx] = np.nan
+
+        return model, signal, params, ii
+
+        
     def fit_creatine(self, reject_outliers=3.0, fit_lb=2.7, fit_ub=3.2):
         """
         Fit a model to the portion of the summed spectra containing the
@@ -174,16 +212,11 @@ class GABA(object):
         ii = np.ones(signal.shape[0], dtype=bool)
         # Reject outliers:
         if reject_outliers:
-            # Z score across repetitions:
-            z_score = (params - np.mean(params, 0))/np.std(params, 0)
-            outlier_idx = np.where(np.abs(z_score)>3.0)[0]
-            nan_idx = np.where(np.isnan(params))[0]
-            outlier_idx = np.unique(np.hstack([nan_idx, outlier_idx]))
-            ii[outlier_idx] = 0
-            model[outlier_idx] = np.nan
-            signal[outlier_idx] = np.nan
-            params[outlier_idx] = np.nan
-
+            model, signal, params, ii = self._outlier_rejection(params,
+                                                                model,
+                                                                signal,
+                                                                ii)
+            
         # We'll keep around a private attribute to tell us which transients
         # were good:
         self._cr_transients = np.where(ii)
@@ -192,11 +225,9 @@ class GABA(object):
         self.creatine_params = params
         self.cr_idx = fit_idx
         mean_params = stats.nanmean(params, 0)
-        self.creatine_auc = ana.integrate(ut.lorentzian,
-                                          self.f_ppm[self.idx],
-                                          tuple(mean_params),
-                                          offset = mean_params[-2],
-                                          drift = mean_params[-1])
+        self.creatine_auc = self._calc_auc(stats.nanmean(model, 0),
+                                           mean_params,
+                                           self.cr_idx)
 
 
     def _gaussian_helper(self, reject_outliers, fit_lb, fit_ub, phase_correct):
@@ -247,12 +278,18 @@ class GABA(object):
             self.fit_creatine()
 
         fit_spectra = np.ones(self.diff_spectra.shape) * np.nan
-        fit_spectra[self._cr_transients] =\
-                    self.diff_spectra[self._cr_transients].copy()
+        # Silence warnings: 
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            fit_spectra[self._cr_transients] =\
+                self.diff_spectra[self._cr_transients].copy()
 
         if phase_correct: 
             for ii, this_spec in enumerate(fit_spectra):
-                fit_spectra[ii] = ut.phase_correct_zero(this_spec,
+                # Silence warnings: 
+                with warnings.catch_warnings():
+                    warnings.simplefilter("ignore")
+                    fit_spectra[ii] = ut.phase_correct_zero(this_spec,
                                         self.creatine_params[ii, 3])
 
         # fit_idx should already be set from fitting the creatine params:
@@ -265,17 +302,10 @@ class GABA(object):
         ii = np.ones(signal.shape[0], dtype=bool)
         # Reject outliers:
         if reject_outliers:
-            # Z score across repetitions:
-            z_score = (params - np.mean(params, 0))/np.std(params, 0)
-            outlier_idx = np.where(np.abs(z_score)>3.0)[0]
-            nan_idx = np.where(np.isnan(params))[0]
-            outlier_idx = np.unique(np.hstack([nan_idx, outlier_idx]))
-            # Use an array of ones to index everything but the outliers and nans:
-            ii[outlier_idx] = 0
-            # Set the outlier transients to nan:
-            model[outlier_idx] = np.nan
-            signal[outlier_idx] = np.nan
-            params[outlier_idx] = np.nan
+            model, signal, params, ii = self._outlier_rejection(params,
+                                                                model,
+                                                                signal,
+                                                                ii)
 
         choose_transients = np.where(ii)
         return choose_transients, model, signal, params, this_idx
@@ -295,12 +325,27 @@ class GABA(object):
         self.gaba_params = params
         self.gaba_idx = this_idx
         mean_params = stats.nanmean(params, 0)
-        # Calculate AUC over the entire domain:
-        self.gaba_auc = ana.integrate(ut.gaussian,
-                                      self.f_ppm[self.idx],
-                                      tuple(mean_params),
-                                      offset = mean_params[-2],
-                                      drift = mean_params[-1])
+        self.gaba_auc =  self._calc_auc(stats.nanmean(model, 0),
+                                        mean_params,
+                                        self.gaba_idx)
+
+    def fit_glx(self, reject_outliers=3.0, fit_lb=3.5, fit_ub=4.5,
+                 phase_correct=True):
+        """
+        Fit a Gaussian function to the Glu/Gln (GLX) peak at ~ 4 ppm).
+        """
+        choose_transients, model, signal, params, this_idx=self._gaussian_helper(
+            reject_outliers, fit_lb, fit_ub, phase_correct)
+
+        self._glx_transients = choose_transients
+        self.glx_model = model
+        self.glx_signal = signal
+        self.glx_params = params
+        self.glx_idx = this_idx
+        mean_params = stats.nanmean(params, 0)
+        self.glx_auc =  self._calc_auc(stats.nanmean(model, 0),
+                                        mean_params,
+                                        self.glx_idx)
 
 
     def est_gaba_conc(self):
@@ -346,26 +391,7 @@ class GABA(object):
         self.pCSF = pCSF
         self.pNongmwm = pNongmwm
 
-    def fit_glx(self, reject_outliers=3.0, fit_lb=3.5, fit_ub=4.5,
-                 phase_correct=True):
-        """
-        Fit a Gaussian function to the Glu/Gln (GLX) peak at ~ 4 ppm).
-        """
-        choose_transients, model, signal, params, this_idx=self._gaussian_helper(
-            reject_outliers, fit_lb, fit_ub, phase_correct)
 
-        self._glx_transients = choose_transients
-        self.glx_model = model
-        self.glx_signal = signal
-        self.glx_params = params
-        self.glx_idx = this_idx
-        mean_params = stats.nanmean(params, 0)
-        # Calculate AUC over the entire domain:
-        self.glx_auc = ana.integrate(ut.gaussian,
-                                      self.f_ppm[self.idx],
-                                      tuple(mean_params),
-                                      offset = mean_params[-2],
-                                      drift = mean_params[-1])
 
 
 class SingleVoxel(object):
