@@ -137,24 +137,43 @@ class GABA(object):
         self.water_params = params
 
         mean_params = stats.nanmean(params, 0)
-        self.water_auc = ana.integrate(ut.lorentzian,
-                                          f_ppm[self.w_idx],
-                                          tuple(mean_params),
-                                          offset = mean_params[-2],
-                                          drift = mean_params[-1])
+        self.water_auc = self._calc_auc(ut.lorentzian, params)
 
 
-    def _calc_auc(self, model, params, idx):
+    def _calc_auc(self, model, params):
         """
-        Helper function to calculate the area under the curve of a model for
-        part of the spectrum: 
-        """
-        # Correct for offset and drift:  
-        corrected_model = (model - params[-2] - params[-1] * self.f_ppm[idx])
-        # Integrate with \delta f: 
-        delta_f = np.abs(self.f_ppm[1] - self.f_ppm[0])
-        return np.sum(corrected_model) * delta_f
+        Helper function to calculate the area under the curve of a model
 
+        Parameters
+        ----------
+        model : callable
+            Probably either ut.lorentzian or ut.gaussian, but any function will
+            do, as long as its first parameter is an array of frequencies and
+            the third parameter controls its amplitude.
+
+        params : ndarray
+            Each row of these should contain exactly the number of params that
+            the model function expects after the first (frequency)
+            parameter. The second column should control the amplitude of the
+            function.
+        """
+
+
+        # Here's what we are going to do: For each transient, we generate
+        # the spectrum for two distinct sets of parameters: one is exactly as
+        # fit to the data, the other is the same expect with amplitude set to
+        # 0. To calculate AUC, we take the difference between them:
+        auc = np.zeros(params.shape[0])
+        delta_f = np.abs(self.f_ppm[1]-self.f_ppm[0])
+        for t in range(auc.shape[0]):
+            model1 = model(self.f_ppm, *params[t])
+            # This controls the amplitude in both the Gaussian and the
+            # Lorentzian: 
+            params[t, 1] = 0
+            model0 = model(self.f_ppm, *params[t])
+            auc[t] = np.sum((model1 - model0) * delta_f)
+
+        return auc
 
     def _outlier_rejection(self, params, model, signal, ii):
         """
@@ -226,9 +245,7 @@ class GABA(object):
         self.creatine_params = params
         self.cr_idx = fit_idx
         mean_params = stats.nanmean(params, 0)
-        self.creatine_auc = self._calc_auc(stats.nanmean(model, 0),
-                                           mean_params,
-                                           self.cr_idx)
+        self.creatine_auc = self._calc_auc(ut.lorentzian, params)
 
 
     def _gaussian_helper(self, reject_outliers, fit_lb, fit_ub, phase_correct):
@@ -326,9 +343,8 @@ class GABA(object):
         self.gaba_params = params
         self.gaba_idx = this_idx
         mean_params = stats.nanmean(params, 0)
-        self.gaba_auc =  self._calc_auc(stats.nanmean(model, 0),
-                                        mean_params,
-                                        self.gaba_idx)
+        self.gaba_auc =  self._calc_auc(ut.gaussian, params)
+
 
     def fit_glx(self, reject_outliers=3.0, fit_lb=3.5, fit_ub=4.5,
                  phase_correct=True):
@@ -344,9 +360,7 @@ class GABA(object):
         self.glx_params = params
         self.glx_idx = this_idx
         mean_params = stats.nanmean(params, 0)
-        self.glx_auc =  self._calc_auc(stats.nanmean(model, 0),
-                                        mean_params,
-                                        self.glx_idx)
+        self.glx_auc =  self._calc_auc(ut.gaussian, params)
 
 
     def est_gaba_conc(self):
