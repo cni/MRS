@@ -69,7 +69,7 @@ class GABA(object):
         self.echo2 = spectra[:,1][:,self.idx]
 
         # Calculate sum and difference:
-        self.diff_spectra = self.echo2 - self.echo1
+        self.diff_spectra = self.echo1 - self.echo2
         self.sum_spectra = self.echo2 + self.echo1
 
     def naa_correct(self):
@@ -203,7 +203,8 @@ class GABA(object):
         conference poster.
 
         """
-        model, signal, params, fit_idx = ana.fit_lorentzian(self.echo1,
+        model, signal, params, fit_idx = ana.fit_lorentzian(self.echo1 +
+                                                            self.echo2,
                                                             self.f_ppm,
                                                             lb=fit_lb,
                                                             ub=fit_ub)
