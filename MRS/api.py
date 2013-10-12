@@ -159,12 +159,13 @@ class GABA(object):
         # 0. To calculate AUC, we take the difference between them:
         auc = np.zeros(params.shape[0])
         delta_f = np.abs(self.f_ppm[1]-self.f_ppm[0])
+        p = np.copy(params)
         for t in range(auc.shape[0]):
-            model1 = model(self.f_ppm[self.idx], *params[t])
+            model1 = model(self.f_ppm[self.idx], *p[t])
             # This controls the amplitude in both the Gaussian and the
             # Lorentzian: 
-            params[t, 1] = 0
-            model0 = model(self.f_ppm[self.idx], *params[t])
+            p[t, 1] = 0
+            model0 = model(self.f_ppm[self.idx], *p[t])
             auc[t] = np.sum((model1 - model0) * delta_f)
 
         return auc
