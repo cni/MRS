@@ -51,7 +51,7 @@ def separate_signals(data, w_idx=[1,2,3]):
    return w_data, w_supp_data
 
 
-def coil_combine(data, w_idx=[1,2,3], coil_dim=2):
+def coil_combine(data, w_idx=[1,2,3], coil_dim=2, sampling_rate=5000.):
     """
     Combine data across coils based on the amplitude of the water peak,
     according to:
@@ -77,9 +77,12 @@ def coil_combine(data, w_idx=[1,2,3], coil_dim=2):
        The indices to the non-water-suppressed transients. Per default we take
         the 2nd-4th transients. We dump the first one, because it seems to be
         quite different than the rest of them...
-    
+
+    coil_dim : int
+        The dimension on which the coils are represented. Default: 2
+
     sampling rate : float
-        The sampling rate in Hz
+        The sampling rate in Hz. Default : 5000.
 
     Notes
     -----
@@ -103,40 +106,65 @@ def coil_combine(data, w_idx=[1,2,3], coil_dim=2):
        edition. Wiley (West Sussex, UK).
     
     """
-    w_data, w_supp_data = separate_signals(data, w_idx)     
-    fft_w = fft.fft(w_data)
-    # We use the water peak (the 0th frequency) as the reference (averaging
-    # across transients and echos):
-    zero_freq_w = np.mean(np.abs(fft_w[..., 0]), axis = (0,1))
-   
+    w_data, w_supp_data = separate_signals(data, w_idx)
+
+    fft_w = np.fft.fftshift(fft.fft(w_data))
+    fft_w_supp = np.fft.fftshift(fft.fft(w_supp_data))
+    freqs_w = np.linspace(-sampling_rate/2.0,
+                          sampling_rate/2.0,
+                          w_data.shape[-1])
+    
+    # To determine phase and amplitude, fit a Lorentzian line-shape to each
+    # coils data in each trial: 
+    # No bounds except for on the phase:
+    bounds = [(None,None),
+              (0,None),
+              (0,None),
+              (-np.pi, np.pi),
+              (None,None),
+              (None, None)]
+
+    n_params = len(bounds)
+    params = np.zeros(fft_w.shape[:-1] + (n_params,))
+
+    # Let's fit a Lorentzian line-shape to each one of these:
+    for repeat in range(w_data.shape[0]):
+       for echo in range(w_data.shape[1]):
+          for coil in range(w_data.shape[2]):
+             sig = fft_w[repeat, echo, coil]
+             # Use the private function to do this:
+             params[repeat, echo, coil] = _do_lorentzian_fit(freqs_w,
+                                                             sig, bounds)
+
+
+    # The area parameter stands for the magnitude:
+    area_w = params[..., 1]
     # This is the weighting by SNR (equation 29 in the Wald paper):
-    zero_freq_w_across_coils = np.sqrt(np.sum(zero_freq_w**2, -1))
-    w = zero_freq_w/zero_freq_w_across_coils[...,np.newaxis]
+    norm_factor = np.sqrt(np.sum(area_w**2, -1))
+    amp_weight = area_w/norm_factor[...,np.newaxis]
 
     # Next, we make sure that all the coils have the same phase. We will use
-    # the phase of this peak to align the phases: 
-    zero_phi_w = np.angle(w_data[..., 0])
+    # the phase of the Lorentzian to align the phases: 
+    zero_phi_w = params[..., 3]
+
     # This recalculates the weight with the phase alignment (see page 397 in
     # Wald paper):
-    w = w * np.exp(-1j * zero_phi_w)
-    # Multiply each one of them by it's weight and average across coils (2nd
-    # dim). This makes sure that you are roughly 0 phased for the water peak
+    weight = amp_weight * np.exp(-1j * zero_phi_w) 
+
+    # Average across repetitions and echos:
+    final_weight = np.mean(weight, axis=(0,1))
+
+    # Multiply each one of the signals by its coil-weights and average across
+    # coils:
     na = np.newaxis  # Short-hand
 
-    weighted_w_data = w[..., na] * w_data
-    weighted_w_data = np.mean(weighted_w_data, coil_dim)
+    # Collapse across coils for the combination in both the water 
+    weighted_w_data = np.mean(np.fft.ifft(np.fft.fftshift(
+       final_weight[na, na, :, na] * fft_w)), coil_dim)
+    weighted_w_supp_data = np.mean(np.fft.ifft(np.fft.fftshift(
+       final_weight[na, na, : ,na] * fft_w_supp)) , coil_dim)
 
-    # Need to create a flexible indexer that knows to index into all of items
-    # on the dimension after the coil dimension. This is done by concatenating
-    # some tuples here and using the total tuple for indexing below:
-    idxer = coil_dim * (na, ) + (slice(0,None), na)
-    
-    weighted_w_supp_data =np.mean(
-       np.mean(w, axis = tuple(range(coil_dim)))[idxer] * w_supp_data,
-       axis=coil_dim)
-
-    #return weighted_w_data, weighted_w_supp_data 
-    
+    # Normalize each series by the sqrt(rms):
     def normalize_this(x):
        return  x * (x.shape[-1] / (np.sum(np.abs(x))))
 
@@ -275,12 +303,9 @@ def fit_lorentzian(spectra, f_ppm, lb=2.6, ub=3.6):
    
    """
    # We are only going to look at the interval between lb and ub
-   idx0 = np.argmin(np.abs(f_ppm - lb))
-   idx1 = np.argmin(np.abs(f_ppm - ub))
-   idx = slice(idx1, idx0)
-   n_points = idx.stop - idx.start
+   idx = ut.make_idx(f_ppm, lb, ub)
+   n_points = np.abs(idx.stop - idx.start) 
    n_params = 6
-   fit_func = ut.lorentzian
    # Set the bounds for the optimization
    bounds = [(lb,ub),
              (0,None),
@@ -295,36 +320,46 @@ def fit_lorentzian(spectra, f_ppm, lb=2.6, ub=3.6):
    for ii, xx in enumerate(spectra):
       # We fit to the real spectrum:
       signal[ii] = np.real(xx[idx])
-      # Use the signal for a rough estimate of the parameters for
-      # initialization :
-      max_idx = np.argmax(signal[ii])
-      max_sig = np.max(signal[ii])
-      initial_f0 = f_ppm[idx][max_idx]
-      half_max_idx = np.argmin(np.abs(signal[ii] - max_sig/2))
-      initial_hwhm = np.abs(initial_f0 - f_ppm[idx][half_max_idx])
-      initial_ph = 0
-      initial_off = np.min(signal[ii])
-      initial_drift = 0
-      initial_a = (np.sum(signal[ii][max_idx:max_idx +
-                                    np.abs(half_max_idx)*2]) ) * 2
+      params[ii] = _do_lorentzian_fit(f_ppm[idx], np.real(signal[ii]),
+                                      bounds=bounds)
       
-      initial = (initial_f0,
-                 initial_a,
-                 initial_hwhm,
-                 initial_ph,
-                 initial_off,
-                 initial_drift)
-      
-      params[ii], _ = lsq.leastsqbound(mopt.err_func,
-                                       initial,
-                                       args=(f_ppm[idx],
-                                             np.real(signal[ii]),
-                                             fit_func), bounds=bounds)
-
-      model[ii] = fit_func(f_ppm[idx], *params[ii])
+      model[ii] = ut.lorentzian(f_ppm[idx], *params[ii])
    
-   return model, signal, params, idx
+   return model, signal, params
 
+
+def _do_lorentzian_fit(freqs, signal, bounds=None):
+   """
+
+   Helper function, so that Lorentzian fit can be generalized to different
+   frequency scales (Hz and ppm).
+   
+   """
+   # Use the signal for a rough estimate of the parameters for initialization:
+   max_idx = np.argmax(np.real(signal))
+   max_sig = np.max(np.real(signal))
+   initial_f0 = freqs[max_idx]
+   half_max_idx = np.argmin(np.abs(np.real(signal) - max_sig/2))
+   initial_hwhm = np.abs(initial_f0 - freqs[half_max_idx])
+   # Everything should be treated as real, except for the phase!
+   initial_ph = np.angle(signal[signal.shape[-1]/2.])
+
+   initial_off = np.min(np.real(signal))
+   initial_drift = 0
+   initial_a = (np.sum(np.real(signal)[max_idx:max_idx +
+                              np.abs(half_max_idx)*2]) ) * 2
+
+   initial = (initial_f0,
+              initial_a,
+              initial_hwhm,
+              initial_ph,
+              initial_off,
+              initial_drift)
+
+   params, _ = lsq.leastsqbound(mopt.err_func, initial,
+                                args=(freqs, np.real(signal), ut.lorentzian),
+                                bounds=bounds)
+   return params
 
 def fit_gaussian(spectra, f_ppm, lb=2.6, ub=3.6):
    """
@@ -342,10 +377,8 @@ def fit_gaussian(spectra, f_ppm, lb=2.6, ub=3.6):
       In ppm, the range over which optimization is bounded
    
    """
+   idx = ut.make_idx(f_ppm, lb, ub)
    # We are only going to look at the interval between lb and ub
-   idx0 = np.argmin(np.abs(f_ppm - lb))
-   idx1 = np.argmin(np.abs(f_ppm - ub))
-   idx = slice(idx1, idx0)
    n_points = idx.stop - idx.start
    n_params = 5
    fit_func = ut.gaussian
@@ -389,7 +422,7 @@ def fit_gaussian(spectra, f_ppm, lb=2.6, ub=3.6):
 
       model[ii] = fit_func(f_ppm[idx], *params[ii])
    
-   return model, signal, params, idx
+   return model, signal, params
 
 
 def integrate(func, x, args=(), offset=0, drift=0):
