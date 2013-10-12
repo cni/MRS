@@ -7,7 +7,6 @@ import MRS.analysis as ana
 import MRS.utils as ut
 import MRS.freesurfer as fs
 
-
 class GABA(object):
     """
     Class for analysis of GABA MRS.
@@ -61,7 +60,7 @@ class GABA(object):
         idx0 = np.argmin(np.abs(f_ppm - min_ppm))
         idx1 = np.argmin(np.abs(f_ppm - max_ppm))
         self.idx = slice(idx1, idx0)
-        self.f_ppm = f_ppm[self.idx]
+        self.f_ppm = f_ppm
     
         # The first echo (off-resonance) is in the first output 
         self.echo1 = spectra[:,0][:,self.idx]
@@ -85,7 +84,8 @@ class GABA(object):
         diff = np.mean(self.diff_spectra, 0)
         # find index of NAA peak in diff spectrum
         idx = np.argmin(diff)
-        adjust_by=(float(idx)/len(diff))*(np.max(self.f_ppm)-np.min(self.f_ppm))
+        adjust_by=(float(idx)/len(diff))*(np.max(self.f_ppm[self.idx])-
+                                          np.min(self.f_ppm[self.idx]))
         NAA_ppm = np.max(self.f_ppm)-adjust_by 
         
         # determine how far spectrum is shifted
@@ -107,7 +107,7 @@ class GABA(object):
 
 
     def fit_water(self, line_broadening=5, zerofill=100,
-                 filt_method=None, min_ppm=-0.7, max_ppm=5.0):
+                 filt_method=None, min_ppm=-5.0, max_ppm=5.0):
         """
 
         """
@@ -118,24 +118,18 @@ class GABA(object):
                                           filt_method=filt_method)
 
         f_ppm = ut.freq_to_ppm(f_hz)
-
-        # We use different limits for the water part:
-        idx0 = np.argmin(np.abs(f_ppm - min_ppm))
-        idx1 = np.argmin(np.abs(f_ppm - max_ppm))
-        w_idx = slice(idx1, idx0)
-        self.w_idx = w_idx
-        f_ppm = f_ppm[self.w_idx]
-        self.water_spectra = np.mean(w_spectra, 1)[:, w_idx]
-        model, signal, params, fit_idx = ana.fit_lorentzian(self.water_spectra,
-                                                            f_ppm,
-                                                            lb=min_ppm,
-                                                            ub=max_ppm)
+        # Averaging across echos:
+        self.water_spectra = np.mean(w_spectra, 1)
+        model, signal, params = ana.fit_lorentzian(self.water_spectra,
+                                                   self.f_ppm,
+                                                   lb=min_ppm,
+                                                   ub=max_ppm)
 
         # Store the params:
         self.water_model = model
         self.water_signal = signal
         self.water_params = params
-
+        self.water_idx = ut.make_idx(self.f_ppm, min_ppm, max_ppm)
         mean_params = stats.nanmean(params, 0)
         self.water_auc = self._calc_auc(ut.lorentzian, params)
 
@@ -166,11 +160,11 @@ class GABA(object):
         auc = np.zeros(params.shape[0])
         delta_f = np.abs(self.f_ppm[1]-self.f_ppm[0])
         for t in range(auc.shape[0]):
-            model1 = model(self.f_ppm, *params[t])
+            model1 = model(self.f_ppm[self.idx], *params[t])
             # This controls the amplitude in both the Gaussian and the
             # Lorentzian: 
             params[t, 1] = 0
-            model0 = model(self.f_ppm, *params[t])
+            model0 = model(self.f_ppm[self.idx], *params[t])
             auc[t] = np.sum((model1 - model0) * delta_f)
 
         return auc
@@ -222,11 +216,11 @@ class GABA(object):
         conference poster.
 
         """
-        model, signal, params, fit_idx = ana.fit_lorentzian(self.echo1 +
-                                                            self.echo2,
-                                                            self.f_ppm,
-                                                            lb=fit_lb,
-                                                            ub=fit_ub)
+        model, signal, params = ana.fit_lorentzian(self.echo1 +
+                                                   self.echo2,
+                                                   self.f_ppm[self.idx],
+                                                   lb=fit_lb,
+                                                   ub=fit_ub)
 
         # Use an array of ones to index everything but the outliers and nans:
         ii = np.ones(signal.shape[0], dtype=bool)
@@ -243,7 +237,7 @@ class GABA(object):
         self.creatine_model = model
         self.creatine_signal = signal
         self.creatine_params = params
-        self.cr_idx = fit_idx
+        self.cr_idx = ut.make_idx(self.f_ppm, fit_lb, fit_ub)
         mean_params = stats.nanmean(params, 0)
         self.creatine_auc = self._calc_auc(ut.lorentzian, params)
 
@@ -311,10 +305,10 @@ class GABA(object):
                                         self.creatine_params[ii, 3])
 
         # fit_idx should already be set from fitting the creatine params:
-        model, signal, params, this_idx = ana.fit_gaussian(fit_spectra,
-                                                           self.f_ppm,
-                                                           lb=fit_lb,
-                                                           ub=fit_ub)
+        model, signal, params = ana.fit_gaussian(fit_spectra,
+                                                 self.f_ppm[self.idx],
+                                                 lb=fit_lb,
+                                                 ub=fit_ub)
 
         # We'll use these indices to reject outliers (or not):
         ii = np.ones(signal.shape[0], dtype=bool)
@@ -326,6 +320,7 @@ class GABA(object):
                                                                 ii)
 
         choose_transients = np.where(ii)
+        this_idx = ut.make_idx(self.f_ppm, fit_lb, fit_ub)
         return choose_transients, model, signal, params, this_idx
 
 
@@ -334,7 +329,7 @@ class GABA(object):
         """
         Fit a Gaussian function to the GABA peak at ~ 3 ppm.
         """
-        choose_transients, model, signal, params, this_idx=self._gaussian_helper(
+        choose_transients, model, signal, params,this_idx= self._gaussian_helper(
             reject_outliers, fit_lb, fit_ub, phase_correct)
 
         self._gaba_transients = choose_transients
@@ -351,7 +346,7 @@ class GABA(object):
         """
         Fit a Gaussian function to the Glu/Gln (GLX) peak at ~ 4 ppm).
         """
-        choose_transients, model, signal, params, this_idx=self._gaussian_helper(
+        choose_transients, model, signal, params,this_idx=self._gaussian_helper(
             reject_outliers, fit_lb, fit_ub, phase_correct)
 
         self._glx_transients = choose_transients
@@ -461,6 +456,6 @@ class SingleVoxel(object):
         idx0 = np.argmin(np.abs(f_ppm - min_ppm))
         idx1 = np.argmin(np.abs(f_ppm - max_ppm))
         self.idx = slice(idx1, idx0)
-        self.f_ppm = f_ppm[self.idx]
+        self.f_ppm = f_ppm
         self.spectra = spectra[:,self.idx]
     

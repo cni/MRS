@@ -493,3 +493,42 @@ def gaussian(freq, freq0, sigma, amp, offset, drift):
         return (amp * np.exp(- ((freq - freq0)**2) / (sigma**2) ) +
                 drift * freq + offset)
 
+def make_idx(f, lb, ub):
+    """
+    This is a little utility function to replace an oft-called set of
+    operations
+
+    Parameters
+    ----------
+    f : 1d array
+        A frequency axis along which we want to slice
+       
+    lb : float
+       Defines the upper bound of slicing
+
+    ub : float
+       Defines the lower bound of slicing
+
+    Returns
+    -------
+    idx : a slice object
+    
+    """
+    
+    idx0 = np.argmin(np.abs(f - lb))
+    idx1 = np.argmin(np.abs(f - ub))
+
+    # Determine which should be on which side
+    if f[0] > f[1]:
+        direction = -1
+    else:
+        direction = 1
+        
+    if direction == -1:
+        idx = slice(idx1, idx0)
+    elif direction == 1:
+        idx = slice(idx0, idx1)
+
+    return idx
+        
+
