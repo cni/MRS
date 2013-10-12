@@ -303,9 +303,7 @@ def fit_lorentzian(spectra, f_ppm, lb=2.6, ub=3.6):
    
    """
    # We are only going to look at the interval between lb and ub
-   idx0 = np.argmin(np.abs(f_ppm - lb))
-   idx1 = np.argmin(np.abs(f_ppm - ub))
-   idx = slice(idx1, idx0)
+   idx = ut.make_idx(f_ppm, lb, ub)
    n_points = np.abs(idx.stop - idx.start) 
    n_params = 6
    # Set the bounds for the optimization
@@ -327,7 +325,7 @@ def fit_lorentzian(spectra, f_ppm, lb=2.6, ub=3.6):
       
       model[ii] = ut.lorentzian(f_ppm[idx], *params[ii])
    
-   return model, signal, params, idx
+   return model, signal, params
 
 
 def _do_lorentzian_fit(freqs, signal, bounds=None):
@@ -379,10 +377,8 @@ def fit_gaussian(spectra, f_ppm, lb=2.6, ub=3.6):
       In ppm, the range over which optimization is bounded
    
    """
+   idx = ut.make_idx(f_ppm, lb, ub)
    # We are only going to look at the interval between lb and ub
-   idx0 = np.argmin(np.abs(f_ppm - lb))
-   idx1 = np.argmin(np.abs(f_ppm - ub))
-   idx = slice(idx1, idx0)
    n_points = idx.stop - idx.start
    n_params = 5
    fit_func = ut.gaussian
@@ -426,7 +422,7 @@ def fit_gaussian(spectra, f_ppm, lb=2.6, ub=3.6):
 
       model[ii] = fit_func(f_ppm[idx], *params[ii])
    
-   return model, signal, params, idx
+   return model, signal, params
 
 
 def integrate(func, x, args=(), offset=0, drift=0):
