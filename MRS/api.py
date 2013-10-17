@@ -63,9 +63,9 @@ class GABA(object):
         self.f_ppm = f_ppm
     
         # The first echo (off-resonance) is in the first output 
-        self.echo1 = spectra[:,0][:,self.idx]
+        self.echo1 = spectra[:,0]
         # The on-resonance is in the second:
-        self.echo2 = spectra[:,1][:,self.idx]
+        self.echo2 = spectra[:,1]
 
         # Calculate sum and difference:
         self.diff_spectra = self.echo1 - self.echo2
