@@ -55,11 +55,11 @@ if __name__ == "__main__":
                  max_ppm=in_args.max_ppm)
     
     # Pack it into a recarray:
-    names = ('ppm', 'echo1', 'echo2', 'diff')
+    names = ('ppm', 'echo_on', 'echo_off', 'diff')
     formats = (float, float, float, float)
     dt = zip(names, formats)
-    m_e1 = np.mean(G.echo1, 0)
-    m_e2 = np.mean(G.echo2, 0)
+    m_e1 = np.mean(G.echo_on, 0)
+    m_e2 = np.mean(G.echo_off, 0)
     diff = m_e2 - m_e1
 
     if in_args.out_file:
