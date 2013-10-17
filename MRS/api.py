@@ -63,13 +63,13 @@ class GABA(object):
         self.f_ppm = f_ppm
     
         # The first echo (off-resonance) is in the first output 
-        self.echo1 = spectra[:,0]
+        self.echo_on = spectra[:, 0]
         # The on-resonance is in the second:
-        self.echo2 = spectra[:,1]
+        self.echo_off = spectra[:, 1]
 
         # Calculate sum and difference:
-        self.diff_spectra = self.echo1 - self.echo2
-        self.sum_spectra = self.echo2 + self.echo1
+        self.diff_spectra = self.echo_off - self.echo_on
+        self.sum_spectra = self.echo_off + self.echo_on
 
     def naa_correct(self):
 
@@ -217,9 +217,8 @@ class GABA(object):
         conference poster.
 
         """
-        model, signal, params = ana.fit_lorentzian(self.echo1 +
-                                                   self.echo2,
-                                                   self.f_ppm[self.idx],
+        model, signal, params = ana.fit_lorentzian(self.sum_spectra,
+                                                   self.f_ppm,
                                                    lb=fit_lb,
                                                    ub=fit_ub)
 
@@ -307,7 +306,7 @@ class GABA(object):
 
         # fit_idx should already be set from fitting the creatine params:
         model, signal, params = ana.fit_gaussian(fit_spectra,
-                                                 self.f_ppm[self.idx],
+                                                 self.f_ppm,
                                                  lb=fit_lb,
                                                  ub=fit_ub)
 
