@@ -498,5 +498,5 @@ def simple_auc(spectrum, f_ppm, center=3.00, bandwidth=0.30):
 
    auc = trapz(spectrum[ub:lb].real, dx=dx)
 
-   return auc   
+   return auc, ub, lb   
 
