@@ -84,8 +84,8 @@ class GABA(object):
         diff = np.mean(self.diff_spectra, 0)
         # find index of NAA peak in diff spectrum
         idx = np.argmin(diff)
-        adjust_by=(float(idx)/len(diff))*(np.max(self.f_ppm[self.idx])-
-                                          np.min(self.f_ppm[self.idx]))
+        adjust_by=(float(idx)/len(diff))*(np.max(self.f_ppm)-
+                                          np.min(self.f_ppm))
         NAA_ppm = np.max(self.f_ppm)-adjust_by 
         
         # determine how far spectrum is shifted
