@@ -196,10 +196,10 @@ class GABA(object):
         return model, signal, params, ii
 
         
-    def fit_creatine(self, reject_outliers=3.0, fit_lb=2.7, fit_ub=3.2):
+    def fit_creatine(self, reject_outliers=3.0, fit_lb=2.7, fit_ub=3.5):
         """
         Fit a model to the portion of the summed spectra containing the
-        creatine signal.
+        creatine and choline signals.
 
         Parameters
         ----------
@@ -209,7 +209,7 @@ class GABA(object):
 
         fit_lb, fit_ub : float
            What part of the spectrum (in ppm) contains the creatine peak.
-           Default (2.7, 3.1)
+           Default (2.7, 3.5)
 
         Note
         ----
@@ -220,10 +220,12 @@ class GABA(object):
         conference poster.
 
         """
-        model, signal, params = ana.fit_lorentzian(self.sum_spectra,
-                                                   self.f_ppm,
-                                                   lb=fit_lb,
-                                                   ub=fit_ub)
+        # We fit a two-lorentz function to this entire chunk of the spectrum,
+        # to catch both choline and creatine
+        model, signal, params = ana.fit_two_lorentzian(self.sum_spectra,
+                                                       self.f_ppm,
+                                                       lb=fit_lb,
+                                                       ub=fit_ub)
 
         # Use an array of ones to index everything but the outliers and nans:
         ii = np.ones(signal.shape[0], dtype=bool)
@@ -235,15 +237,31 @@ class GABA(object):
                                                                 ii)
             
         # We'll keep around a private attribute to tell us which transients
-        # were good:
+        # were good (this is for both creatine and choline):
         self._cr_transients = np.where(ii)
-        self.creatine_model = model
-        self.creatine_signal = signal
-        self.creatine_params = params
+        
+        # Now we separate choline and creatine params from each other (remember
+        # that they both share offset and drift!):
+        self.creatine_params = params[:, (0,2,4,6,8,9)]
+        self.choline_params = params[:, (1,3,5,7,8,9)]
+        
         self.cr_idx = ut.make_idx(self.f_ppm, fit_lb, fit_ub)
-        mean_params = stats.nanmean(params, 0)
-        self.creatine_auc = self._calc_auc(ut.lorentzian, params)
 
+        # We'll need to generate the model predictions from these parameters,
+        # because what we're holding in 'model' is for both together:
+        self.creatine_model = np.zeros((self.creatine_params.shape[0],
+                                    np.abs(self.cr_idx.stop-self.cr_idx.start)))
+
+        self.choline_model = np.zeros((self.choline_params.shape[0],
+                                    np.abs(self.cr_idx.stop-self.cr_idx.start)))
+        
+        for idx in range(self.creatine_params.shape[0]):
+            self.creatine_model[idx] = ut.lorentzian(self.f_ppm[self.cr_idx],*self.creatine_params[idx])
+            self.choline_model[idx] = ut.lorentzian(self.f_ppm[self.cr_idx],
+                                                    *self.choline_params[idx])
+        self.creatine_signal = signal
+        self.creatine_auc = self._calc_auc(ut.lorentzian, self.creatine_params)
+        self.choline_auc = self._calc_auc(ut.lorentzian, self.choline_params)
 
     def _gaussian_helper(self, reject_outliers, fit_lb, fit_ub, phase_correct):
         """
