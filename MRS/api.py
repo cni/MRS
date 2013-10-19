@@ -43,17 +43,42 @@ class GABA(object):
                                      [1,2,3,4,5,0]).squeeze()
 
         w_data, w_supp_data = ana.coil_combine(self.raw_data)
-        # We keep these around for reference, as private attrs
+        f_hz, w_supp_spectra = ana.get_spectra(w_supp_data,
+                                           line_broadening=line_broadening,
+                                           zerofill=zerofill,
+                                           filt_method=filt_method)
+
+        self.w_supp_spectra = w_supp_spectra
+
+        # Often, there will be some small offset from the on-resonance
+        # frequency, which we can correct for. We fit a Lorentzian to each of
+        # the spectra from the water-suppressed data, so that we can get a
+        # phase-corrected estimate of the frequeny shift, instead of just
+        # relying on the frequency of the maximum:
+        self.w_supp_lorentz = np.zeros(w_supp_spectra.shape[:-1] + (6,))
+        for ii in range(self.w_supp_lorentz.shape[0]):
+            for jj in range(self.w_supp_lorentz.shape[1]):
+                self.w_supp_lorentz[ii,jj]=\
+                    ana._do_lorentzian_fit(f_hz, w_supp_spectra[ii,jj])
+
+        # We store the frequency offset for each transient/echo:
+        self.freq_offset = self.w_supp_lorentz[..., 0]
+
+        # But for now, we average over all the transients/echos for the
+        # correction: 
+        mean_freq_offset = np.mean(self.w_supp_lorentz[..., 0])
+        f_hz = f_hz - mean_freq_offset
+    
         self.water_fid = w_data
         self.w_supp_fid = w_supp_data
         # This is the time-domain signal of interest, combined over coils:
         self.data = ana.subtract_water(w_data, w_supp_data)
 
-        f_hz, spectra = ana.get_spectra(self.data,
-                                           line_broadening=line_broadening,
-                                           zerofill=zerofill,
-                                           filt_method=filt_method)
-                                           
+        _, spectra = ana.get_spectra(self.data,
+                                     line_broadening=line_broadening,
+                                     zerofill=zerofill,
+                                     filt_method=filt_method)
+
         self.f_hz = f_hz
         # Convert from Hz to ppm and extract the part you are interested in.
         f_ppm = ut.freq_to_ppm(self.f_hz)
@@ -63,36 +88,14 @@ class GABA(object):
         self.f_ppm = f_ppm
     
         # The first echo (off-resonance) is in the first output 
-        self.echo_on = spectra[:, 0]
+        self.echo_on = spectra[:, 1]
         # The on-resonance is in the second:
-        self.echo_off = spectra[:, 1]
+        self.echo_off = spectra[:, 0]
 
         # Calculate sum and difference:
         self.diff_spectra = self.echo_off - self.echo_on
         self.sum_spectra = self.echo_off + self.echo_on
 
-    def naa_correct(self):
-
-        """
-        This function resets the fits and corrects shifts in the spectra.
-        It uses uses the NAA peak at 2.0ppm as a guide to replaces the existing
-        f_ppm values! 
-        """
-        self.reset_fits()
-
-        # calculate diff
-        diff = np.mean(self.diff_spectra, 0)
-        # find index of NAA peak in diff spectrum
-        idx = np.argmin(diff)
-        adjust_by=(float(idx)/len(diff))*(np.max(self.f_ppm)-
-                                          np.min(self.f_ppm))
-        NAA_ppm = np.max(self.f_ppm)-adjust_by 
-        
-        # determine how far spectrum is shifted
-        NAA_shift = 2.0-NAA_ppm
-        
-        # correct
-        self.f_ppm = self.f_ppm + NAA_shift
         
     def reset_fits(self):
         """
