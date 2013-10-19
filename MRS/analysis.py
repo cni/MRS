@@ -416,10 +416,10 @@ def _do_two_lorentzian_fit(freqs, signal, bounds=None):
    
    """
    # Use the signal for a rough estimate of the parameters for initialization:
-
+   r_signal = np.real(signal)
    # The local maxima have a zero-crossing in their derivative, so we start by
    # calculating the derivative:
-   diff_sig = np.diff(signal)
+   diff_sig = np.diff(r_signal)
    # We look for indices that have zero-crossings (in the right direction - we
    # are looking for local maxima, not minima!)
    local_max_idx = []
@@ -431,19 +431,21 @@ def _do_two_lorentzian_fit(freqs, signal, bounds=None):
    local_max_idx = np.array(local_max_idx)
    # Our guesses for the location of the interesting local maxima is the two
    # with the largest signals in them: 
-   max_idx = np.sort(np.argsort(signal[local_max_idx])[::-1][:2])
-   # We sort again, so that we can try to get the first one to be choline:
+   max_idx = local_max_idx[np.argsort(r_signal[local_max_idx])[::-1][:2]]
+   # We sort again, so that we can try to get the first one to be the left peak:
    max_idx = np.sort(max_idx)
    # And thusly: 
    max_idx_1 = max_idx[0]
    max_idx_2 = max_idx[1]
    # A few of the rest just follow:
-   max_sig_1 = signal[max_idx_1]
-   max_sig_2 = signal[max_idx_2]
+   max_sig_1 = r_signal[max_idx_1]
+   max_sig_2 = r_signal[max_idx_2]
    initial_f0_1 = freqs[max_idx_1]
    initial_f0_2 = freqs[max_idx_2]
+
    half_max_idx_1 = np.argmin(np.abs(np.real(signal) - max_sig_1/2))
    initial_hwhm_1 = np.abs(initial_f0_1 - freqs[half_max_idx_1])
+
    half_max_idx_2 = np.argmin(np.abs(np.real(signal) - max_sig_2/2))
    initial_hwhm_2 = np.abs(initial_f0_2 - freqs[half_max_idx_2])
    
