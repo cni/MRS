@@ -442,17 +442,13 @@ def _do_two_lorentzian_fit(freqs, signal, bounds=None):
    max_sig_2 = r_signal[max_idx_2]
    initial_f0_1 = freqs[max_idx_1]
    initial_f0_2 = freqs[max_idx_2]
-
    half_max_idx_1 = np.argmin(np.abs(np.real(signal) - max_sig_1/2))
    initial_hwhm_1 = np.abs(initial_f0_1 - freqs[half_max_idx_1])
-
    half_max_idx_2 = np.argmin(np.abs(np.real(signal) - max_sig_2/2))
    initial_hwhm_2 = np.abs(initial_f0_2 - freqs[half_max_idx_2])
-   
    # Everything should be treated as real, except for the phase!
    initial_ph_1 = np.angle(signal[max_idx_1])
    initial_ph_2 = np.angle(signal[max_idx_2])
-
    # We only fit one offset and one drift, for both functions together! 
    initial_off = np.min(np.real(signal))
    initial_drift = 0
@@ -474,8 +470,16 @@ def _do_two_lorentzian_fit(freqs, signal, bounds=None):
               initial_off,
               initial_drift)
 
+   # We want to preferntially weight the error on estimating the height of the
+   # individual peaks, so we formulate an error-weighting function based on
+   # these peaks, which is simply a two-gaussian bumpety-bump:
+   w = (ut.gaussian(freqs, initial_f0_1, 0.075, 1, 0, 0) +
+        ut.gaussian(freqs, initial_f0_2, 0.075, 1, 0, 0))
+
+
    params, _ = lsq.leastsqbound(mopt.err_func, initial,
-                                args=(freqs, np.real(signal), ut.two_lorentzian),
+                                args=(freqs, np.real(signal),
+                                ut.two_lorentzian, w),
                                 bounds=bounds)
    return params
 
