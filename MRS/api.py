@@ -43,17 +43,42 @@ class GABA(object):
                                      [1,2,3,4,5,0]).squeeze()
 
         w_data, w_supp_data = ana.coil_combine(self.raw_data)
-        # We keep these around for reference, as private attrs
+        f_hz, w_supp_spectra = ana.get_spectra(w_supp_data,
+                                           line_broadening=line_broadening,
+                                           zerofill=zerofill,
+                                           filt_method=filt_method)
+
+        self.w_supp_spectra = w_supp_spectra
+
+        # Often, there will be some small offset from the on-resonance
+        # frequency, which we can correct for. We fit a Lorentzian to each of
+        # the spectra from the water-suppressed data, so that we can get a
+        # phase-corrected estimate of the frequeny shift, instead of just
+        # relying on the frequency of the maximum:
+        self.w_supp_lorentz = np.zeros(w_supp_spectra.shape[:-1] + (6,))
+        for ii in range(self.w_supp_lorentz.shape[0]):
+            for jj in range(self.w_supp_lorentz.shape[1]):
+                self.w_supp_lorentz[ii,jj]=\
+                    ana._do_lorentzian_fit(f_hz, w_supp_spectra[ii,jj])
+
+        # We store the frequency offset for each transient/echo:
+        self.freq_offset = self.w_supp_lorentz[..., 0]
+
+        # But for now, we average over all the transients/echos for the
+        # correction: 
+        mean_freq_offset = np.mean(self.w_supp_lorentz[..., 0])
+        f_hz = f_hz - mean_freq_offset
+    
         self.water_fid = w_data
         self.w_supp_fid = w_supp_data
         # This is the time-domain signal of interest, combined over coils:
         self.data = ana.subtract_water(w_data, w_supp_data)
 
-        f_hz, spectra = ana.get_spectra(self.data,
-                                           line_broadening=line_broadening,
-                                           zerofill=zerofill,
-                                           filt_method=filt_method)
-                                           
+        _, spectra = ana.get_spectra(self.data,
+                                     line_broadening=line_broadening,
+                                     zerofill=zerofill,
+                                     filt_method=filt_method)
+
         self.f_hz = f_hz
         # Convert from Hz to ppm and extract the part you are interested in.
         f_ppm = ut.freq_to_ppm(self.f_hz)
@@ -63,36 +88,14 @@ class GABA(object):
         self.f_ppm = f_ppm
     
         # The first echo (off-resonance) is in the first output 
-        self.echo_on = spectra[:, 0]
+        self.echo_on = spectra[:, 1]
         # The on-resonance is in the second:
-        self.echo_off = spectra[:, 1]
+        self.echo_off = spectra[:, 0]
 
         # Calculate sum and difference:
         self.diff_spectra = self.echo_off - self.echo_on
         self.sum_spectra = self.echo_off + self.echo_on
 
-    def naa_correct(self):
-
-        """
-        This function resets the fits and corrects shifts in the spectra.
-        It uses uses the NAA peak at 2.0ppm as a guide to replaces the existing
-        f_ppm values! 
-        """
-        self.reset_fits()
-
-        # calculate diff
-        diff = np.mean(self.diff_spectra, 0)
-        # find index of NAA peak in diff spectrum
-        idx = np.argmin(diff)
-        adjust_by=(float(idx)/len(diff))*(np.max(self.f_ppm)-
-                                          np.min(self.f_ppm))
-        NAA_ppm = np.max(self.f_ppm)-adjust_by 
-        
-        # determine how far spectrum is shifted
-        NAA_shift = 2.0-NAA_ppm
-        
-        # correct
-        self.f_ppm = self.f_ppm + NAA_shift
         
     def reset_fits(self):
         """
@@ -193,10 +196,10 @@ class GABA(object):
         return model, signal, params, ii
 
         
-    def fit_creatine(self, reject_outliers=3.0, fit_lb=2.7, fit_ub=3.2):
+    def fit_creatine(self, reject_outliers=3.0, fit_lb=2.7, fit_ub=3.5):
         """
         Fit a model to the portion of the summed spectra containing the
-        creatine signal.
+        creatine and choline signals.
 
         Parameters
         ----------
@@ -206,7 +209,7 @@ class GABA(object):
 
         fit_lb, fit_ub : float
            What part of the spectrum (in ppm) contains the creatine peak.
-           Default (2.7, 3.1)
+           Default (2.7, 3.5)
 
         Note
         ----
@@ -217,10 +220,12 @@ class GABA(object):
         conference poster.
 
         """
-        model, signal, params = ana.fit_lorentzian(self.sum_spectra,
-                                                   self.f_ppm,
-                                                   lb=fit_lb,
-                                                   ub=fit_ub)
+        # We fit a two-lorentz function to this entire chunk of the spectrum,
+        # to catch both choline and creatine
+        model, signal, params = ana.fit_two_lorentzian(self.sum_spectra,
+                                                       self.f_ppm,
+                                                       lb=fit_lb,
+                                                       ub=fit_ub)
 
         # Use an array of ones to index everything but the outliers and nans:
         ii = np.ones(signal.shape[0], dtype=bool)
@@ -232,15 +237,31 @@ class GABA(object):
                                                                 ii)
             
         # We'll keep around a private attribute to tell us which transients
-        # were good:
+        # were good (this is for both creatine and choline):
         self._cr_transients = np.where(ii)
-        self.creatine_model = model
-        self.creatine_signal = signal
-        self.creatine_params = params
+        
+        # Now we separate choline and creatine params from each other (remember
+        # that they both share offset and drift!):
+        self.creatine_params = params[:, (0,2,4,6,8,9)]
+        self.choline_params = params[:, (1,3,5,7,8,9)]
+        
         self.cr_idx = ut.make_idx(self.f_ppm, fit_lb, fit_ub)
-        mean_params = stats.nanmean(params, 0)
-        self.creatine_auc = self._calc_auc(ut.lorentzian, params)
 
+        # We'll need to generate the model predictions from these parameters,
+        # because what we're holding in 'model' is for both together:
+        self.creatine_model = np.zeros((self.creatine_params.shape[0],
+                                    np.abs(self.cr_idx.stop-self.cr_idx.start)))
+
+        self.choline_model = np.zeros((self.choline_params.shape[0],
+                                    np.abs(self.cr_idx.stop-self.cr_idx.start)))
+        
+        for idx in range(self.creatine_params.shape[0]):
+            self.creatine_model[idx] = ut.lorentzian(self.f_ppm[self.cr_idx],*self.creatine_params[idx])
+            self.choline_model[idx] = ut.lorentzian(self.f_ppm[self.cr_idx],
+                                                    *self.choline_params[idx])
+        self.creatine_signal = signal
+        self.creatine_auc = self._calc_auc(ut.lorentzian, self.creatine_params)
+        self.choline_auc = self._calc_auc(ut.lorentzian, self.choline_params)
 
     def _gaussian_helper(self, reject_outliers, fit_lb, fit_ub, phase_correct):
         """
