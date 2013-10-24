@@ -7,8 +7,6 @@ import MRS.analysis as ana
 import MRS.utils as ut
 import MRS.freesurfer as fs
 
-from scipy import interpolate
-
 class GABA(object):
     """
     Class for analysis of GABA MRS.
@@ -45,17 +43,42 @@ class GABA(object):
                                      [1,2,3,4,5,0]).squeeze()
 
         w_data, w_supp_data = ana.coil_combine(self.raw_data)
-        # We keep these around for reference, as private attrs
+        f_hz, w_supp_spectra = ana.get_spectra(w_supp_data,
+                                           line_broadening=line_broadening,
+                                           zerofill=zerofill,
+                                           filt_method=filt_method)
+
+        self.w_supp_spectra = w_supp_spectra
+
+        # Often, there will be some small offset from the on-resonance
+        # frequency, which we can correct for. We fit a Lorentzian to each of
+        # the spectra from the water-suppressed data, so that we can get a
+        # phase-corrected estimate of the frequeny shift, instead of just
+        # relying on the frequency of the maximum:
+        self.w_supp_lorentz = np.zeros(w_supp_spectra.shape[:-1] + (6,))
+        for ii in range(self.w_supp_lorentz.shape[0]):
+            for jj in range(self.w_supp_lorentz.shape[1]):
+                self.w_supp_lorentz[ii,jj]=\
+                    ana._do_lorentzian_fit(f_hz, w_supp_spectra[ii,jj])
+
+        # We store the frequency offset for each transient/echo:
+        self.freq_offset = self.w_supp_lorentz[..., 0]
+
+        # But for now, we average over all the transients/echos for the
+        # correction: 
+        mean_freq_offset = np.mean(self.w_supp_lorentz[..., 0])
+        f_hz = f_hz - mean_freq_offset
+    
         self.water_fid = w_data
         self.w_supp_fid = w_supp_data
         # This is the time-domain signal of interest, combined over coils:
         self.data = ana.subtract_water(w_data, w_supp_data)
 
-        f_hz, spectra = ana.get_spectra(self.data,
-                                           line_broadening=line_broadening,
-                                           zerofill=zerofill,
-                                           filt_method=filt_method)
-                                           
+        _, spectra = ana.get_spectra(self.data,
+                                     line_broadening=line_broadening,
+                                     zerofill=zerofill,
+                                     filt_method=filt_method)
+
         self.f_hz = f_hz
         # Convert from Hz to ppm and extract the part you are interested in.
         f_ppm = ut.freq_to_ppm(self.f_hz)
@@ -65,78 +88,15 @@ class GABA(object):
         self.f_ppm = f_ppm
     
         # The first echo (off-resonance) is in the first output 
-        self.echo_on = spectra[:, 0]
+        self.echo_on = spectra[:, 1]
         # The on-resonance is in the second:
-        self.echo_off = spectra[:, 1]
+        self.echo_off = spectra[:, 0]
 
         # Calculate sum and difference:
         self.diff_spectra = self.echo_off - self.echo_on
         self.sum_spectra = self.echo_off + self.echo_on
 
-#    def naa_correct(self):
-#
-#        """
-#        This function resets the fits and corrects shifts in the spectra.
-#        It uses uses the NAA peak at 2.0ppm as a guide to replaces the existing
-#        f_ppm values! 
-#        """
-#        self.reset_fits()
-#
-#        # calculate diff
-#        diff = np.mean(self.diff_spectra, 0)
-#        # find index of NAA peak in diff spectrum, that is between 3 and 1ppm
-#        temp_diff = np.mean(self.diff_spectra, 0)
-#        temp_diff[slice(0,np.min(np.where(self.f_ppm<3)))]=0
-#        temp_diff[np.max(np.where(self.f_ppm>1)):]=0 
-#        idx = np.argmin(temp_diff)
-#        adjust_by=(float(idx)/len(diff))*(np.max(self.f_ppm)-
-#                                          np.min(self.f_ppm))
-#        NAA_ppm = np.max(self.f_ppm)-adjust_by 
-#        
-#        # determine how far spectrum is shifted
-#        NAA_shift = 2.0-NAA_ppm
-#        
-#        # correct
-#        self.f_ppm = self.f_ppm + NAA_shift
-#
-#        # tag as corrected
-#        self.naa_corrected = True
-#        
-#    def baseline_correct(self):
-#
-#        """
-#        This function zeroes the baseline from 2.5ppm upwards 
-#       
-#        """
-#        # define ppm ranges that are known to be at baseline, get indices
-#        baseidx =[]
-#        baseidx.extend(range(np.min(np.where(self.f_ppm<5.0)),np.max(np.where(self.f_ppm>4.0))+1))
-#        baseidx.extend(range(np.min(np.where(self.f_ppm<3.5)),np.max(np.where(self.f_ppm>3.2))+1))
-#        baseidx.extend(range(np.min(np.where(self.f_ppm<2.8)),np.max(np.where(self.f_ppm>2.5))+1))
-#
-#        self.diff = np.mean(self.diff_spectra,0)
-#        # find x and y values at those indices
-#        yArr=np.real(self.diff[baseidx])
-#        baseppm = self.f_ppm[baseidx]
-#        # filter out anything above the new max
-#        adjbaseppm =[baseppm[i] for i in np.where(baseppm<=np.max(self.f_ppm))[0]]
-#        
-#        # spline
-#        f = interpolate.interp1d(adjbaseppm[::-1], yArr[::-1], kind='linear', bounds_error=True, fill_value=0)
-#        
-#        fitidxmax = np.where(self.f_ppm<np.max(adjbaseppm))[0]
-#        fitidxmin = np.where(self.f_ppm>np.min(adjbaseppm))[0]
-#        fitidx = list(set(fitidxmax) & set(fitidxmin))
-#        
-#        basefit = f(self.f_ppm[fitidx])#[::-1]
-#        adjusted = self.diff[fitidx]-basefit#[::-1]
-#
-#        self.diff_corrected = self.diff
-#        self.diff_corrected[fitidx] = adjusted
-#        
-#        # tag as corrected
-#        self.baseline_corrected = True
-#
+        
     def reset_fits(self):
         """
         This is used to restore the original state of the fits.
@@ -236,10 +196,10 @@ class GABA(object):
         return model, signal, params, ii
 
         
-    def fit_creatine(self, reject_outliers=3.0, fit_lb=2.7, fit_ub=3.2):
+    def fit_creatine(self, reject_outliers=3.0, fit_lb=2.7, fit_ub=3.5):
         """
         Fit a model to the portion of the summed spectra containing the
-        creatine signal.
+        creatine and choline signals.
 
         Parameters
         ----------
@@ -249,7 +209,7 @@ class GABA(object):
 
         fit_lb, fit_ub : float
            What part of the spectrum (in ppm) contains the creatine peak.
-           Default (2.7, 3.1)
+           Default (2.7, 3.5)
 
         Note
         ----
@@ -260,10 +220,12 @@ class GABA(object):
         conference poster.
 
         """
-        model, signal, params = ana.fit_lorentzian(self.sum_spectra,
-                                                   self.f_ppm,
-                                                   lb=fit_lb,
-                                                   ub=fit_ub)
+        # We fit a two-lorentz function to this entire chunk of the spectrum,
+        # to catch both choline and creatine
+        model, signal, params = ana.fit_two_lorentzian(self.sum_spectra,
+                                                       self.f_ppm,
+                                                       lb=fit_lb,
+                                                       ub=fit_ub)
 
         # Use an array of ones to index everything but the outliers and nans:
         ii = np.ones(signal.shape[0], dtype=bool)
@@ -275,15 +237,31 @@ class GABA(object):
                                                                 ii)
             
         # We'll keep around a private attribute to tell us which transients
-        # were good:
+        # were good (this is for both creatine and choline):
         self._cr_transients = np.where(ii)
-        self.creatine_model = model
-        self.creatine_signal = signal
-        self.creatine_params = params
+        
+        # Now we separate choline and creatine params from each other (remember
+        # that they both share offset and drift!):
+        self.creatine_params = params[:, (0,2,4,6,8,9)]
+        self.choline_params = params[:, (1,3,5,7,8,9)]
+        
         self.cr_idx = ut.make_idx(self.f_ppm, fit_lb, fit_ub)
-        mean_params = stats.nanmean(params, 0)
-        self.creatine_auc = self._calc_auc(ut.lorentzian, params)
 
+        # We'll need to generate the model predictions from these parameters,
+        # because what we're holding in 'model' is for both together:
+        self.creatine_model = np.zeros((self.creatine_params.shape[0],
+                                    np.abs(self.cr_idx.stop-self.cr_idx.start)))
+
+        self.choline_model = np.zeros((self.choline_params.shape[0],
+                                    np.abs(self.cr_idx.stop-self.cr_idx.start)))
+        
+        for idx in range(self.creatine_params.shape[0]):
+            self.creatine_model[idx] = ut.lorentzian(self.f_ppm[self.cr_idx],*self.creatine_params[idx])
+            self.choline_model[idx] = ut.lorentzian(self.f_ppm[self.cr_idx],
+                                                    *self.choline_params[idx])
+        self.creatine_signal = signal
+        self.creatine_auc = self._calc_auc(ut.lorentzian, self.creatine_params)
+        self.choline_auc = self._calc_auc(ut.lorentzian, self.choline_params)
 
     def _gaussian_helper(self, reject_outliers, fit_lb, fit_ub, phase_correct):
         """
@@ -402,25 +380,25 @@ class GABA(object):
 
 
     def est_gaba_conc(self):
-	"""
-	Estimate gaba concentration based on equation adapted from Sanacora
-	1999, p1045
+        """
+        Estimate gaba concentration based on equation adapted from Sanacora
+        1999, p1045
 
-	Ref: Sanacora, G., Mason, G. F., Rothman, D. L., Behar, K. L., Hyder,
-	F., Petroff, O. A., ... & Krystal, J. H. (1999). Reduced cortical
-	$\gamma$-aminobutyric acid levels in depressed patients determined by
-	proton magnetic resonance spectroscopy. Archives of general psychiatry,
-	56(11), 1043.
+        Ref: Sanacora, G., Mason, G. F., Rothman, D. L., Behar, K. L., Hyder,
+        F., Petroff, O. A., ... & Krystal, J. H. (1999). Reduced cortical
+        $\gamma$-aminobutyric acid levels in depressed patients determined by
+        proton magnetic resonance spectroscopy. Archives of general psychiatry,
+        56(11), 1043.
 
-	"""
-	# need gaba_auc and creatine_auc
-	if not hasattr(self, 'gaba_params'):
-	    self.fit_gaba()
+        """
+        # need gaba_auc and creatine_auc
+        if not hasattr(self, 'gaba_params'):
+            self.fit_gaba()
 
-	# estimate [GABA] according to equation9
-	gaba_conc_est = self.gaba_auc / self.creatine_auc * 1.5 * 9.0
-	
-	self.gaba_conc_est = gaba_conc_est
+        # estimate [GABA] according to equation9
+        gaba_conc_est = self.gaba_auc / self.creatine_auc * 1.5 * 9.0
+        
+        self.gaba_conc_est = gaba_conc_est
 
 
     def voxel_seg(self, segfile, MRSfile):
@@ -501,4 +479,3 @@ class SingleVoxel(object):
         self.idx = slice(idx1, idx0)
         self.f_ppm = f_ppm
         self.spectra = spectra[:,self.idx]
-    
