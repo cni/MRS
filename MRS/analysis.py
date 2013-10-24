@@ -500,3 +500,5 @@ def simple_auc(spectrum, f_ppm, center=3.00, bandwidth=0.30):
 
    return auc, ub, lb   
 
+
+

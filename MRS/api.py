@@ -7,6 +7,8 @@ import MRS.analysis as ana
 import MRS.utils as ut
 import MRS.freesurfer as fs
 
+from scipy import interpolate
+
 class GABA(object):
     """
     Class for analysis of GABA MRS.
@@ -71,29 +73,70 @@ class GABA(object):
         self.diff_spectra = self.echo_off - self.echo_on
         self.sum_spectra = self.echo_off + self.echo_on
 
-    def naa_correct(self):
-
-        """
-        This function resets the fits and corrects shifts in the spectra.
-        It uses uses the NAA peak at 2.0ppm as a guide to replaces the existing
-        f_ppm values! 
-        """
-        self.reset_fits()
-
-        # calculate diff
-        diff = np.mean(self.diff_spectra, 0)
-        # find index of NAA peak in diff spectrum
-        idx = np.argmin(diff)
-        adjust_by=(float(idx)/len(diff))*(np.max(self.f_ppm)-
-                                          np.min(self.f_ppm))
-        NAA_ppm = np.max(self.f_ppm)-adjust_by 
-        
-        # determine how far spectrum is shifted
-        NAA_shift = 2.0-NAA_ppm
-        
-        # correct
-        self.f_ppm = self.f_ppm + NAA_shift
-        
+#    def naa_correct(self):
+#
+#        """
+#        This function resets the fits and corrects shifts in the spectra.
+#        It uses uses the NAA peak at 2.0ppm as a guide to replaces the existing
+#        f_ppm values! 
+#        """
+#        self.reset_fits()
+#
+#        # calculate diff
+#        diff = np.mean(self.diff_spectra, 0)
+#        # find index of NAA peak in diff spectrum, that is between 3 and 1ppm
+#        temp_diff = np.mean(self.diff_spectra, 0)
+#        temp_diff[slice(0,np.min(np.where(self.f_ppm<3)))]=0
+#        temp_diff[np.max(np.where(self.f_ppm>1)):]=0 
+#        idx = np.argmin(temp_diff)
+#        adjust_by=(float(idx)/len(diff))*(np.max(self.f_ppm)-
+#                                          np.min(self.f_ppm))
+#        NAA_ppm = np.max(self.f_ppm)-adjust_by 
+#        
+#        # determine how far spectrum is shifted
+#        NAA_shift = 2.0-NAA_ppm
+#        
+#        # correct
+#        self.f_ppm = self.f_ppm + NAA_shift
+#
+#        # tag as corrected
+#        self.naa_corrected = True
+#        
+#    def baseline_correct(self):
+#
+#        """
+#        This function zeroes the baseline from 2.5ppm upwards 
+#       
+#        """
+#        # define ppm ranges that are known to be at baseline, get indices
+#        baseidx =[]
+#        baseidx.extend(range(np.min(np.where(self.f_ppm<5.0)),np.max(np.where(self.f_ppm>4.0))+1))
+#        baseidx.extend(range(np.min(np.where(self.f_ppm<3.5)),np.max(np.where(self.f_ppm>3.2))+1))
+#        baseidx.extend(range(np.min(np.where(self.f_ppm<2.8)),np.max(np.where(self.f_ppm>2.5))+1))
+#
+#        self.diff = np.mean(self.diff_spectra,0)
+#        # find x and y values at those indices
+#        yArr=np.real(self.diff[baseidx])
+#        baseppm = self.f_ppm[baseidx]
+#        # filter out anything above the new max
+#        adjbaseppm =[baseppm[i] for i in np.where(baseppm<=np.max(self.f_ppm))[0]]
+#        
+#        # spline
+#        f = interpolate.interp1d(adjbaseppm[::-1], yArr[::-1], kind='linear', bounds_error=True, fill_value=0)
+#        
+#        fitidxmax = np.where(self.f_ppm<np.max(adjbaseppm))[0]
+#        fitidxmin = np.where(self.f_ppm>np.min(adjbaseppm))[0]
+#        fitidx = list(set(fitidxmax) & set(fitidxmin))
+#        
+#        basefit = f(self.f_ppm[fitidx])#[::-1]
+#        adjusted = self.diff[fitidx]-basefit#[::-1]
+#
+#        self.diff_corrected = self.diff
+#        self.diff_corrected[fitidx] = adjusted
+#        
+#        # tag as corrected
+#        self.baseline_corrected = True
+#
     def reset_fits(self):
         """
         This is used to restore the original state of the fits.

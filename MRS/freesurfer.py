@@ -167,7 +167,7 @@ def MRSvoxelStats(segfile, MRSfile=None, center=None, dim=None, subjID=None,
         mrs_aff[0,3]=tmp[1,3]
         mrs_aff[1,3]=-1.0*tmp[0,3]
         
-        # This appliese the concatenation of the transforms from mrs space to
+        # This applies the concatenation of the transforms from mrs space to
         # the T1 space. [0,0,0] is the center of the MRS voxel:
         center = np.round(np.dot(np.dot(np.linalg.pinv(aseg_aff), mrs_aff),
                                  [0,0,0,1]))[:3].astype(int)
