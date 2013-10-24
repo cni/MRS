@@ -66,7 +66,7 @@ def motioncheck(ref_file, end_file, thres=5.0):
     mcflt = fsl.MCFLIRT(in_file=in_file, ref_file=ref_file, save_mats=True,cost='mutualinfo')
     res = mcflt.run() 
 
-   # print 'realignment affine matrix saved in mat_file: '+res.outputs.mat_file
+    print 'realignment affine matrix saved in mat_file: '+res.outputs.mat_file
 
     aff_file=res.outputs.mat_file
     aff = np.loadtxt(aff_file, dtype=float)
@@ -80,9 +80,5 @@ def motioncheck(ref_file, end_file, thres=5.0):
     else:
         passed=True
 
-    #cleanup
-    os.remove(ref_file)
-    os.remove(in_file)
-    os.remove(mat_file)
 
     return rms,passed
