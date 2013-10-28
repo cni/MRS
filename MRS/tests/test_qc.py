@@ -14,5 +14,5 @@ def test_motion():
 
     # cleanup
     os.remove(ref_file)
-    os.remove(in_file)
+    os.remove(end_file)
 
