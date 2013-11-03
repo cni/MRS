@@ -380,25 +380,25 @@ class GABA(object):
 
 
     def est_gaba_conc(self):
-	"""
-	Estimate gaba concentration based on equation adapted from Sanacora
-	1999, p1045
+        """
+        Estimate gaba concentration based on equation adapted from Sanacora
+        1999, p1045
 
-	Ref: Sanacora, G., Mason, G. F., Rothman, D. L., Behar, K. L., Hyder,
-	F., Petroff, O. A., ... & Krystal, J. H. (1999). Reduced cortical
-	$\gamma$-aminobutyric acid levels in depressed patients determined by
-	proton magnetic resonance spectroscopy. Archives of general psychiatry,
-	56(11), 1043.
+        Ref: Sanacora, G., Mason, G. F., Rothman, D. L., Behar, K. L., Hyder,
+        F., Petroff, O. A., ... & Krystal, J. H. (1999). Reduced cortical
+        $\gamma$-aminobutyric acid levels in depressed patients determined by
+        proton magnetic resonance spectroscopy. Archives of general psychiatry,
+        56(11), 1043.
 
-	"""
-	# need gaba_auc and creatine_auc
-	if not hasattr(self, 'gaba_params'):
-	    self.fit_gaba()
+        """
+        # need gaba_auc and creatine_auc
+        if not hasattr(self, 'gaba_params'):
+            self.fit_gaba()
 
-	# estimate [GABA] according to equation9
-	gaba_conc_est = self.gaba_auc / self.creatine_auc * 1.5 * 9.0
-	
-	self.gaba_conc_est = gaba_conc_est
+        # estimate [GABA] according to equation9
+        gaba_conc_est = self.gaba_auc / self.creatine_auc * 1.5 * 9.0
+        
+        self.gaba_conc_est = gaba_conc_est
 
 
     def voxel_seg(self, segfile, MRSfile):
@@ -479,4 +479,3 @@ class SingleVoxel(object):
         self.idx = slice(idx1, idx0)
         self.f_ppm = f_ppm
         self.spectra = spectra[:,self.idx]
-    

@@ -11,3 +11,8 @@ def test_motion():
     test motion detection
     """
     qcres=qc.motioncheck(ref_file,end_file, thres=5.0)
+
+    # cleanup
+    os.remove(ref_file)
+    os.remove(end_file)
+
