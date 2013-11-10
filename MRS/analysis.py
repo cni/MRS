@@ -175,8 +175,8 @@ def coil_combine(data, w_idx=[1,2,3], coil_dim=2, sampling_rate=5000.):
     return weighted_w_data.squeeze(), weighted_w_supp_data.squeeze()
 
 
-def get_spectra(data, filt_method = dict(lb=0.1, filt_order=256),
-                spect_method=dict(NFFT=1024, n_overlap=1023, BW=2),
+def get_spectra(data, filt_method=dict(lb=0.1, filt_order=256),
+                spectrum_method=dict(algorithm='fft'),
                 phase_zero=None, line_broadening=None, zerofill=None):
     """
     Derive the spectra from MRS data
@@ -192,8 +192,21 @@ def get_spectra(data, filt_method = dict(lb=0.1, filt_order=256),
         Details for the filtering method. A FIR zero phase-delay method is used
         with parameters set according to these parameters
         
-    spect_method : dict
-        Details for the spectral analysis. Per default, we use 
+     spectrum_method : dict
+         To set the spectral analysis method used, pass a dict with
+         parameters :
+
+         algorithm : 'fft', 'periodogram', 'multi_taper' Which run an
+         apodized FFT-based, a periodogram, or a multi-taper based spectral
+         analysis. Set to 'fft' per default.
+
+         NFFT : For algorithms other than 'fft', sets the NFFT for the
+         windowing function.
+
+         n_overlap : For algorithms other than 'fft', sets the overlap
+         between windowing functions.
+
+         BW : For 'multi_taper', sets the bandwidth.
 
     line_broadening : float
         Linewidth for apodization (in Hz).
@@ -231,14 +244,21 @@ def get_spectra(data, filt_method = dict(lb=0.1, filt_order=256),
         filtered = nta.FilterAnalyzer(data, **filt_method).fir
     else:
         filtered = data
-    if line_broadening is not None: 
+
+    # Check the value of the algorithm and pop it out of here:
+    algo = spectrum_method.pop('algorithm', None)
+    if algo is None:
+        algo = 'fft'
+
+    if line_broadening is not None:
        lbr_time = line_broadening * np.pi  # Conversion from Hz to
-                                           # time-constant, see Keeler page 94 
+                                           # time-constant, see Keeler page
+                                           # 94
     else:
        lbr_time = 0
 
     apodized = ut.line_broadening(filtered, lbr_time)
-   
+
     if zerofill is not None:
          new_apodized = np.concatenate([apodized.data,
                     np.zeros(apodized.shape[:-1] + (zerofill,))], -1)
@@ -246,18 +266,34 @@ def get_spectra(data, filt_method = dict(lb=0.1, filt_order=256),
          apodized = nt.TimeSeries(new_apodized,
                                   sampling_rate=apodized.sampling_rate)
 
-    S = nta.SpectralAnalyzer(apodized,
-                             method=dict(NFFT=spect_method['NFFT'],
-                                         n_overlap=spect_method['n_overlap']),
-                             BW=spect_method['BW'])
-    
-    f, c = S.spectrum_fourier
+
+    # Handle different options for the spectral method dict:
+    if len(spectrum_method.keys())==0:
+       method = None
+    else:
+       method = spectrum_method
+
+    if spectrum_method.has_key('BW'):
+       BW = method.pop('BW')
+    else:
+       BW = None
+
+    S = nta.SpectralAnalyzer(apodized, method=method, BW=BW)
+
+    # Now do it:
+    if algo == 'fft':
+       f, c = S.spectrum_fourier
+    elif algo == 'multi_taper':
+       f, c = S.spectrum_multi_taper
+    elif algo == 'periodogram':
+       f, c = S.periodogram
 
     return f, c
 
 def subtract_water(w_sig, w_supp_sig):
     """
-    Subtract the residual water signal from the 
+    Subtract the residual water signal from the water-suppressed measurement.
+
     Normalize the water-suppressed signal by the signal that is not
     water-suppressed, to get rid of the residual water peak.
 
@@ -280,8 +316,8 @@ def subtract_water(w_sig, w_supp_sig):
     mean_water = np.mean(w_sig, 0)
 
     scale_factor = water_only/mean_nw
-
     corrected = w_supp_sig - water_only/scale_factor[...,0,np.newaxis]
+    
     return corrected
 
 
