@@ -307,12 +307,12 @@ def fit_lorentzian(spectra, f_ppm, lb=2.6, ub=3.6):
    n_points = np.abs(idx.stop - idx.start) 
    n_params = 6
    # Set the bounds for the optimization
-   bounds = [(lb,ub),
-             (0,None),
-             (0,None),
-             (-np.pi, np.pi),
-             (None,None),
-             (None, None)]
+   bounds = [(lb,ub), #peak
+             (0,None), #area
+             (0,None), #hwhm
+             (-np.pi, np.pi), #phase
+             (None,None), #offset
+             (None, None)] #drift
 
    model = np.empty((spectra.shape[0], n_points))
    signal = np.empty((spectra.shape[0], n_points))
@@ -384,16 +384,16 @@ def fit_two_lorentzian(spectra, f_ppm, lb=2.6, ub=3.6):
    n_points = np.abs(idx.stop - idx.start) 
    n_params = 10 # Lotsa params!
    # Set the bounds for the optimization
-   bounds = [(lb,ub),
-             (lb,ub),
-             (0,None),
-             (0,None),
-             (0,None),
-             (0,None),
-             (-np.pi, np.pi),
-             (-np.pi, np.pi),
-             (None,None),
-             (None, None)]
+   bounds = [(lb,ub), #peak1 
+             (lb,ub), #peak2 
+             (0,None), #area1 
+             (0,None), #area2 
+             (0,ub-lb), #hwhm1 
+             (0,ub-lb), #hwhm2
+             (-np.pi, np.pi), #phase
+             (-np.pi, np.pi), #phase
+             (None,None), #offset
+             (None, None)] #drift 
 
    model = np.empty((spectra.shape[0], n_points))
    signal = np.empty((spectra.shape[0], n_points))
@@ -512,7 +512,7 @@ def fit_gaussian(spectra, f_ppm, lb=2.6, ub=3.6):
              (0,None), # sigma
              (0,None), # amp
              (None, None), # offset
-             (None, None)  # rift
+             (None, None)  # drift
              ]
 
    model = np.empty((spectra.shape[0], n_points))
