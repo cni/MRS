@@ -53,7 +53,7 @@ class GABA(object):
         # Often, there will be some small offset from the on-resonance
         # frequency, which we can correct for. We fit a Lorentzian to each of
         # the spectra from the water-suppressed data, so that we can get a
-        # phase-corrected estimate of the frequeny shift, instead of just
+        # phase-corrected estimate of the frequency shift, instead of just
         # relying on the frequency of the maximum:
         self.w_supp_lorentz = np.zeros(w_supp_spectra.shape[:-1] + (6,))
         for ii in range(self.w_supp_lorentz.shape[0]):
@@ -87,10 +87,8 @@ class GABA(object):
         self.idx = slice(idx1, idx0)
         self.f_ppm = f_ppm
     
-        # The first echo (off-resonance) is in the first output 
-        self.echo_off = spectra[:, 0]
-        # The on-resonance is in the second:
-        self.echo_on = spectra[:, 1]
+        self.echo_off = spectra[:, 1]
+        self.echo_on = spectra[:, 0]
 
         # Calculate sum and difference:
         self.diff_spectra = self.echo_on - self.echo_off

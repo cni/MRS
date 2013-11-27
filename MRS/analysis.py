@@ -434,6 +434,8 @@ def _do_two_lorentzian_fit(freqs, signal, bounds=None):
    max_idx = local_max_idx[np.argsort(r_signal[local_max_idx])[::-1][:2]]
    # We sort again, so that we can try to get the first one to be the left peak:
    max_idx = np.sort(max_idx)
+   if len(max_idx)==1:
+      max_idx = [max_idx[0], max_idx[0]]
    # And thusly: 
    max_idx_1 = max_idx[0]
    max_idx_2 = max_idx[1]
@@ -476,10 +478,18 @@ def _do_two_lorentzian_fit(freqs, signal, bounds=None):
    w = (ut.gaussian(freqs, initial_f0_1, 0.075, 1, 0, 0) +
         ut.gaussian(freqs, initial_f0_2, 0.075, 1, 0, 0))
 
+   # Further, we want to also optimize on the individual lorentzians error, to
+   # restrict the fit space a bit more. For this purpose, we will pass a list
+   # of lorentzians with indices into the parameter list, so that we can do
+   # that (see mopt.err_func for the mechanics).
+   func_list = [[ut.lorentzian, [0,2,4,6,8,9],
+                 ut.gaussian(freqs, initial_f0_1, 0.075, 1, 0, 0)],
+                [ut.lorentzian, [1,3,5,7,8,9],
+                 ut.gaussian(freqs, initial_f0_2, 0.075, 1, 0, 0)]]
 
    params, _ = lsq.leastsqbound(mopt.err_func, initial,
                                 args=(freqs, np.real(signal),
-                                ut.two_lorentzian, w),
+                                ut.two_lorentzian, w, func_list),
                                 bounds=bounds)
    return params
 
