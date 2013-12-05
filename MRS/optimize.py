@@ -2,7 +2,7 @@
 Functions for optimization and fitting
 """
 
-def err_func(params, x, y, func, w=None):
+def err_func(params, x, y, func, w=None, func_list=None):
         """
         Error function for fitting a function
         
@@ -21,11 +21,14 @@ def err_func(params, x, y, func, w=None):
         
         func : function
             A function with inputs: `(x, *params)`
-
+           
 	w : ndarray
             A weighting function. Allows emphasizing certain parts of the
             original function. Should have the same length as x/y.
-	
+
+        func_list : dict
+           dict of callables, each with it's own set of indices into the params
+
         Returns
         -------
         The marginals of the fit to x/y given the params.
@@ -36,5 +39,14 @@ def err_func(params, x, y, func, w=None):
 	
 	if w is not None:
 	    err = err * w
+
+        if func_list is not None:
+            err2 = 0
+            for f in func_list: 
+                this_err = (y - f[0](x, *[params[ii] for ii in f[1]]))
+                if f[2] is not None:
+                    this_err = this_err * f[2]
+                err2 = err2 + this_err 
+            err = err2 + err
 
 	return err

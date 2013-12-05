@@ -163,9 +163,9 @@ def MRSvoxelStats(segfile, MRSfile=None, center=None, dim=None, subjID=None,
         mrs = nib.load(MRSfile)
         mrs_data = mrs.get_data().squeeze()
         mrs_aff = mrs.get_affine()
-        tmp=mrs_aff.copy()
-        mrs_aff[0,3]=tmp[1,3]
-        mrs_aff[1,3]=-1.0*tmp[0,3]
+        #tmp=mrs_aff.copy()
+        #mrs_aff[0,3]=tmp[1,3]
+        #mrs_aff[1,3]=-1.0*tmp[0,3]
         
         # This applies the concatenation of the transforms from mrs space to
         # the T1 space. [0,0,0] is the center of the MRS voxel:

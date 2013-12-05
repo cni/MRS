@@ -53,7 +53,7 @@ class GABA(object):
         # Often, there will be some small offset from the on-resonance
         # frequency, which we can correct for. We fit a Lorentzian to each of
         # the spectra from the water-suppressed data, so that we can get a
-        # phase-corrected estimate of the frequeny shift, instead of just
+        # phase-corrected estimate of the frequency shift, instead of just
         # relying on the frequency of the maximum:
         self.w_supp_lorentz = np.zeros(w_supp_spectra.shape[:-1] + (6,))
         for ii in range(self.w_supp_lorentz.shape[0]):
@@ -87,13 +87,11 @@ class GABA(object):
         self.idx = slice(idx1, idx0)
         self.f_ppm = f_ppm
     
-        # The first echo (off-resonance) is in the first output 
-        self.echo_on = spectra[:, 1]
-        # The on-resonance is in the second:
-        self.echo_off = spectra[:, 0]
+        self.echo_off = spectra[:, 1]
+        self.echo_on = spectra[:, 0]
 
         # Calculate sum and difference:
-        self.diff_spectra = self.echo_off - self.echo_on
+        self.diff_spectra = self.echo_on - self.echo_off
         self.sum_spectra = self.echo_off + self.echo_on
 
         
@@ -242,17 +240,17 @@ class GABA(object):
         
         # Now we separate choline and creatine params from each other (remember
         # that they both share offset and drift!):
-        self.creatine_params = params[:, (0,2,4,6,8,9)]
-        self.choline_params = params[:, (1,3,5,7,8,9)]
+        self.choline_params = params[:, (0,2,4,6,8,9)]
+        self.creatine_params = params[:, (1,3,5,7,8,9)]
         
         self.cr_idx = ut.make_idx(self.f_ppm, fit_lb, fit_ub)
 
         # We'll need to generate the model predictions from these parameters,
         # because what we're holding in 'model' is for both together:
-        self.creatine_model = np.zeros((self.creatine_params.shape[0],
+        self.choline_model = np.zeros((self.creatine_params.shape[0],
                                     np.abs(self.cr_idx.stop-self.cr_idx.start)))
 
-        self.choline_model = np.zeros((self.choline_params.shape[0],
+        self.creatine_model = np.zeros((self.choline_params.shape[0],
                                     np.abs(self.cr_idx.stop-self.cr_idx.start)))
         
         for idx in range(self.creatine_params.shape[0]):

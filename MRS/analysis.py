@@ -307,12 +307,12 @@ def fit_lorentzian(spectra, f_ppm, lb=2.6, ub=3.6):
    n_points = np.abs(idx.stop - idx.start) 
    n_params = 6
    # Set the bounds for the optimization
-   bounds = [(lb,ub),
-             (0,None),
-             (0,None),
-             (-np.pi, np.pi),
-             (None,None),
-             (None, None)]
+   bounds = [(lb,ub), #peak
+             (0,None), #area
+             (0,None), #hwhm
+             (-np.pi, np.pi), #phase
+             (None,None), #offset
+             (None, None)] #drift
 
    model = np.empty((spectra.shape[0], n_points))
    signal = np.empty((spectra.shape[0], n_points))
@@ -384,16 +384,16 @@ def fit_two_lorentzian(spectra, f_ppm, lb=2.6, ub=3.6):
    n_points = np.abs(idx.stop - idx.start) 
    n_params = 10 # Lotsa params!
    # Set the bounds for the optimization
-   bounds = [(lb,ub),
-             (lb,ub),
-             (0,None),
-             (0,None),
-             (0,None),
-             (0,None),
-             (-np.pi, np.pi),
-             (-np.pi, np.pi),
-             (None,None),
-             (None, None)]
+   bounds = [(lb,ub), #peak1 
+             (lb,ub), #peak2 
+             (0,None), #area1 
+             (0,None), #area2 
+             (0,ub-lb), #hwhm1 
+             (0,ub-lb), #hwhm2
+             (-np.pi, np.pi), #phase
+             (-np.pi, np.pi), #phase
+             (None,None), #offset
+             (None, None)] #drift 
 
    model = np.empty((spectra.shape[0], n_points))
    signal = np.empty((spectra.shape[0], n_points))
@@ -434,6 +434,8 @@ def _do_two_lorentzian_fit(freqs, signal, bounds=None):
    max_idx = local_max_idx[np.argsort(r_signal[local_max_idx])[::-1][:2]]
    # We sort again, so that we can try to get the first one to be the left peak:
    max_idx = np.sort(max_idx)
+   if len(max_idx)==1:
+      max_idx = [max_idx[0], max_idx[0]]
    # And thusly: 
    max_idx_1 = max_idx[0]
    max_idx_2 = max_idx[1]
@@ -476,10 +478,18 @@ def _do_two_lorentzian_fit(freqs, signal, bounds=None):
    w = (ut.gaussian(freqs, initial_f0_1, 0.075, 1, 0, 0) +
         ut.gaussian(freqs, initial_f0_2, 0.075, 1, 0, 0))
 
+   # Further, we want to also optimize on the individual lorentzians error, to
+   # restrict the fit space a bit more. For this purpose, we will pass a list
+   # of lorentzians with indices into the parameter list, so that we can do
+   # that (see mopt.err_func for the mechanics).
+   func_list = [[ut.lorentzian, [0,2,4,6,8,9],
+                 ut.gaussian(freqs, initial_f0_1, 0.075, 1, 0, 0)],
+                [ut.lorentzian, [1,3,5,7,8,9],
+                 ut.gaussian(freqs, initial_f0_2, 0.075, 1, 0, 0)]]
 
    params, _ = lsq.leastsqbound(mopt.err_func, initial,
                                 args=(freqs, np.real(signal),
-                                ut.two_lorentzian, w),
+                                ut.two_lorentzian, w, func_list),
                                 bounds=bounds)
    return params
 
@@ -512,7 +522,7 @@ def fit_gaussian(spectra, f_ppm, lb=2.6, ub=3.6):
              (0,None), # sigma
              (0,None), # amp
              (None, None), # offset
-             (None, None)  # rift
+             (None, None)  # drift
              ]
 
    model = np.empty((spectra.shape[0], n_points))
