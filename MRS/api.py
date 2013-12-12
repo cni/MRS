@@ -132,10 +132,10 @@ class GABA(object):
         self.water_params = params
         self.water_idx = ut.make_idx(self.f_ppm, min_ppm, max_ppm)
         mean_params = stats.nanmean(params, 0)
-        self.water_auc = self._calc_auc(ut.lorentzian, params)
+        self.water_auc = self._calc_auc(ut.lorentzian, params, self.water_idx)
 
 
-    def _calc_auc(self, model, params):
+    def _calc_auc(self, model, params, idx):
         """
         Helper function to calculate the area under the curve of a model
 
@@ -151,6 +151,11 @@ class GABA(object):
             the model function expects after the first (frequency)
             parameter. The second column should control the amplitude of the
             function.
+
+        idx :
+           Indices to the part of the spectrum over which AUC will be
+           calculated.
+
         """
 
 
@@ -162,13 +167,12 @@ class GABA(object):
         delta_f = np.abs(self.f_ppm[1]-self.f_ppm[0])
         p = np.copy(params)
         for t in range(auc.shape[0]):
-            model1 = model(self.f_ppm[self.idx], *p[t])
+            model1 = model(self.f_ppm[idx], *p[t])
             # This controls the amplitude in both the Gaussian and the
             # Lorentzian: 
             p[t, 1] = 0
-            model0 = model(self.f_ppm[self.idx], *p[t])
+            model0 = model(self.f_ppm[idx], *p[t])
             auc[t] = np.sum((model1 - model0) * delta_f)
-
         return auc
 
     def _outlier_rejection(self, params, model, signal, ii):
@@ -258,8 +262,12 @@ class GABA(object):
             self.choline_model[idx] = ut.lorentzian(self.f_ppm[self.cr_idx],
                                                     *self.choline_params[idx])
         self.creatine_signal = signal
-        self.creatine_auc = self._calc_auc(ut.lorentzian, self.creatine_params)
-        self.choline_auc = self._calc_auc(ut.lorentzian, self.choline_params)
+        self.creatine_auc = self._calc_auc(ut.lorentzian,
+                                           self.creatine_params,
+                                           self.cr_idx)
+        self.choline_auc = self._calc_auc(ut.lorentzian,
+                                          self.choline_params,
+                                          self.cr_idx)
 
     def _gaussian_helper(self, reject_outliers, fit_lb, fit_ub, phase_correct):
         """
@@ -357,7 +365,7 @@ class GABA(object):
         self.gaba_params = params
         self.gaba_idx = this_idx
         mean_params = stats.nanmean(params, 0)
-        self.gaba_auc =  self._calc_auc(ut.gaussian, params)
+        self.gaba_auc =  self._calc_auc(ut.gaussian, params, self.gaba_idx)
 
 
     def fit_glx(self, reject_outliers=3.0, fit_lb=3.5, fit_ub=4.5,
@@ -374,7 +382,7 @@ class GABA(object):
         self.glx_params = params
         self.glx_idx = this_idx
         mean_params = stats.nanmean(params, 0)
-        self.glx_auc =  self._calc_auc(ut.gaussian, params)
+        self.glx_auc =  self._calc_auc(ut.gaussian, params, self.glx_idx)
 
 
     def est_gaba_conc(self):
