@@ -17,7 +17,8 @@ def test_get_data():
     Test that the data is the same as the one read using Matlab tools.
 
     """ 
-    matlab_data = sio.loadmat('data.mat', squeeze_me=True)['data']
+    matlab_data = sio.loadmat(os.path.join(test_path, 'data.mat'),
+                              squeeze_me=True)['data']
     mrs_data = np.transpose(nib.load(file_name).get_data(),
                             [1,2,3,4,5,0]).squeeze()
 
