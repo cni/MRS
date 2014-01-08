@@ -86,7 +86,7 @@ def coil_combine(data, w_idx=[1,2,3], coil_dim=2, sampling_rate=5000.):
 
     Notes
     -----
-    Following [Wald1997]_, we compute weights on the different coils based on
+    Following [Hall2013]_, we compute weights on the different coils based on
     the amplitudes and phases of the water peak. The signal from different
     coils is combined as:
 
@@ -99,6 +99,12 @@ def coil_combine(data, w_idx=[1,2,3], coil_dim=2, sampling_rate=5000.):
   
     References
     ----------
+
+    .. [Hall2013] Emma L. Hall, Mary C. Stephenson, Darren Price, Peter
+       G. Morris (2013). Methodology for improved detection of low
+       concentration metabolites in MRS: Optimised combination of signals from 
+       multi-element coil arrays. Neuroimage 86: 35-42.  
+
     .. [Wald1997] Wald, L. and Wright, S. (1997). Theory and application of
        array coils in MR spectroscopy. NMR in Biomedicine, 10: 394-410.
 
@@ -139,20 +145,22 @@ def coil_combine(data, w_idx=[1,2,3], coil_dim=2, sampling_rate=5000.):
 
     # The area parameter stands for the magnitude:
     area_w = params[..., 1]
-    # This is the weighting by SNR (equation 29 in the Wald paper):
-    norm_factor = np.sqrt(np.sum(area_w**2, -1))
-    amp_weight = area_w/norm_factor[...,np.newaxis]
 
+    # In each coil, we derive S/(N^2):
+    s = np.var(area_w.reshape(-1, area_w.shape[-1]), 0)
+    n = np.var(area_w.reshape(-1, area_w.shape[-1]), 0)
+    amp_weight = s/n 
+    # Normalize to sum to 1: 
+    amp_weight = amp_weight / np.sum(amp_weight)    
+    
     # Next, we make sure that all the coils have the same phase. We will use
-    # the phase of the Lorentzian to align the phases: 
-    zero_phi_w = params[..., 3]
+    # the phase of the Lorentzian to align the phases:
+    phase_param = params[..., 3]
+    zero_phi_w = np.mean(phase_param.reshape(-1, phase_param.shape[-1]),0)
 
     # This recalculates the weight with the phase alignment (see page 397 in
     # Wald paper):
     weight = amp_weight * np.exp(-1j * zero_phi_w) 
-
-    # Average across repetitions and echos:
-    final_weight = np.mean(weight, axis=(0,1))
 
     # Multiply each one of the signals by its coil-weights and average across
     # coils:
@@ -160,9 +168,9 @@ def coil_combine(data, w_idx=[1,2,3], coil_dim=2, sampling_rate=5000.):
 
     # Collapse across coils for the combination in both the water 
     weighted_w_data = np.mean(np.fft.ifft(np.fft.fftshift(
-       final_weight[na, na, :, na] * fft_w)), coil_dim)
+       weight[na, na, :, na] * fft_w)), coil_dim)
     weighted_w_supp_data = np.mean(np.fft.ifft(np.fft.fftshift(
-       final_weight[na, na, : ,na] * fft_w_supp)) , coil_dim)
+       weight[na, na, : ,na] * fft_w_supp)) , coil_dim)
 
     # Normalize each series by the sqrt(rms):
     def normalize_this(x):
