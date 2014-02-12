@@ -502,6 +502,124 @@ def _do_two_lorentzian_fit(freqs, signal, bounds=None):
    return params
 
 
+def fit_two_gaussian(spectra, f_ppm, lb=3.5, ub=4.5):
+   """
+   Fit a gaussian function to the difference spectra to be used for estimation of
+   the Glx peak.
+
+   Parameters
+   ----------
+   spectra : array of shape (n_transients, n_points)
+      Typically the difference of the on/off spectra in each transient.
+
+   f_ppm : array
+
+   lb, ub: floats
+      In ppm, the range over which optimization is bounded
+
+   """
+   idx = ut.make_idx(f_ppm, lb, ub)
+   # We are only going to look at the interval between lb and ub
+   n_points = idx.stop - idx.start
+   n_params = 8
+   fit_func = ut.gaussian
+   # Set the bounds for the optimization
+   bounds = [(lb,ub), # peak 1 location
+             (lb,ub), # peak 2 location
+             (0,None), # sigma 1
+             (0,None), # sigma 2
+             (0,None), # amp 1
+             (0,None), # amp 2
+             (None, None), # offset
+             (None, None),  # drift
+             ]
+
+   model = np.empty((spectra.shape[0], n_points))
+   signal = np.empty((spectra.shape[0], n_points))
+   params = np.empty((spectra.shape[0], n_params))
+   for ii, xx in enumerate(spectra):
+      # We fit to the real spectrum:
+      signal[ii] = np.real(xx[idx])
+      params[ii] = _do_two_gaussian_fit(f_ppm[idx], np.real(signal[ii]),
+                                      bounds=bounds)
+
+      model[ii] = fit_func(f_ppm[idx], *params[ii])
+
+   return model, signal, params
+
+
+def _do_two_gaussian_fit(freqs, signal, bounds=None):
+   """
+   Helper function for the two gaussian fit
+   """
+   # Use the signal for a rough estimate of the parameters for initialization:
+   r_signal = np.real(signal)
+   # The local maxima have a zero-crossing in their derivative, so we start by
+   # calculating the derivative:
+   diff_sig = np.diff(r_signal)
+   # We look for indices that have zero-crossings (in the right direction - we
+   # are looking for local maxima, not minima!)
+   local_max_idx = []
+   for ii in range(len(diff_sig)-1):
+      if diff_sig[ii]>0 and diff_sig[ii+1]<0:
+        local_max_idx.append(ii)
+
+   # Array-ify it before moving on:
+   local_max_idx = np.array(local_max_idx)
+   # Our guesses for the location of the interesting local maxima is the two
+   # with the largest signals in them:
+   max_idx = local_max_idx[np.argsort(r_signal[local_max_idx])[::-1][:2]]
+   # We sort again, so that we can try to get the first one to be the left peak:
+   max_idx = np.sort(max_idx)
+   if len(max_idx)==1:
+      max_idx = [max_idx[0], max_idx[0]]
+   # And thusly:
+   max_idx_1 = max_idx[0]
+   max_idx_2 = max_idx[1]
+   # A few of the rest just follow:
+   max_sig_1 = r_signal[max_idx_1]
+   max_sig_2 = r_signal[max_idx_2]
+   initial_f0_1 = freqs[max_idx_1]
+   initial_f0_2 = freqs[max_idx_2]
+   initial_amp_1 = max_sig_1
+   initial_amp_2 = max_sig_2
+   half_max_idx_1 = np.argmin(np.abs(r_signal - max_sig_1/2))
+   half_max_idx_2 = np.argmin(np.abs(r_signal - max_sig_2/2))
+   initial_sigma_1 = np.abs(initial_f0_1 - freqs[half_max_idx_1])
+   initial_sigma_2 = np.abs(initial_f0_2 - freqs[half_max_idx_2])
+   # We only fit one offset and one drift, for both functions together!
+   initial_off = np.min(np.real(signal))
+   initial_drift = 0
+
+   initial = (initial_f0_1,
+              initial_f0_2,
+              initial_sigma_1,
+              initial_sigma_2,
+              initial_amp_1,
+              initial_amp_2,
+              initial_off,
+              initial_drift)
+
+   # We want to preferntially weight the error on estimating the height of the
+   # individual peaks, so we formulate an error-weighting function based on
+   # these peaks, which is simply a two-gaussian bumpety-bump:
+   w = (ut.gaussian(freqs, initial_f0_1, 0.075, 1, 0, 0) +
+        ut.gaussian(freqs, initial_f0_2, 0.075, 1, 0, 0))
+
+   # Further, we want to also optimize on the individual gaussians error, to
+   # restrict the fit space a bit more. For this purpose, we will pass a list
+   # of gaussians with indices into the parameter list, so that we can do
+   # that (see mopt.err_func for the mechanics).
+   func_list = [[ut.gaussian, [freqs,0,2,4,6,7],
+                 ut.gaussian(freqs, initial_f0_1, 0.075, 1, 0, 0)],
+                [ut.gaussian, [freqs,1,3,5,6,7],
+                 ut.gaussian(freqs, initial_f0_2, 0.075, 1, 0, 0)]]
+
+   params, _ = lsq.leastsqbound(mopt.err_func, initial,
+                                args=(freqs, np.real(signal),
+                                ut.two_gaussian, w, func_list),
+                                bounds=bounds)
+   return params
 
 
 def fit_gaussian(spectra, f_ppm, lb=2.6, ub=3.6):

@@ -493,6 +493,19 @@ def gaussian(freq, freq0, sigma, amp, offset, drift):
         return (amp * np.exp(- ((freq - freq0)**2) / (sigma**2) ) +
                 drift * freq + offset)
 
+def two_gaussian(freq, freq0_1, freq0_2, sigma1, sigma2, amp1, amp2,
+                   offset, drift):
+   """
+   A two-Gaussian model.
+
+   This is simply the sum of two gaussian functions in some part of the
+   spectrum. Each individual gaussian has its own peak frequency, sigma,
+   and amp, but they share common offset and drift parameters.
+
+   """
+   return (gaussian(freq, freq0_1, sigma1, amp1, offset, drift) +
+           gaussian(freq, freq0_2, sigma2, amp2, offset, drift))
+
 def make_idx(f, lb, ub):
     """
     This is a little utility function to replace an oft-called set of

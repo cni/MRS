@@ -197,7 +197,8 @@ class GABA(object):
 
         return model, signal, params, ii
 
-        
+
+
     def fit_creatine(self, reject_outliers=3.0, fit_lb=2.7, fit_ub=3.5):
         """
         Fit a model to the portion of the summed spectra containing the
@@ -384,6 +385,105 @@ class GABA(object):
         mean_params = stats.nanmean(params, 0)
         self.glx_auc =  self._calc_auc(ut.gaussian, params, self.glx_idx)
 
+    def fit_naa(self, reject_outliers=3.0, fit_lb=1.8, fit_ub=2.4,
+                 phase_correct=True):
+        """
+        Fit a Gaussian function to the NAA peak at ~ 2 ppm.
+        """
+
+        model, signal, params = ana.fit_lorentzian(self.diff_spectra,
+                                                   self.f_ppm,
+                                                   lb=fit_lb,
+                                                   ub=fit_ub)
+
+        # Store the params:
+        self.naa_model = model
+        self.naa_signal = signal
+        self.naa_params = params
+        self.naa_idx = ut.make_idx(self.f_ppm, fit_lb, fit_ub)
+        mean_params = stats.nanmean(params, 0)
+        self.naa_auc = self._calc_auc(ut.lorentzian, params, self.naa_idx)
+
+
+    def fit_glx2(self, reject_outliers=3.0, fit_lb=3.5, fit_ub=4.5, phase_correct=True):
+        """
+        Fit a model to the portion of the diff spectra containing the
+        glx signal.
+
+        Parameters
+        ----------
+        reject_outliers : float or bool
+           If set to a float, this is the z score threshold for rejection (on
+           any of the parameters). If set to False, no outlier rejection
+
+        fit_lb, fit_ub : float
+           What part of the spectrum (in ppm) contains the creatine peak.
+           Default (3.5, 4.2)
+
+
+        """
+        if not hasattr(self, 'creatine_params'):
+            self.fit_creatine()
+
+        fit_spectra = np.ones(self.diff_spectra.shape) * np.nan
+
+        # Silence warnings:
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            fit_spectra[self._cr_transients] =\
+                self.diff_spectra[self._cr_transients].copy()
+
+        if phase_correct:
+            for ii, this_spec in enumerate(fit_spectra):
+                # Silence warnings:
+                with warnings.catch_warnings():
+                    warnings.simplefilter("ignore")
+                    fit_spectra[ii] = ut.phase_correct_zero(this_spec,
+                                        self.creatine_params[ii, 3])
+
+        # We fit a two-gaussian function to this entire chunk of the spectrum,
+        # to catch both glx peaks
+        model, signal, params = ana.fit_two_gaussian(fit_spectra, self.f_ppm,lb=fit_lb, ub=fit_ub)
+
+        # Use an array of ones to index everything but the outliers and nans:
+        ii = np.ones(signal.shape[0], dtype=bool)
+        # Reject outliers:
+        if reject_outliers:
+            model, signal, params, ii = self._outlier_rejection(params,
+                                                                model,
+                                                                signal,
+                                                                ii)
+
+        # We'll keep around a private attribute to tell us which transients
+        # were good (this is for both creatine and choline):
+        self._glx2_transients = np.where(ii)
+
+        # Now we separate params of the two glx peaks from each other
+        # (remember that they both share offset and drift!):
+        self.glxp1_params = params[:, (0,2,4,6,7)]
+        self.glxp2_params = params[:, (1,3,5,6,7)]
+
+        self.glx2_idx = ut.make_idx(self.f_ppm, fit_lb, fit_ub)
+
+        # We'll need to generate the model predictions from these parameters,
+        # because what we're holding in 'model' is for both together:
+        self.glxp1_model = np.zeros((self.glxp1_params.shape[0],
+                                    np.abs(self.glx2_idx.stop-self.glx2_idx.start)))
+
+        self.glxp2_model = np.zeros((self.glxp2_params.shape[0],
+                                    np.abs(self.glx2_idx.stop-self.glx2_idx.start)))
+
+        for idx in range(self.glxp2_params.shape[0]):
+            self.glxp2_model[idx] = ut.gaussian(self.f_ppm[self.glx2_idx],*self.glxp2_params[idx])
+            self.glxp1_model[idx] = ut.gaussian(self.f_ppm[self.glx2_idx],
+                                                    *self.glxp1_params[idx])
+        self.glxp2_signal = signal
+        self.glxp2_auc = self._calc_auc(ut.gaussian,
+                                           self.glxp2_params,
+                                           self.glx2_idx)
+        self.glxp1_auc = self._calc_auc(ut.gaussian,
+                                          self.glxp1_params,
+                                          self.glx2_idx)
 
     def est_gaba_conc(self):
         """
