@@ -425,21 +425,23 @@ class GABA(object):
         if not hasattr(self, 'creatine_params'):
             self.fit_creatine()
 
-        fit_spectra = np.ones(self.diff_spectra.shape) * np.nan
+#        fit_spectra = np.ones(self.diff_spectra.shape) * np.nan
+#
+#        # Silence warnings:
+#        with warnings.catch_warnings():
+#            warnings.simplefilter("ignore")
+#            fit_spectra[self._cr_transients] =\
+#                self.diff_spectra[self._cr_transients].copy()
+#
+#        if phase_correct:
+#            for ii, this_spec in enumerate(fit_spectra):
+#                # Silence warnings:
+#                with warnings.catch_warnings():
+#                    warnings.simplefilter("ignore")
+#                    fit_spectra[ii] = ut.phase_correct_zero(this_spec,
+#                                        self.creatine_params[ii, 3])
 
-        # Silence warnings:
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")
-            fit_spectra[self._cr_transients] =\
-                self.diff_spectra[self._cr_transients].copy()
-
-        if phase_correct:
-            for ii, this_spec in enumerate(fit_spectra):
-                # Silence warnings:
-                with warnings.catch_warnings():
-                    warnings.simplefilter("ignore")
-                    fit_spectra[ii] = ut.phase_correct_zero(this_spec,
-                                        self.creatine_params[ii, 3])
+        fit_spectra = self.diff_spectra
 
         # We fit a two-gaussian function to this entire chunk of the spectrum,
         # to catch both glx peaks

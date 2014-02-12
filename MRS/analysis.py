@@ -522,7 +522,7 @@ def fit_two_gaussian(spectra, f_ppm, lb=3.5, ub=4.5):
    # We are only going to look at the interval between lb and ub
    n_points = idx.stop - idx.start
    n_params = 8
-   fit_func = ut.gaussian
+   fit_func = ut.two_gaussian
    # Set the bounds for the optimization
    bounds = [(lb,ub), # peak 1 location
              (lb,ub), # peak 2 location
@@ -610,9 +610,9 @@ def _do_two_gaussian_fit(freqs, signal, bounds=None):
    # restrict the fit space a bit more. For this purpose, we will pass a list
    # of gaussians with indices into the parameter list, so that we can do
    # that (see mopt.err_func for the mechanics).
-   func_list = [[ut.gaussian, [freqs,0,2,4,6,7],
+   func_list = [[ut.gaussian, [0,2,4,6,7],
                  ut.gaussian(freqs, initial_f0_1, 0.075, 1, 0, 0)],
-                [ut.gaussian, [freqs,1,3,5,6,7],
+                [ut.gaussian, [1,3,5,6,7],
                  ut.gaussian(freqs, initial_f0_2, 0.075, 1, 0, 0)]]
 
    params, _ = lsq.leastsqbound(mopt.err_func, initial,
