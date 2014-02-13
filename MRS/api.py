@@ -423,7 +423,7 @@ class GABA(object):
 
         References
         ----------
-        Hurd et al. 2004, Measurement of brain glutamate using TE‐averaged PRESS at 3T
+        Hurd et al. 2004, Measurement of brain glutamate using TE-averaged PRESS at 3T
         """
         if not hasattr(self, 'creatine_params'):
             self.fit_creatine()
