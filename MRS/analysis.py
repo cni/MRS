@@ -502,7 +502,7 @@ def _do_two_lorentzian_fit(freqs, signal, bounds=None):
    return params
 
 
-def fit_two_gaussian(spectra, f_ppm, lb=3.5, ub=4.5):
+def fit_two_gaussian(spectra, f_ppm, lb=3.6, ub=3.9):
    """
    Fit a gaussian function to the difference spectra to be used for estimation of
    the Glx peak.

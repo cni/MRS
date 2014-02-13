@@ -405,10 +405,11 @@ class GABA(object):
         self.naa_auc = self._calc_auc(ut.lorentzian, params, self.naa_idx)
 
 
-    def fit_glx2(self, reject_outliers=3.0, fit_lb=3.5, fit_ub=4.5, phase_correct=True):
+    def fit_glx2(self, reject_outliers=3.0, fit_lb=3.6, fit_ub=3.9, phase_correct=True):
         """
         Fit a model to the portion of the diff spectra containing the
-        glx signal.
+        glx signal. This treats the Glx signal as two gaussian peaks.
+        Glx signal at 3.75ppm, +/- 0.15ppm (Hurd et al. 2004)
 
         Parameters
         ----------
@@ -420,7 +421,9 @@ class GABA(object):
            What part of the spectrum (in ppm) contains the creatine peak.
            Default (3.5, 4.2)
 
-
+        References
+        ----------
+        Hurd et al. 2004, Measurement of brain glutamate using TE‐averaged PRESS at 3T
         """
         if not hasattr(self, 'creatine_params'):
             self.fit_creatine()
@@ -479,7 +482,7 @@ class GABA(object):
             self.glxp2_model[idx] = ut.gaussian(self.f_ppm[self.glx2_idx],*self.glxp2_params[idx])
             self.glxp1_model[idx] = ut.gaussian(self.f_ppm[self.glx2_idx],
                                                     *self.glxp1_params[idx])
-        self.glxp2_signal = signal
+        self.glx2_signal = signal
         self.glxp2_auc = self._calc_auc(ut.gaussian,
                                            self.glxp2_params,
                                            self.glx2_idx)
