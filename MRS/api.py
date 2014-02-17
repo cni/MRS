@@ -389,6 +389,10 @@ class GABA(object):
                  phase_correct=True):
         """
         Fit a Gaussian function to the NAA peak at ~ 2 ppm.
+        Example of fitting inverted peak:
+        Foerster et al. 2013, An imbalance between excitatory and
+        inhibitory neurotransmitters in amyothrophic lateral sclerosis
+        revealed by use of 3T proton MRS
         """
 
         model, signal, params = ana.fit_lorentzian(self.diff_spectra,
@@ -405,7 +409,7 @@ class GABA(object):
         self.naa_auc = self._calc_auc(ut.lorentzian, params, self.naa_idx)
 
 
-    def fit_glx2(self, reject_outliers=3.0, fit_lb=3.6, fit_ub=3.9, phase_correct=True):
+    def fit_glx2(self, reject_outliers=3.0, fit_lb=3.6, fit_ub=3.9, phase_correct=True, scalefit=False):
         """
         Fit a model to the portion of the diff spectra containing the
         glx signal. This treats the Glx signal as two gaussian peaks.
@@ -460,7 +464,7 @@ class GABA(object):
                                                                 ii)
 
         # We'll keep around a private attribute to tell us which transients
-        # were good (this is for both creatine and choline):
+        # were good:
         self._glx2_transients = np.where(ii)
 
         # Now we separate params of the two glx peaks from each other
@@ -482,13 +486,12 @@ class GABA(object):
             self.glxp2_model[idx] = ut.gaussian(self.f_ppm[self.glx2_idx],*self.glxp2_params[idx])
             self.glxp1_model[idx] = ut.gaussian(self.f_ppm[self.glx2_idx],
                                                     *self.glxp1_params[idx])
+
+        self.glx2_model = self.glxp1_model + self.glxp2_model
+
         self.glx2_signal = signal
-        self.glxp2_auc = self._calc_auc(ut.gaussian,
-                                           self.glxp2_params,
-                                           self.glx2_idx)
-        self.glxp1_auc = self._calc_auc(ut.gaussian,
-                                          self.glxp1_params,
-                                          self.glx2_idx)
+        self.glx2_auc = (self._calc_auc(ut.gaussian, self.glxp2_params, self.glx2_idx) +
+                        self._calc_auc(ut.gaussian, self.glxp1_params, self.glx2_idx))
 
     def est_gaba_conc(self):
         """

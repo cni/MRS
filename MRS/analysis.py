@@ -502,7 +502,7 @@ def _do_two_lorentzian_fit(freqs, signal, bounds=None):
    return params
 
 
-def fit_two_gaussian(spectra, f_ppm, lb=3.6, ub=3.9):
+def fit_two_gaussian(spectra, f_ppm, lb=3.6, ub=3.9, scalefit=False):
    """
    Fit a gaussian function to the difference spectra to be used for estimation of
    the Glx peak.
@@ -517,6 +517,10 @@ def fit_two_gaussian(spectra, f_ppm, lb=3.6, ub=3.9):
    lb, ub: floats
       In ppm, the range over which optimization is bounded
 
+   scalefit : boolean
+      If this is set to true, attempt is made to prevent over or under-fitting
+      with a second round of fitting where the fitted curve is fit with
+      a scale factor. (default false)
    """
    idx = ut.make_idx(f_ppm, lb, ub)
    # We are only going to look at the interval between lb and ub
@@ -544,6 +548,9 @@ def fit_two_gaussian(spectra, f_ppm, lb=3.6, ub=3.9):
                                       bounds=bounds)
 
       model[ii] = fit_func(f_ppm[idx], *params[ii])
+
+   if scalefit:
+      scalefac, model = _do_scale_fit(f_ppm[idx], signal,model)
 
    return model, signal, params
 
@@ -619,7 +626,32 @@ def _do_two_gaussian_fit(freqs, signal, bounds=None):
                                 args=(freqs, np.real(signal),
                                 ut.two_gaussian, w, func_list),
                                 bounds=bounds)
+
    return params
+
+def _do_scale_fit(freqs, signal, model, w=None):
+   scalefac = np.empty(model.shape[0])
+   scalemodel = np.empty((model.shape[0], np.real(model).shape[1]))
+   scalesignal = np.empty((signal.shape[0], np.real(signal).shape[1]))
+   for ii, xx in enumerate(signal):
+      scalesignal[ii] = np.real(xx)
+      scalefac[ii], _ = lsq.leastsqbound(scaleerr, 1.0,
+                                      args=(freqs, np.real(scalesignal[ii]),
+                                      scalemodel[ii],w))
+      scalemodel[ii] = scalefac[ii] * model[ii]
+
+   return scalefac, scalemodel
+
+def scaleerr(scalefac, x, y, model, w=None):
+   err = y - model
+   if w is not None:
+      err = err * w
+   return err
+
+def scalemodel(model, scalefac):
+   for ii, mm in enumerate(model):
+      scaledmodel[ii] = mm * scalefac[ii]
+   return scaledmodel
 
 
 def fit_gaussian(spectra, f_ppm, lb=2.6, ub=3.6):
