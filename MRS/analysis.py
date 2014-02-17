@@ -664,12 +664,46 @@ def _do_scale_fit(freqs, signal, model, w=None):
    return scalefac, scalemodel
 
 def scaleerr(scalefac, x, y, model, w=None):
+   """
+   calculates error between signal and model
+
+   Parameters
+   ----------
+   x : float array
+      indenpendent variable
+   y : array
+      signal
+   model : array
+      model being fit to signal
+   w : array
+      weighting function to emphasize parts of signal
+
+   Returns
+   -------
+   Marginals of fit of model to signal
+
+   """
    err = y - model
    if w is not None:
       err = err * w
    return err
 
 def scalemodel(model, scalefac):
+   """
+   Given a scale factor, multiply by model to get scaled model
+
+   Parameters
+   ----------
+   model : array
+      original model
+   scalefac : array of model.shape[0]
+      array of scalefactors
+
+   Returns
+   -------
+   scaledmodel : array
+      model scaled by scale factor
+   """
    for ii, mm in enumerate(model):
       scaledmodel[ii] = mm * scalefac[ii]
    return scaledmodel
