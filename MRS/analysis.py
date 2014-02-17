@@ -630,6 +630,27 @@ def _do_two_gaussian_fit(freqs, signal, bounds=None):
    return params
 
 def _do_scale_fit(freqs, signal, model, w=None):
+   """
+   Perform a round of fitting to deal with over or under-estimation.
+   Scales curve on y-axis but preserves shape.
+
+   Parameters
+   ----------
+   freqs : array
+   signal : array
+      The signal that the model is being fit to
+   model : array
+      The model being scaled
+   w : array
+      weighting function
+
+   Returns
+   -------
+   scalefac : array of len(signal)
+      the scaling factor for each transient
+   scalemodel : array of model.shape
+      the scaled model
+   """
    scalefac = np.empty(model.shape[0])
    scalemodel = np.empty((model.shape[0], np.real(model).shape[1]))
    scalesignal = np.empty((signal.shape[0], np.real(signal).shape[1]))
