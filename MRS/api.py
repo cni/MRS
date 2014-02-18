@@ -425,6 +425,11 @@ class GABA(object):
            What part of the spectrum (in ppm) contains the creatine peak.
            Default (3.5, 4.2)
 
+        scalefit : boolean
+           If this is set to true, attempt is made to prevent over or under-fitting
+           with a second round of fitting where the fitted curve is fit with
+           a scale factor. (default false)
+
         References
         ----------
         Hurd et al. 2004, Measurement of brain glutamate using TE-averaged PRESS at 3T
@@ -487,7 +492,13 @@ class GABA(object):
             self.glxp1_model[idx] = ut.gaussian(self.f_ppm[self.glx2_idx],
                                                     *self.glxp1_params[idx])
 
-        self.glx2_model = self.glxp1_model + self.glxp2_model
+        if scalefit:
+            combinedmodel = self.glxp2_model + self.glxp1_model
+            scalefac, scalemodel = ana._do_scale_fit(self.f_ppm[self.glx2_idx], signal,combinedmodel)
+            self.glx2_model = scalemodel
+        else:
+            self.glx2_model = self.glxp1_model + self.glxp2_model
+
 
         self.glx2_signal = signal
         self.glx2_auc = (self._calc_auc(ut.gaussian, self.glxp2_params, self.glx2_idx) +

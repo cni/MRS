@@ -502,7 +502,7 @@ def _do_two_lorentzian_fit(freqs, signal, bounds=None):
    return params
 
 
-def fit_two_gaussian(spectra, f_ppm, lb=3.6, ub=3.9, scalefit=False):
+def fit_two_gaussian(spectra, f_ppm, lb=3.6, ub=3.9):
    """
    Fit a gaussian function to the difference spectra to be used for estimation of
    the Glx peak.
@@ -517,10 +517,6 @@ def fit_two_gaussian(spectra, f_ppm, lb=3.6, ub=3.9, scalefit=False):
    lb, ub: floats
       In ppm, the range over which optimization is bounded
 
-   scalefit : boolean
-      If this is set to true, attempt is made to prevent over or under-fitting
-      with a second round of fitting where the fitted curve is fit with
-      a scale factor. (default false)
    """
    idx = ut.make_idx(f_ppm, lb, ub)
    # We are only going to look at the interval between lb and ub
@@ -548,9 +544,6 @@ def fit_two_gaussian(spectra, f_ppm, lb=3.6, ub=3.9, scalefit=False):
                                       bounds=bounds)
 
       model[ii] = fit_func(f_ppm[idx], *params[ii])
-
-   if scalefit:
-      scalefac, model = _do_scale_fit(f_ppm[idx], signal,model)
 
    return model, signal, params
 
@@ -656,37 +649,40 @@ def _do_scale_fit(freqs, signal, model, w=None):
    scalesignal = np.empty((signal.shape[0], np.real(signal).shape[1]))
    for ii, xx in enumerate(signal):
       scalesignal[ii] = np.real(xx)
-      scalefac[ii], _ = lsq.leastsqbound(scaleerr, 1.0,
-                                      args=(freqs, np.real(scalesignal[ii]),
-                                      scalemodel[ii],w))
+      ratio = np.empty(scalesignal[ii].shape[0])
+      for ppm, trans in enumerate(scalesignal[ii]):
+          ratio[ppm] = trans/model[ii][ppm]
+      scalefac[ii] = np.mean(ratio,0)
       scalemodel[ii] = scalefac[ii] * model[ii]
-
+   print model
+   print scalefac
+   print scalemodel
    return scalefac, scalemodel
 
-def scaleerr(scalefac, x, y, model, w=None):
-   """
-   calculates error between signal and model
-
-   Parameters
-   ----------
-   x : float array
-      indenpendent variable
-   y : array
-      signal
-   model : array
-      model being fit to signal
-   w : array
-      weighting function to emphasize parts of signal
-
-   Returns
-   -------
-   Marginals of fit of model to signal
-
-   """
-   err = y - model
-   if w is not None:
-      err = err * w
-   return err
+#def scaleerr(scalefac, x, y, model, w=None):
+#   """
+#   calculates error between signal and model
+#
+#   Parameters
+#   ----------
+#   x : float array
+#      indenpendent variable
+#   y : array
+#      signal
+#   model : array
+#      model being fit to signal
+#   w : array
+#      weighting function to emphasize parts of signal
+#
+#   Returns
+#   -------
+#   Marginals of fit of model to signal
+#
+#   """
+#   err = y - model
+#   if w is not None:
+#      err = err * w
+#   return err
 
 def scalemodel(model, scalefac):
    """
