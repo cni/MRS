@@ -495,6 +495,11 @@ class GABA(object):
         if scalefit:
             combinedmodel = self.glxp2_model + self.glxp1_model
             scalefac, scalemodel = ana._do_scale_fit(self.f_ppm[self.glx2_idx], signal,combinedmodel)
+            # Reject outliers:
+            scalemodel, signal, params, ii = self._rm_outlier_by_amp(params,
+                                                                scalemodel,
+                                                                signal,
+                                                                ii)
             self.glx2_model = scalemodel
         else:
             self.glx2_model = self.glxp1_model + self.glxp2_model
@@ -503,6 +508,32 @@ class GABA(object):
         self.glx2_signal = signal
         self.glx2_auc = (self._calc_auc(ut.gaussian, self.glxp2_params, self.glx2_idx) +
                         self._calc_auc(ut.gaussian, self.glxp1_params, self.glx2_idx))
+
+    def _rm_outlier_by_amp(self, params, model, signal, ii):
+        """
+        Helper function to reject outliers based on mean amplitude
+        """
+#        # mean amplitudes per transient
+#        meanamps = np.mean(model,1)
+        # max amplitudes
+        maxamps = np.nanmax(np.abs(model),0)
+        # zscore
+#        z_score = (meanamps - np.nanmean(meanamps,0))/np.nanstd(meanamps,0)
+        z_score = (maxamps - np.nanmean(maxamps,0))/np.nanstd(maxamps,0)
+        print z_score
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            outlier_idx = np.where(np.abs(z_score)>2.0)[0]
+            nan_idx = np.where(np.isnan(params))[0]
+            outlier_idx = np.unique(np.hstack([nan_idx, outlier_idx]))
+            ii[outlier_idx] = 0
+            print sum(ii)
+            model[outlier_idx] = np.nan
+            signal[outlier_idx] = np.nan
+            params[outlier_idx] = np.nan
+
+        return model, signal, params, ii
+
 
     def est_gaba_conc(self):
         """

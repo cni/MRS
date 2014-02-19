@@ -647,16 +647,14 @@ def _do_scale_fit(freqs, signal, model, w=None):
    scalefac = np.empty(model.shape[0])
    scalemodel = np.empty((model.shape[0], np.real(model).shape[1]))
    scalesignal = np.empty((signal.shape[0], np.real(signal).shape[1]))
-   for ii, xx in enumerate(signal):
+   for ii, xx in enumerate(signal): # per transient
       scalesignal[ii] = np.real(xx)
-      ratio = np.empty(scalesignal[ii].shape[0])
-      for ppm, trans in enumerate(scalesignal[ii]):
-          ratio[ppm] = trans/model[ii][ppm]
-      scalefac[ii] = np.mean(ratio,0)
+#      ratio = np.empty(scalesignal[ii].shape[0])
+#      for ppm, trans in enumerate(scalesignal[ii]):
+#          ratio[ppm] = trans/model[ii][ppm]
+#      scalefac[ii] = np.mean(ratio,0)
+      scalefac[ii] = np.nanmean(scalesignal[ii],0)/np.nanmean(model[ii],0)
       scalemodel[ii] = scalefac[ii] * model[ii]
-   print model
-   print scalefac
-   print scalemodel
    return scalefac, scalemodel
 
 #def scaleerr(scalefac, x, y, model, w=None):
