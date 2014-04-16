@@ -532,3 +532,44 @@ def make_idx(f, lb, ub):
     return idx
         
 
+def zscore(arr, axis=0):
+    """
+    Calculate z scores of an array
+
+    Parameters
+    ----------
+    arr : ndarray
+
+    axis : int
+        the axis along which calculation is done. Default: 0
+
+    """
+    
+    z = ( ( arr - np.mean(arr, axis=axis)[None] ) /
+            np.std(arr, axis=axis)[None] )
+
+    z[np.isnan(z)] = 0
+
+    return z
+
+
+def rms(arr, axis=0):
+    """
+    Calculate the RMSE of an array
+
+    Parameters
+    ----------
+    arr : ndarray
+
+    axis : int
+        the axis along which calculation is done. Default: 0
+    
+    """
+    return np.sqrt(np.mean((np.power(arr, 2)), axis=axis))
+
+
+
+    
+    
+
+    

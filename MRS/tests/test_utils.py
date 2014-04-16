@@ -44,3 +44,34 @@ def test_lorentzian():
     baseline1 = 0
     ut.lorentzian(freq, freq0, area, hwhm, phase, baseline0, baseline1)
     
+
+def test_zscore():
+    """
+
+    """
+
+    x = np.array([[1, 1, 3, 3],
+                  [4, 4, 6, 6]])
+
+    z = ut.zscore(x)
+    npt.assert_equal(x.shape, z.shape)
+
+    #Default axis is 0
+    npt.assert_equal(ut.zscore(x), np.array([[-1., -1., -1., -1.],
+                                             [1., 1., 1., 1.]]))
+
+
+def test_rms():
+
+    x = np.array([[1, 1, 3, 3],
+                  [4, 4, 6, 6]])
+    
+    rms = np.array([np.sqrt((1 ** 2 + 4 ** 2)/2.),
+                    np.sqrt((1 ** 2 + 4 ** 2)/2.),
+                    np.sqrt((3 ** 2 + 6 ** 2)/2.),
+                    np.sqrt((3 ** 2 + 6 ** 2)/2.)])
+
+    npt.assert_equal(ut.rms(x), rms)
+    
+    
+    

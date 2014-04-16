@@ -9,10 +9,8 @@ import MRS.freesurfer as fs
 
 class GABA(object):
     """
-    Class for analysis of GABA MRS.
-    
+    Class for analysis of GABA MRS.    
     """
-
     def __init__(self, in_file, line_broadening=5, zerofill=100,
                  filt_method=None, min_ppm=-0.7, max_ppm=4.3):
         """
@@ -175,26 +173,80 @@ class GABA(object):
             auc[t] = np.sum((model1 - model0) * delta_f)
         return auc
 
+
+        
     def _outlier_rejection(self, params, model, signal, ii):
         """
-        Helper function to reject outliers
+        Helper function to reject outliers.
 
-        DRY!
-        
+        We will use cross-validation to determine which of the transients are
+        outliers 
         """
-        # Z score across repetitions:
-        z_score = (params - np.mean(params, 0))/np.std(params, 0)
+        # Extract the model and signal where the model was successfully fit: 
+        not_nans = np.unique(np.where(~np.isnan(model))[0])
+        use_model = model[not_nans]
+        use_signal = signal[not_nans]
+        use_params = params[not_nans]
+
+        # We divide the data into even and odd transients for the xval procedure:
+        even_idx = np.arange(0, use_model.shape[0], 2)
+        odd_idx = np.arange(1, use_model.shape[0], 2)
+        model_even = use_model[even_idx]
+        model_odd = use_model[odd_idx]
+        signal_even = use_signal[even_idx]
+        signal_odd = use_signal[odd_idx]
+
+        # Each one is separately z-scored at this stage:
+        zscore_even = ut.zscore(model_even)
+        zscore_odd = ut.zscore(model_odd)
+        zscore_all = np.vstack([zscore_even, zscore_odd])
+        max_zscore = np.nanmax(np.abs(zscore_all))
+        min_zscore = np.nanmin(np.abs(zscore_all))
+        
+        # We will set the threshold in steps of 0.1 from the maximum zscore
+        # observed to the smallest: 
+        zscore_thresholds = np.arange(max_zscore, min_zscore, -0.1)        
+        rmse_odd = np.zeros(zscore_thresholds.shape)
+        rmse_even = np.zeros(zscore_thresholds.shape)
+        
+        # At each threshold level we calculate a cross-validation error:
+        for z_idx, z_th in enumerate(zscore_thresholds):
+            idx_even = np.unique(np.where(np.abs(zscore_even) < z_th)[0])
+            idx_odd = np.unique(np.where(np.abs(zscore_odd) < z_th)[0])
+            model_even_th = model_even[idx_even]
+            model_odd_th = model_odd[idx_odd]
+            signal_even_th = signal_even[idx_even]
+            signal_odd_th = signal_odd[idx_odd]
+            # Calculate xval errors:
+            rmse_odd[z_idx] = np.mean(ut.rms(signal_odd_th -
+                                             np.nanmean(model_even_th, 0),1))
+            rmse_even[z_idx] = np.mean(ut.rms(signal_even_th -
+                                             np.mean(model_odd_th, 0),1))
+
+        # We find the minimal mean cross-validation error across the two
+        # folds. The indexing operation in the end is that we get the largest
+        # possible index in the case where the minimum value extends over many
+        # parts of the array:
+        find_min = np.argmin(np.mean(np.vstack([rmse_odd, rmse_even]), 0)[::-1])
+        final_th = zscore_thresholds[::-1][find_min]
+        # We apply this Z score threshold across the entire data-set:
+        z_score = ut.zscore(use_model)
         # Silence warnings: 
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            outlier_idx = np.where(np.abs(z_score)>3.0)[0]
-            nan_idx = np.where(np.isnan(params))[0]
-            outlier_idx = np.unique(np.hstack([nan_idx, outlier_idx]))
+            outlier_idx = np.unique(np.where(np.abs(z_score) > final_th)[0])
+            # We don't use the transients in which there are outliers according
+            # to this criterion, or there are nans in the model (indicating
+            # model fit failed):
             ii[outlier_idx] = 0
-            model[outlier_idx] = np.nan
-            signal[outlier_idx] = np.nan
-            params[outlier_idx] = np.nan
-
+            ii[np.unique(np.isnan(model))] = 0
+            use_model[outlier_idx] = np.nan
+            use_signal[outlier_idx] = np.nan
+            use_params[outlier_idx] = np.nan
+        
+        model[not_nans] = use_model
+        signal[not_nans] = use_signal
+        params[not_nans] = use_params
         return model, signal, params, ii
 
         
@@ -258,7 +310,9 @@ class GABA(object):
                                     np.abs(self.cr_idx.stop-self.cr_idx.start)))
         
         for idx in range(self.creatine_params.shape[0]):
-            self.creatine_model[idx] = ut.lorentzian(self.f_ppm[self.cr_idx],*self.creatine_params[idx])
+            self.creatine_model[idx] = ut.lorentzian(self.f_ppm[self.cr_idx],
+                                                     *self.creatine_params[idx])
+            
             self.choline_model[idx] = ut.lorentzian(self.f_ppm[self.cr_idx],
                                                     *self.choline_params[idx])
         self.creatine_signal = signal
