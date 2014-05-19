@@ -147,7 +147,7 @@ def coil_combine(data, w_idx=[1,2,3], coil_dim=2, sampling_rate=5000.):
     area_w = params[..., 1]
 
     # In each coil, we derive S/(N^2):
-    s = np.var(area_w.reshape(-1, area_w.shape[-1]), 0)
+    s = np.mean(area_w.reshape(-1, area_w.shape[-1]), 0)
     n = np.var(area_w.reshape(-1, area_w.shape[-1]), 0)
     amp_weight = s/n 
     # Normalize to sum to 1: 
