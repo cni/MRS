@@ -259,7 +259,8 @@ class GABA(object):
                                     np.abs(self.cr_idx.stop-self.cr_idx.start)))
         
         for idx in range(self.creatine_params.shape[0]):
-            self.creatine_model[idx] = ut.lorentzian(self.f_ppm[self.cr_idx],*self.creatine_params[idx])
+            self.creatine_model[idx] = ut.lorentzian(self.f_ppm[self.cr_idx],
+                                                     *self.creatine_params[idx])
             self.choline_model[idx] = ut.lorentzian(self.f_ppm[self.cr_idx],
                                                     *self.choline_params[idx])
         self.creatine_signal = signal
