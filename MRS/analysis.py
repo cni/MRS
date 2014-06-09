@@ -1,3 +1,12 @@
+"""
+MRS.analysis
+------------
+
+Analysis functions for analysis of MRS data. These include a variety of
+functions that can be called independently, or through the interface provided
+in :mod:`MRS.api`.
+
+"""
 import os
 
 import numpy as np
@@ -14,6 +23,7 @@ from scipy.integrate import trapz, simps
 import MRS.leastsqbound as lsq
 import MRS.utils as ut
 import MRS.optimize as mopt
+
 
 def separate_signals(data, w_idx=[1,2,3]):
    """
@@ -35,7 +45,6 @@ def separate_signals(data, w_idx=[1,2,3]):
        no water suppression was applied. The second element is an array with
        the transients in which water suppression was applied
    """
-
    # The transients are the first dimension in the data
    idxes_w = np.zeros(data.shape[0], dtype=bool)
    idxes_w[w_idx] = True
