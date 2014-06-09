@@ -135,7 +135,7 @@ def coil_combine(data, w_idx=[1,2,3], coil_dim=2, sampling_rate=5000.):
     bounds = [(None,None),
               (0,None),
               (0,None),
-              (-np.pi, np.pi), # Keeping it positive!
+              (-np.pi, np.pi),
               (None,None),
               (None, None)]
 
