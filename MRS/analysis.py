@@ -329,7 +329,7 @@ def fit_lorentzian(spectra, f_ppm, lb=2.6, ub=3.6):
    bounds = [(lb,ub), #peak
              (0,None), #area
              (0,None), #hwhm
-             (-np.pi, np.pi), #phase
+             (-np.pi/2, np.pi/2), #phase
              (None,None), #offset
              (None, None)] #drift
 
@@ -551,8 +551,8 @@ def fit_two_lorentzian(spectra, f_ppm, lb=2.6, ub=3.6):
              (0,None), #area2 
              (0,ub-lb), #hwhm1 
              (0,ub-lb), #hwhm2
-             (-np.pi, np.pi), #phase
-             (-np.pi, np.pi), #phase
+             (-np.pi/2, np.pi/2), #phase
+             (-np.pi/2, np.pi/2), #phase
              (None,None), #offset
              (None, None)] #drift 
 
