@@ -135,7 +135,7 @@ def coil_combine(data, w_idx=[1,2,3], coil_dim=2, sampling_rate=5000.):
     bounds = [(None,None),
               (0,None),
               (0,None),
-              (-np.pi, np.pi),
+              (-np.pi/2, np.pi/2), # Keeping it positive!
               (None,None),
               (None, None)]
 
@@ -329,7 +329,7 @@ def fit_lorentzian(spectra, f_ppm, lb=2.6, ub=3.6):
    bounds = [(lb,ub), #peak
              (0,None), #area
              (0,None), #hwhm
-             (-np.pi, np.pi), #phase
+             (-np.pi/2, np.pi/2), #phase
              (None,None), #offset
              (None, None)] #drift
 
