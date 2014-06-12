@@ -52,7 +52,12 @@ MAJOR = _version_major
 MINOR = _version_minor
 MICRO = _version_micro
 VERSION = __version__
-PACKAGES = ['MRS']
+PACKAGES = ['MRS',
+            'MRS.api',
+            'MRS.analysis',
+            'MRS.utils',
+            'MRS.freesurfer',
+            'MRS.qc']
             
 PACKAGE_DATA = {"MRS": ["LICENSE"]}
 

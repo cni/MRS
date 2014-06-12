@@ -1,12 +1,13 @@
 
-Welcome to MTS documentation!
-==================================
+Stanford CNI MRS library
+========================
 
 Contents:
 
 .. toctree::
    :maxdepth: 2
 
+   getting_started
    reference/index
 
 
