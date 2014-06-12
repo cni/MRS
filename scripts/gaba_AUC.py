@@ -1,6 +1,6 @@
 #! /usr/bin/python
 
-# attempting Wang 2006's method of calculating the GABA concentration 
+# attempting Wang 2006's method of calculating the GABA concentration
 # takes folder name as argument
 
 import os

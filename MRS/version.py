@@ -1,4 +1,4 @@
-"""Osmosis version/release information"""
+"""MRS version/release information"""
 
 # Format expected by setup.py and doc/source/conf.py: string of form "X.Y.Z"
 _version_major = 0
@@ -54,6 +54,6 @@ MICRO = _version_micro
 VERSION = __version__
 PACKAGES = ['MRS']
             
-PACKAGE_DATA = {"osmosis": ["LICENSE"]}
+PACKAGE_DATA = {"MRS": ["LICENSE"]}
 
 REQUIRES = ["numpy", "matplotlib", "scipy"]
