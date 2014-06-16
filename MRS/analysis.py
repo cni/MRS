@@ -25,7 +25,7 @@ import MRS.utils as ut
 import MRS.optimize as mopt
 
 
-def separate_signals(data, w_idx=[1,2,3]):
+def separate_signals(data, w_idx=[1, 2, 3]):
    """
    Separate the water and non-water data from each other
 
