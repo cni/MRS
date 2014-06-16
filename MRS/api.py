@@ -1,3 +1,11 @@
+"""
+MRS.api
+-------
+
+Functions and classes for representation and analysis of MRS data. This is the
+main module to use when performing routine analysis of MRS data.
+
+"""
 import numpy as np
 import scipy.stats as stats
 import nibabel as nib
@@ -7,19 +15,19 @@ import MRS.analysis as ana
 import MRS.utils as ut
 import MRS.freesurfer as fs
 
+
 class GABA(object):
     """
     Class for analysis of GABA MRS.
-    
     """
 
-    def __init__(self, in_file, line_broadening=5, zerofill=100,
+    def __init__(self, in_data, line_broadening=5, zerofill=100,
                  filt_method=None, min_ppm=-0.7, max_ppm=4.3):
         """
         Parameters
         ----------
 
-        in_file : str
+        in_data : str
             Path to a nifti file containing MRS data.
 
         line_broadening : float
@@ -37,10 +45,14 @@ class GABA(object):
            creatine and GABA peaks. 
         
         """
-        # The nifti files follow the strange nifti convention, but we want to
-        # use our own logic, which is transients on dim 0 and time on dim -1:
-        self.raw_data = np.transpose(nib.load(in_file).get_data(),
-                                     [1,2,3,4,5,0]).squeeze()
+        if isinstance(in_data, string):
+            # The nifti files follow the strange nifti convention, but we want
+            # to use our own logic, which is transients on dim 0 and time on
+            # dim -1:
+            self.raw_data = np.transpose(nib.load(in_file).get_data(),
+                                         [1,2,3,4,5,0]).squeeze()
+        elif isinstance(in_data, np.ndarray):
+            self.raw_data = in_data
 
         w_data, w_supp_data = ana.coil_combine(self.raw_data)
         f_hz, w_supp_spectra = ana.get_spectra(w_supp_data,
@@ -196,7 +208,6 @@ class GABA(object):
             params[outlier_idx] = np.nan
 
         return model, signal, params, ii
-
 
 
     def fit_creatine(self, reject_outliers=3.0, fit_lb=2.7, fit_ub=3.5):
