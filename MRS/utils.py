@@ -543,5 +543,27 @@ def make_idx(f, lb, ub):
         idx = slice(idx0, idx1)
 
     return idx
-        
 
+
+def rmse(arr1, arr2):
+    """
+
+    The root of the mean of the squared error between arr1 and arr2
+
+    Parameters
+    ----------
+    arr1, arr2 : ndarray
+       The two arrays to compare
+
+    Returns
+    -------
+    RMSE : float
+
+    Notes
+    -----
+    The RMSE will be summarized in one number. That is, even if the two arrays
+    are multi-dimensional, the error between them will be averaged over the
+    entire array and then the sqrt will be derived.
+
+    """
+    return np.sqrt(np.mean((arr1 - arr2)**2))
