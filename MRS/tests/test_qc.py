@@ -1,4 +1,3 @@
-import os
 import MRS
 import MRS.qc as qc
 from nibabel.tmpdirs import InTemporaryDirectory
@@ -15,8 +14,4 @@ def test_motion():
     with InTemporaryDirectory() as tmpdir:
         qcres=qc.motioncheck(ref_file,end_file, thres=5.0)
 
-    # cleanup
-    
-    # os.remove(ref_file)
-    # os.remove(end_file)
 
