@@ -42,37 +42,39 @@ def motioncheck(ref_file, end_file, thres=5.0):
     ref_aff=ref.get_affine()
     end_aff=end.get_affine()
 
-    if np.array_equal(ref_aff,end_aff):
+    if np.array_equal(ref_aff, end_aff):
         print 'affines match'
     else:
         raise ValueError("Affines of start and end images do not match")
 
     # save only axials
-    refax = ref_data[:,:,:,0,np.newaxis]
-    endax = end_data[:,:,:,0,np.newaxis]
+    refax = ref_data[:, :, :, 0, np.newaxis]
+    endax = end_data[:, :, :, 0, np.newaxis]
 
     path = os.path.dirname(ref_file)
 
-    refax_img = nib.Nifti1Image(refax,ref_aff)
-    nib.save(refax_img,path+'/refax.nii.gz')
-    endax_img = nib.Nifti1Image(endax,ref_aff)
-    nib.save(endax_img,path+'/endax.nii.gz')
+    refax_img = nib.Nifti1Image(refax, ref_aff)
+    nib.save(refax_img, path+'/refax.nii.gz')
+    endax_img = nib.Nifti1Image(endax, ref_aff)
+    nib.save(endax_img, path+'/endax.nii.gz')
 
     # realignment
-    ref_file = path+'/refax.nii.gz'
-    in_file = path+'/endax.nii.gz'
-    mat_file = path+'/mat.nii.gz'
+    ref_file = path + '/refax.nii.gz'
+    in_file = path + '/endax.nii.gz'
+    mat_file = path + '/mat.nii.gz'
 
-    mcflt = fsl.MCFLIRT(in_file=in_file, ref_file=ref_file, save_mats=True,cost='mutualinfo')
+    mcflt = fsl.MCFLIRT(in_file=in_file, ref_file=ref_file, save_mats=True,
+                        cost='mutualinfo')
     res = mcflt.run() 
 
-    print 'realignment affine matrix saved in mat_file: '+res.outputs.mat_file
+    print('realignment affine matrix saved in mat_file: %s'
+          %res.outputs.mat_file)
 
     aff_file=res.outputs.mat_file
     aff = np.loadtxt(aff_file, dtype=float)
 
     # compute RMS as indicator of motion
-    rel=aff[0:3,3]
+    rel=aff[0:3, 3]
     rms = np.sqrt(np.mean(rel**2))
   
     if rms>=thres:
@@ -81,4 +83,4 @@ def motioncheck(ref_file, end_file, thres=5.0):
         passed=True
 
 
-    return rms,passed
+    return rms, passed
