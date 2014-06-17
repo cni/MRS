@@ -358,28 +358,63 @@ class GABA(object):
         set2 = fit_spectra[1::2]
 
         errs = []
-
+        signal_select = [] 
         # We can loop over functions and try each one out, checking the
         # error in each:
         for fitter in fitters:
             models = []
             signals = []
-            for set in [set1, set2]:
+            for this_set in [set1, set2]:
                 choose_transients, model, signal, params, this_idx =\
-                    self._fit_helper(set1, reject_outliers,
+                    self._fit_helper(this_set, reject_outliers,
                                     fit_lb, fit_ub, fitter)
                 models.append(np.nanmean(model[choose_transients], 0))
                 signals.append(np.nanmean(signal[choose_transients], 0))
 
+                signal_select.append(signal[choose_transients])
+                
             #Cross-validate!
             errs.append(np.mean([ut.rmse(models[0], signals[1]),
                                  ut.rmse(models[1], signals[0])]))
+        # We really only need to look at the first two:
+        signal_err = ut.rmse(np.nanmean(signal_select[0], 0),
+                             np.nanmean(signal_select[1], 0))
+        # Based on the errors, choose a function. Also report errors:
+        return (fitters[np.argmin(errs)], funcs[np.argmin(errs)], np.min(errs),
+                signal_err)
+            
+    def _xval_model_error(self, fit_spectra, reject_outliers, fit_lb, fit_ub,
+                           fitter, func):
+        """
+        Helper function for calculation of split-half cross-validation model
+        error and signal reliability.
 
-            # Having done that, choose the minimal error function and fit
-            # that one to all spectra:
-        return fitters[np.argmin(errs)], funcs[np.argmin(errs)]
+        """
+        set1 = fit_spectra[::2]
+        set2 = fit_spectra[1::2]
+        errs = []
+        signal_select = [] 
+        models = []
+        signals = []
+        for this_set in [set1, set2]:
+            choose_transients, model, signal, params, this_idx =\
+                self._fit_helper(this_set, reject_outliers,
+                                 fit_lb, fit_ub, fitter)
+            models.append(np.nanmean(model[choose_transients], 0))
+            signals.append(np.nanmean(signal[choose_transients], 0))
 
+            signal_select.append(signal[choose_transients])
+                
+        #Cross-validation error estimation:
+        model_err = np.mean([ut.rmse(models[0], signals[1]),
+                              ut.rmse(models[1], signals[0])])
+        # Also for the signal:
+        signal_err = ut.rmse(np.nanmean(signal_select[0], 0),
+                             np.nanmean(signal_select[1], 0))
+        # Based on the errors, choose a function. Also report errors:
+        return model_err, signal_err
 
+            
     def fit_gaba(self, reject_outliers=3.0, fit_lb=2.8, fit_ub=3.4,
                  phase_correct=True, fit_func=None):
         """
@@ -431,16 +466,19 @@ class GABA(object):
 
         if fit_func is None:
             # Cross-validate!
-            fitter, self.gaba_func = self._xval_choose_funcs(fit_spectra,
-                                                       reject_outliers,
-                                                       fit_lb, fit_ub)
+            fitter, self.gaba_func, self.gaba_model_err, self.gaba_signal_err=\
+                self._xval_choose_funcs(fit_spectra,
+                                        reject_outliers,
+                                        fit_lb, fit_ub)
         # Otherwise, you had better supply a couple of callables that can be
         # used to fit these spectra!
         else:
             fitter = fit_func[0]
             self.gaba_func = fit_func[1]
-
-        # Do it!
+            self.gaba_model_err, self.gaba_signal_err = \
+                self._xval_model_error(fit_spectra, reject_outliers,
+                                       fit_lb, fit_ub, fitter, self.gaba_func)
+        # Either way, we end up fitting to everything in the end: 
         choose_transients, model, signal, params, this_idx = self._fit_helper(
                                          fit_spectra, reject_outliers,
                                          fit_lb, fit_ub, fitter)
@@ -489,14 +527,18 @@ class GABA(object):
 
         if fit_func is None:
             # Cross-validate!
-            fitter, self.glx_func = self._xval_choose_funcs(fit_spectra,
-                                                       reject_outliers,
-                                                       fit_lb, fit_ub)
+            fitter, self.glx_func, self.glx_model_err, self.glx_signal_err=\
+                self._xval_choose_funcs(fit_spectra,
+                                        reject_outliers,
+                                        fit_lb, fit_ub)
         # Otherwise, you had better supply a couple of callables that can be
         # used to fit these spectra!
         else:
             fitter = fit_func[0]
             self.glx_func = fit_func[1]
+            self.glx_model_err, self.glx_signal_err = \
+                self._xval_model_error(fit_spectra, reject_outliers,
+                                       fit_lb, fit_ub, fitter, self.glx_func)
 
         # Do it!
         choose_transients, model, signal, params, this_idx = self._fit_helper(
