@@ -75,4 +75,14 @@ def test_mrs_analyze():
     npt.assert_equal(os.system(cmd),0)
     # XXX We might want to analyze the output file here...
 
+def test_bootstrap_stat():
+    """
+    Test simple bootstrapping statistics
+    """
 
+    rand_array = np.random.randn(100, 1000)
+    arr_mean, mean_ci = ana.bootstrap_stat(rand_array)
+    npt.assert_array_equal(np.mean(rand_array, 0), arr_mean)
+
+    arr_var, var_ci = ana.bootstrap_stat(rand_array, stat=np.var)
+    npt.assert_array_equal(np.var(rand_array, 0), arr_var)

@@ -1,3 +1,11 @@
+"""
+MRS.api
+-------
+
+Functions and classes for representation and analysis of MRS data. This is the
+main module to use when performing routine analysis of MRS data.
+
+"""
 import numpy as np
 import scipy.stats as stats
 import nibabel as nib
@@ -7,19 +15,19 @@ import MRS.analysis as ana
 import MRS.utils as ut
 import MRS.freesurfer as fs
 
+
 class GABA(object):
     """
     Class for analysis of GABA MRS.
-    
     """
 
-    def __init__(self, in_file, line_broadening=5, zerofill=100,
+    def __init__(self, in_data, line_broadening=5, zerofill=100,
                  filt_method=None, min_ppm=-0.7, max_ppm=4.3):
         """
         Parameters
         ----------
 
-        in_file : str
+        in_data : str
             Path to a nifti file containing MRS data.
 
         line_broadening : float
@@ -37,10 +45,14 @@ class GABA(object):
            creatine and GABA peaks. 
         
         """
-        # The nifti files follow the strange nifti convention, but we want to
-        # use our own logic, which is transients on dim 0 and time on dim -1:
-        self.raw_data = np.transpose(nib.load(in_file).get_data(),
-                                     [1,2,3,4,5,0]).squeeze()
+        if isinstance(in_data, str):
+            # The nifti files follow the strange nifti convention, but we want
+            # to use our own logic, which is transients on dim 0 and time on
+            # dim -1:
+            self.raw_data = np.transpose(nib.load(in_data).get_data(),
+                                         [1,2,3,4,5,0]).squeeze()
+        elif isinstance(in_data, np.ndarray):
+            self.raw_data = in_data
 
         w_data, w_supp_data = ana.coil_combine(self.raw_data)
         f_hz, w_supp_spectra = ana.get_spectra(w_supp_data,
@@ -198,7 +210,6 @@ class GABA(object):
         return model, signal, params, ii
 
 
-
     def fit_creatine(self, reject_outliers=3.0, fit_lb=2.7, fit_ub=3.5):
         """
         Fit a model to the portion of the summed spectra containing the
@@ -271,13 +282,18 @@ class GABA(object):
                                           self.choline_params,
                                           self.cr_idx)
 
-    def _gaussian_helper(self, reject_outliers, fit_lb, fit_ub, phase_correct):
+
+    def _fit_helper(self, fit_spectra, reject_outliers, fit_lb, fit_ub,
+                    fit_func):
         """
         This is a helper function for fitting different segments of the spectrum
-        with Gaussian functions (GLX and GABA)
+        with Gaussian functions (GLX and GABA).
 
         Parameters
         ----------
+        fit_spectra : ndarray
+           The data to fit
+
         reject_outliers : float or bool
             Z score for outlier rejection. If set to `False`, not outlier
             rejection.
@@ -289,9 +305,8 @@ class GABA(object):
         fit_ub : float
             The upper bound of the part of the scale fit.
 
-        phase_correct : bool
-            Whether to perform first-order phase correction by the paramters
-            of the creatine Lorentzian fit.
+        fit_func: callable
+           e.g. `fit_gaussian`
 
         Returns
         -------
@@ -313,31 +328,11 @@ class GABA(object):
         this_idx : slice object
             A slice into the part of the spectrum that is fit
         """
-        # We need to fit the creatine, so that we know which transients to
-        # exclude in fitting this peak:
-        if not hasattr(self, 'creatine_params'):
-            self.fit_creatine()
-
-        fit_spectra = np.ones(self.diff_spectra.shape) * np.nan
-        # Silence warnings: 
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")
-            fit_spectra[self._cr_transients] =\
-                self.diff_spectra[self._cr_transients].copy()
-
-        if phase_correct: 
-            for ii, this_spec in enumerate(fit_spectra):
-                # Silence warnings: 
-                with warnings.catch_warnings():
-                    warnings.simplefilter("ignore")
-                    fit_spectra[ii] = ut.phase_correct_zero(this_spec,
-                                        self.creatine_params[ii, 3])
-
         # fit_idx should already be set from fitting the creatine params:
-        model, signal, params = ana.fit_gaussian(fit_spectra,
-                                                 self.f_ppm,
-                                                 lb=fit_lb,
-                                                 ub=fit_ub)
+        model, signal, params = fit_func(fit_spectra,
+                                         self.f_ppm,
+                                         lb=fit_lb,
+                                         ub=fit_ub)
 
         # We'll use these indices to reject outliers (or not):
         ii = np.ones(signal.shape[0], dtype=bool)
@@ -353,13 +348,140 @@ class GABA(object):
         return choose_transients, model, signal, params, this_idx
 
 
+    def _xval_choose_funcs(self, fit_spectra, reject_outliers, fit_lb, fit_ub,
+                           fitters=[ana.fit_gaussian,ana.fit_two_gaussian],
+                           funcs = [ut.gaussian, ut.two_gaussian]):
+        """ Helper function used to do split-half xvalidation to select among
+            alternative models"""
+
+        set1 = fit_spectra[::2]
+        set2 = fit_spectra[1::2]
+
+        errs = []
+        signal_select = [] 
+        # We can loop over functions and try each one out, checking the
+        # error in each:
+        for fitter in fitters:
+            models = []
+            signals = []
+            for this_set in [set1, set2]:
+                choose_transients, model, signal, params, this_idx =\
+                    self._fit_helper(this_set, reject_outliers,
+                                    fit_lb, fit_ub, fitter)
+                models.append(np.nanmean(model[choose_transients], 0))
+                signals.append(np.nanmean(signal[choose_transients], 0))
+
+                signal_select.append(signal[choose_transients])
+                
+            #Cross-validate!
+            errs.append(np.mean([ut.rmse(models[0], signals[1]),
+                                 ut.rmse(models[1], signals[0])]))
+        # We really only need to look at the first two:
+        signal_err = ut.rmse(np.nanmean(signal_select[0], 0),
+                             np.nanmean(signal_select[1], 0))
+        # Based on the errors, choose a function. Also report errors:
+        return (fitters[np.argmin(errs)], funcs[np.argmin(errs)], np.min(errs),
+                signal_err)
+            
+    def _xval_model_error(self, fit_spectra, reject_outliers, fit_lb, fit_ub,
+                           fitter, func):
+        """
+        Helper function for calculation of split-half cross-validation model
+        error and signal reliability.
+
+        """
+        set1 = fit_spectra[::2]
+        set2 = fit_spectra[1::2]
+        errs = []
+        signal_select = [] 
+        models = []
+        signals = []
+        for this_set in [set1, set2]:
+            choose_transients, model, signal, params, this_idx =\
+                self._fit_helper(this_set, reject_outliers,
+                                 fit_lb, fit_ub, fitter)
+            models.append(np.nanmean(model[choose_transients], 0))
+            signals.append(np.nanmean(signal[choose_transients], 0))
+
+            signal_select.append(signal[choose_transients])
+                
+        #Cross-validation error estimation:
+        model_err = np.mean([ut.rmse(models[0], signals[1]),
+                              ut.rmse(models[1], signals[0])])
+        # Also for the signal:
+        signal_err = ut.rmse(np.nanmean(signal_select[0], 0),
+                             np.nanmean(signal_select[1], 0))
+        # Based on the errors, choose a function. Also report errors:
+        return model_err, signal_err
+
+            
     def fit_gaba(self, reject_outliers=3.0, fit_lb=2.8, fit_ub=3.4,
-                 phase_correct=True):
+                 phase_correct=True, fit_func=None):
         """
-        Fit a Gaussian function to the GABA peak at ~ 3 ppm.
+        Fit either a single Gaussian, or a two-Gaussian to the GABA 3 PPM
+        peak.
+
+        Parameters
+        ----------
+        reject_outliers : float
+            Z-score criterion for rejection of outliers, based on their model
+            parameter
+
+        fit_lb, fit_ub : float
+            Frequency bounds (in ppm) for the region of the spectrum to be
+            fit.
+
+        phase_correct : bool
+            Where to perform zero-order phase correction based on the fit of
+            the creatine peaks in the sum spectra
+
+        fit_func : None or callable (default None).
+            If this is set to `False`, an automatic selection will take place,
+            choosing between a two-Gaussian and a single Gaussian, based on a
+            split-half cross-validation procedure. Otherwise, the requested
+            callable function will be fit. Needs to conform to the conventions
+            of `fit_gaussian`/`fit_two_gaussian` and
+            `ut.gaussian`/`ut.two_gaussian`.
+
         """
-        choose_transients, model, signal, params,this_idx= self._gaussian_helper(
-            reject_outliers, fit_lb, fit_ub, phase_correct)
+        # We need to fit the creatine, so that we know which transients to
+        # exclude in fitting this peak:
+        if not hasattr(self, 'creatine_params'):
+            self.fit_creatine()
+
+        fit_spectra = np.ones(self.diff_spectra.shape) * np.nan
+        # Silence warnings:
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            fit_spectra =\
+                self.diff_spectra[self._cr_transients].copy()
+
+        if phase_correct:
+            for ii, this_spec in enumerate(fit_spectra):
+                # Silence warnings:
+                with warnings.catch_warnings():
+                    warnings.simplefilter("ignore")
+                    fit_spectra[ii] = ut.phase_correct_zero(this_spec,
+                            self.creatine_params[self._cr_transients][ii, 3])
+
+        if fit_func is None:
+            # Cross-validate!
+            fitter, self.gaba_func, self.gaba_model_err, self.gaba_signal_err=\
+                self._xval_choose_funcs(fit_spectra,
+                                        reject_outliers,
+                                        fit_lb, fit_ub)
+        # Otherwise, you had better supply a couple of callables that can be
+        # used to fit these spectra!
+        else:
+            fitter = fit_func[0]
+            self.gaba_func = fit_func[1]
+            self.gaba_model_err, self.gaba_signal_err = \
+                self._xval_model_error(fit_spectra, reject_outliers,
+                                       fit_lb, fit_ub, fitter, self.gaba_func)
+        # Either way, we end up fitting to everything in the end: 
+        choose_transients, model, signal, params, this_idx = self._fit_helper(
+                                         fit_spectra, reject_outliers,
+                                         fit_lb, fit_ub, fitter)
 
         self._gaba_transients = choose_transients
         self.gaba_model = model
@@ -367,16 +489,61 @@ class GABA(object):
         self.gaba_params = params
         self.gaba_idx = this_idx
         mean_params = stats.nanmean(params, 0)
-        self.gaba_auc =  self._calc_auc(ut.gaussian, params, self.gaba_idx)
+
+        self.gaba_auc =  self._calc_auc(self.gaba_func, params, self.gaba_idx)
 
 
-    def fit_glx(self, reject_outliers=3.0, fit_lb=3.5, fit_ub=4.5,
-                 phase_correct=True):
+    def fit_glx(self, reject_outliers=3.0, fit_lb=3.6, fit_ub=3.9,
+                fit_func=None):
         """
-        Fit a Gaussian function to the Glu/Gln (GLX) peak at ~ 4 ppm).
+        Fit a Gaussian function to the Glu/Gln (GLX) peak at 3.75ppm, +/-
+        0.15ppm [Hurd2004]_.  Compare this model to a model
+        that treats the Glx signal as two gaussian peaks.  Glx signal
+        at. Select between them based on cross-validation
+
+        Parameters
+        ----------
+        reject_outliers : float or bool
+           If set to a float, this is the z score threshold for rejection (on
+           any of the parameters). If set to False, no outlier rejection
+
+        fit_lb, fit_ub : float
+           What part of the spectrum (in ppm) contains the GLX peak.
+           Default (3.5, 4.5)
+
+        scalefit : boolean
+           If this is set to true, attempt is made to tighten the fit to the
+           peak with a second round of fitting where the fitted curve
+           is fit with a scale factor. (default false)
+
+        References
+        ----------
+        .. [Hurd2004] 2004, Measurement of brain glutamate using TE-averaged
+        PRESS at 3T
+
         """
-        choose_transients, model, signal, params,this_idx=self._gaussian_helper(
-            reject_outliers, fit_lb, fit_ub, phase_correct)
+        # Use everything:
+        fit_spectra = self.diff_spectra.copy()
+
+        if fit_func is None:
+            # Cross-validate!
+            fitter, self.glx_func, self.glx_model_err, self.glx_signal_err=\
+                self._xval_choose_funcs(fit_spectra,
+                                        reject_outliers,
+                                        fit_lb, fit_ub)
+        # Otherwise, you had better supply a couple of callables that can be
+        # used to fit these spectra!
+        else:
+            fitter = fit_func[0]
+            self.glx_func = fit_func[1]
+            self.glx_model_err, self.glx_signal_err = \
+                self._xval_model_error(fit_spectra, reject_outliers,
+                                       fit_lb, fit_ub, fitter, self.glx_func)
+
+        # Do it!
+        choose_transients, model, signal, params, this_idx = self._fit_helper(
+                                         fit_spectra, reject_outliers,
+                                         fit_lb, fit_ub, fitter)
 
         self._glx_transients = choose_transients
         self.glx_model = model
@@ -384,18 +551,18 @@ class GABA(object):
         self.glx_params = params
         self.glx_idx = this_idx
         mean_params = stats.nanmean(params, 0)
-        self.glx_auc =  self._calc_auc(ut.gaussian, params, self.glx_idx)
+
+        self.glx_auc =  self._calc_auc(self.glx_func, params, self.glx_idx)
+
 
     def fit_naa(self, reject_outliers=3.0, fit_lb=1.8, fit_ub=2.4,
                  phase_correct=True):
         """
-        Fit a Gaussian function to the NAA peak at ~ 2 ppm.
-        Example of fitting inverted peak:
-        Foerster et al. 2013, An imbalance between excitatory and
-        inhibitory neurotransmitters in amyothrophic lateral sclerosis
-        revealed by use of 3T proton MRS
+        Fit a Lorentzian function to the NAA peak at ~ 2 ppm.  Example of
+        fitting inverted peak: Foerster et al. 2013, An imbalance between
+        excitatory and inhibitory neurotransmitters in amyothrophic lateral
+        sclerosis revealed by use of 3T proton MRS
         """
-
         model, signal, params = ana.fit_lorentzian(self.diff_spectra,
                                                    self.f_ppm,
                                                    lb=fit_lb,
@@ -410,11 +577,9 @@ class GABA(object):
         self.naa_auc = self._calc_auc(ut.lorentzian, params, self.naa_idx)
 
 
-    def fit_glx2(self, reject_outliers=3.0, fit_lb=3.6, fit_ub=3.9, phase_correct=True, scalefit=False):
+    def fit_glx2(self, reject_outliers=3.0, fit_lb=3.6, fit_ub=3.9,
+                 phase_correct=True, scalefit=False):
         """
-        Fit a model to the portion of the diff spectra containing the
-        glx signal. This treats the Glx signal as two gaussian peaks.
-        Glx signal at 3.75ppm, +/- 0.15ppm (Hurd et al. 2004)
 
         Parameters
         ----------
@@ -427,38 +592,22 @@ class GABA(object):
            Default (3.5, 4.2)
 
         scalefit : boolean
-           If this is set to true, attempt is made to prevent over or under-fitting
-           with a second round of fitting where the fitted curve is fit with
-           a scale factor. (default false)
+           If this is set to true, attempt is made to tighten the fit to the
+           peak with a second round of fitting where the fitted curve
+           is fit with a scale factor. (default false)
 
-        References
-        ----------
-        Hurd et al. 2004, Measurement of brain glutamate using TE-averaged PRESS at 3T
         """
         if not hasattr(self, 'creatine_params'):
             self.fit_creatine()
-
-#        fit_spectra = np.ones(self.diff_spectra.shape) * np.nan
-#
-#        # Silence warnings:
-#        with warnings.catch_warnings():
-#            warnings.simplefilter("ignore")
-#            fit_spectra[self._cr_transients] =\
-#                self.diff_spectra[self._cr_transients].copy()
-#
-#        if phase_correct:
-#            for ii, this_spec in enumerate(fit_spectra):
-#                # Silence warnings:
-#                with warnings.catch_warnings():
-#                    warnings.simplefilter("ignore")
-#                    fit_spectra[ii] = ut.phase_correct_zero(this_spec,
-#                                        self.creatine_params[ii, 3])
 
         fit_spectra = self.diff_spectra
 
         # We fit a two-gaussian function to this entire chunk of the spectrum,
         # to catch both glx peaks
-        model, signal, params = ana.fit_two_gaussian(fit_spectra, self.f_ppm,lb=fit_lb, ub=fit_ub)
+        model, signal, params = ana.fit_two_gaussian(fit_spectra,
+                                                     self.f_ppm,
+                                                     lb=fit_lb,
+                                                     ub=fit_ub)
 
         # Use an array of ones to index everything but the outliers and nans:
         ii = np.ones(signal.shape[0], dtype=bool)
@@ -475,27 +624,29 @@ class GABA(object):
 
         # Now we separate params of the two glx peaks from each other
         # (remember that they both share offset and drift!):
-        self.glxp1_params = params[:, (0,2,4,6,7)]
-        self.glxp2_params = params[:, (1,3,5,6,7)]
+        self.glxp1_params = params[:, (0, 2, 4, 6, 7)]
+        self.glxp2_params = params[:, (1, 3, 5, 6, 7)]
 
         self.glx2_idx = ut.make_idx(self.f_ppm, fit_lb, fit_ub)
 
         # We'll need to generate the model predictions from these parameters,
         # because what we're holding in 'model' is for both together:
         self.glxp1_model = np.zeros((self.glxp1_params.shape[0],
-                                    np.abs(self.glx2_idx.stop-self.glx2_idx.start)))
+                                np.abs(self.glx2_idx.stop-self.glx2_idx.start)))
 
         self.glxp2_model = np.zeros((self.glxp2_params.shape[0],
-                                    np.abs(self.glx2_idx.stop-self.glx2_idx.start)))
+                                np.abs(self.glx2_idx.stop-self.glx2_idx.start)))
 
         for idx in range(self.glxp2_params.shape[0]):
-            self.glxp2_model[idx] = ut.gaussian(self.f_ppm[self.glx2_idx],*self.glxp2_params[idx])
+            self.glxp2_model[idx] = ut.gaussian(self.f_ppm[self.glx2_idx],
+                                                *self.glxp2_params[idx])
             self.glxp1_model[idx] = ut.gaussian(self.f_ppm[self.glx2_idx],
                                                     *self.glxp1_params[idx])
 
         if scalefit:
             combinedmodel = self.glxp2_model + self.glxp1_model
-            scalefac, scalemodel = ana._do_scale_fit(self.f_ppm[self.glx2_idx], signal,combinedmodel)
+            scalefac, scalemodel = ana._do_scale_fit(
+                self.f_ppm[self.glx2_idx], signal,combinedmodel)
             # Reject outliers:
             scalemodel, signal, params, ii = self._rm_outlier_by_amp(params,
                                                                 scalemodel,
@@ -507,8 +658,10 @@ class GABA(object):
 
 
         self.glx2_signal = signal
-        self.glx2_auc = (self._calc_auc(ut.gaussian, self.glxp2_params, self.glx2_idx) +
-                        self._calc_auc(ut.gaussian, self.glxp1_params, self.glx2_idx))
+        self.glx2_auc = (
+            self._calc_auc(ut.gaussian, self.glxp2_params, self.glx2_idx) +
+            self._calc_auc(ut.gaussian, self.glxp1_params, self.glx2_idx))
+
 
     def _rm_outlier_by_amp(self, params, model, signal, ii):
         """

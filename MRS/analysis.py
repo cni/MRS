@@ -19,13 +19,49 @@ import nitime.analysis as nta
 import scipy.fftpack as fft
 import scipy.integrate as spi
 from scipy.integrate import trapz, simps
+import scipy.stats as stats
 
 import MRS.leastsqbound as lsq
 import MRS.utils as ut
 import MRS.optimize as mopt
 
 
-def separate_signals(data, w_idx=[1,2,3]):
+def bootstrap_stat(arr, stat=np.mean, n_iters=1000, alpha=0.05):
+    """
+    Produce a boot-strap distribution of the mean of an array on axis 0
+
+    Parameters
+    ---------
+    arr : ndarray
+       The array with data to be bootstrapped
+
+    stat : callable
+        The statistical function to call. will be called as `stat(arr, 0)`, so
+        needs to accept that call signature.
+
+    n_iters : int
+        The number of bootstrap iterations to sample
+
+    alpha : float
+       The confidence interval size will be 1-alpha
+
+    """
+    stat_orig = stat(arr, 0)
+
+    boot_arr = np.empty((arr.shape[-1] , n_iters))
+    for ii in xrange(n_iters):
+        this_arr=arr[np.random.random_integers(0, arr.shape[0]-1, arr.shape[0])]
+        boot_arr[:, ii] = stat(this_arr, 0)
+
+    eb = np.array([stats.scoreatpercentile(boot_arr[xx], 1-(alpha/2)) -
+                   stats.scoreatpercentile(boot_arr[xx], alpha/2)
+                   for xx in range(boot_arr.shape[0])])
+
+    return stat_orig, eb
+
+
+
+def separate_signals(data, w_idx=[1, 2, 3]):
    """
    Separate the water and non-water data from each other
 
@@ -678,8 +714,8 @@ def scalemodel(model, scalefac):
 
 def fit_gaussian(spectra, f_ppm, lb=2.6, ub=3.6):
    """
-   Fit a gaussian function to the difference spectra to be used for estimation of
-   the GABA peak.
+   Fit a gaussian function to the difference spectra to be used for estimation
+   of the GABA peak.
    
    Parameters
    ----------

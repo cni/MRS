@@ -1,5 +1,6 @@
 import MRS
 import MRS.qc as qc
+import os
 from nibabel.tmpdirs import InTemporaryDirectory
 
 test_path = os.path.join(MRS.__path__[0], 'tests')
