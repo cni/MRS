@@ -84,3 +84,43 @@ def motioncheck(ref_file, end_file, thres=5.0):
 
 
     return rms, passed
+
+
+def detectoutlier(in_list,thres=3.0): 
+    """ 
+    Detects outliers more than X standard deviations from mean. 
+ 
+    Parameters 
+    ----------   
+    in_list: list of floats 
+        A list of measures for which outliers need to be detected. 
+ 
+    thres: float 
+        Threshold number of standard deviations before a measure is considered an outlier. 
+        Default = 3  
+ 
+    Returns 
+    ------- 
+    outlier_idx: list of boolean  
+        A list indicating if a measure is an outlier (true) or not (false). 
+    """  
+     
+    mean = np.nanmean(in_list) 
+    std = np.nanstd(in_list) 
+ 
+    # calculate cutoffs 
+    uppthres = mean + thres*std 
+    lowthres = mean - thres*std 
+     
+    # initialize list of all false 
+    outlier_idx = [False]*len(in_list) 
+ 
+    # detect outliers 
+    idx = 0 
+    for i in in_list: 
+        if i>uppthres or i<lowthres:  
+           outlier_idx[idx]=True 
+        idx+=1 
+ 
+    return outlier_idx  
+
