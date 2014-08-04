@@ -86,7 +86,7 @@ def motioncheck(ref_file, end_file, thres=5.0):
     return rms, passed
 
 
-def detectoutlier(in_list,thres=3.0): 
+def detectoutlier(in_list,thres=2.5): 
     """ 
     Detects outliers more than X standard deviations from mean. 
  
@@ -97,7 +97,7 @@ def detectoutlier(in_list,thres=3.0):
  
     thres: float 
         Threshold number of standard deviations before a measure is considered an outlier. 
-        Default = 3  
+        Default = 2.5
  
     Returns 
     ------- 
