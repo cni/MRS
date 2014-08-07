@@ -591,8 +591,8 @@ def detect_outliers(in_list,thresh=3.0):
     std = np.nanstd(in_list)
 
     # calculate cutoffs 
-    uppthres = mean + thres * std
-    lowthres = mean - thres * std
+    uppthresh = mean + thresh * std
+    lowthresh = mean - thresh * std
 
     # initialize list of all false 
     outlier_idx = [False] * len(in_list)
@@ -600,7 +600,7 @@ def detect_outliers(in_list,thresh=3.0):
     # detect outliers 
     idx = 0
     for i in in_list:
-        if i > uppthres or i < lowthres:
+        if i > uppthresh or i < lowthresh:
            outlier_idx[idx] = True
         idx += 1
 
