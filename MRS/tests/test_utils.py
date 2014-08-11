@@ -44,3 +44,16 @@ def test_lorentzian():
     baseline1 = 0
     ut.lorentzian(freq, freq0, area, hwhm, phase, baseline0, baseline1)
     
+def test_detect_outliers():
+    """
+    Test that outlier detection works.
+    """
+    # Make random numbers, with two outliers
+    b = np.random.rand(1,1000)
+    st = np.std(b)
+    b[0][0] = b[0][0] + 5 * st
+    b[0][1] = b[0][1] - 5 * st
+    thresh = 2.5
+    idx = ut.detect_outliers(b,thresh)
+    npt.assert_equal(sum(x),2)
+     
