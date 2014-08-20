@@ -2,12 +2,13 @@
 quality control for MRS data
 """ 
 import os
+import os.path as op
 import nibabel as nib
 import numpy as np
 import nipype.pipeline.engine as pe
 from nipype.interfaces import fsl
 
-def motioncheck(ref_file, end_file, thres=5.0):
+def motioncheck(ref_file, end_file, out_path=None, thres=5.0):
     """
     Checks motion between structural scans of the same modality. 
     Ideally obtained at the beginning and end of a scanning session.
@@ -51,17 +52,18 @@ def motioncheck(ref_file, end_file, thres=5.0):
     refax = ref_data[:, :, :, 0, np.newaxis]
     endax = end_data[:, :, :, 0, np.newaxis]
 
-    path = os.path.dirname(ref_file)
-
+    if out_path is None:
+        path = os.path.dirname(ref_file)
+    
     refax_img = nib.Nifti1Image(refax, ref_aff)
-    nib.save(refax_img, path+'/refax.nii.gz')
+    nib.save(refax_img, op.join(out_path, 'refax.nii.gz'))
     endax_img = nib.Nifti1Image(endax, ref_aff)
-    nib.save(endax_img, path+'/endax.nii.gz')
+    nib.save(endax_img, op.join(out_path, 'endax.nii.gz'))
 
     # realignment
-    ref_file = path + '/refax.nii.gz'
-    in_file = path + '/endax.nii.gz'
-    mat_file = path + '/mat.nii.gz'
+    ref_file = op.join(out_path, 'refax.nii.gz')
+    in_file = op.join(out_path, 'endax.nii.gz')
+    mat_file = op.join(out_path, 'mat.nii.gz')
 
     mcflt = fsl.MCFLIRT(in_file=in_file, ref_file=ref_file, save_mats=True,
                         cost='mutualinfo')

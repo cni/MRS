@@ -13,6 +13,6 @@ def test_motion():
     test motion detection
     """
     with InTemporaryDirectory() as tmpdir:
-        qcres=qc.motioncheck(ref_file,end_file, thres=5.0)
+        qcres=qc.motioncheck(ref_file, end_file, out_path='.', thres=5.0)
 
 
