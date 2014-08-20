@@ -28,6 +28,12 @@ description = "MRS analysis software"
 
 long_description = """
 
+The STANFORD CNI MRS ANALYSIS LIBRARY (SMAL)
+--------------------------------------------
+
+This library contains implementations 
+
+
 
 Copyright (c) 2013-, Ariel Rokem, Grace Tang.
 
@@ -42,9 +48,9 @@ MAINTAINER = "Ariel Rokem"
 MAINTAINER_EMAIL = "arokem@gmail.com"
 DESCRIPTION = description
 LONG_DESCRIPTION = long_description
-URL = "http://github.com/arokem/MRS"
+URL = "http://github.com/cni/MRS"
 DOWNLOAD_URL = "http://github.com/arokem/MRS"
-LICENSE = "GPL"
+LICENSE = "MIT"
 AUTHOR = "Ariel Rokem, Grace Tang"
 AUTHOR_EMAIL = "arokem@gmail.com"
 PLATFORMS = "OS Independent"
@@ -56,4 +62,4 @@ PACKAGES = []
 BIN = 'bin/'            
 PACKAGE_DATA = {"MRS": ["LICENSE"]}
 
-REQUIRES = ["numpy", "matplotlib", "scipy"]
+REQUIRES = ["numpy", "matplotlib", "scipy", "nipy", "nitime", "nipype"]
