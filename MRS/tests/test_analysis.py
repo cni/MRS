@@ -12,9 +12,10 @@ import nibabel as nib
 import MRS
 import MRS.utils as ut
 import MRS.analysis as ana
+import MRS.data as mrd
 
-test_path = os.path.join(MRS.__path__[0], 'tests')
-file_name = os.path.join(test_path, 'pure_gaba_P64024.nii.gz')
+data_folder = os.path.join(os.path.join(os.path.expanduser('~'), '.mrs_data'))
+file_name = os.path.join(data_folder, 'pure_gaba_P64024.nii.gz')
 
 def test_separate_signals():
     """

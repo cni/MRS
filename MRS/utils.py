@@ -357,10 +357,16 @@ def line_broadening(ts, width):
 
 def freq_to_ppm(f, water_hz=0.0, water_ppm=4.7, hz_per_ppm=127.680):
     """
-    Convert a set of numbers from frequeny in hertz to chemical shift in ppm
+    Convert a set of numbers from frequenxy in hertz to chemical shift in ppm
     """
     return water_ppm - (f - water_hz)/hz_per_ppm
 
+
+def ppm_to_freq(ppm, water_hz=0.0, water_ppm=4.7, hz_per_ppm=127.680):
+    """
+    Convert an array from chemical shift to Hz
+    """
+    return water_hz + (ppm - water_ppm) * hz_per_ppm
 
 def ppm_idx(f_ppm, lb, ub):
     """

@@ -1,9 +1,10 @@
 import os
 import MRS
 import MRS.api as api
+import os
 
-test_path = os.path.join(MRS.__path__[0], 'tests')
-file_name = os.path.join(test_path, 'pure_gaba_P64024.nii.gz')
+data_folder = os.path.join(os.path.join(os.path.expanduser('~'), '.mrs_data'))
+file_name = os.path.join(data_folder, 'pure_gaba_P64024.nii.gz')
 
 def test_fitting():
     """

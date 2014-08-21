@@ -118,7 +118,7 @@ def coil_combine(data, w_idx=[1,2,3], coil_dim=2, sampling_rate=5000.):
        The data as it comes from the scanner (read using the functions in
        files.py), with shape (transients, echos, coils, time points)
     
-    w_idx : tuple
+    w_idx : list
        The indices to the non-water-suppressed transients. Per default we take
         the 2nd-4th transients. We dump the first one, because it seems to be
         quite different than the rest of them...
@@ -228,7 +228,7 @@ def coil_combine(data, w_idx=[1,2,3], coil_dim=2, sampling_rate=5000.):
     return weighted_w_data.squeeze(), weighted_w_supp_data.squeeze()
 
 
-def get_spectra(data, filt_method = dict(lb=0.1, filt_order=256),
+def get_spectra(data, filt_method=dict(lb=0.1, filt_order=256),
                 spect_method=dict(NFFT=1024, n_overlap=1023, BW=2),
                 phase_zero=None, line_broadening=None, zerofill=None):
     """
