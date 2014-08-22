@@ -135,7 +135,9 @@ def fetch_from_sdr(folder=data_folder, data='test'):
 
     elif data == 'example':
         md5_dict = {'12_1_PROBE_MEGA_L_Occ.nii.gz':
-                    'a0571606c1caa16a9d9b00847771bc94'}
+                    'a0571606c1caa16a9d9b00847771bc94',
+                     '5062_2_1.nii.gz':
+                    '6f77fb5134bc2841bdfc954390f0f4a4'}
         
     if not os.path.exists(folder):
         print('Creating new directory %s' % folder)
