@@ -132,6 +132,7 @@ def fetch_from_sdr(folder=data_folder, data='test'):
                 '5182_15_1.nii.gz': 'a5a307b581620184baf868cd0df81f89',
                 'data.mat': 'a6275698f2220c65994354d412e6d82e',
                 'pure_gaba_P64024.nii.gz': 'f3e09ec0f00bd9a03910b19bfe731afb'}
+
     elif data == 'example':
         md5_dict = {'12_1_PROBE_MEGA_L_Occ.nii.gz':
                     'a0571606c1caa16a9d9b00847771bc94'}
@@ -139,17 +140,19 @@ def fetch_from_sdr(folder=data_folder, data='test'):
     if not os.path.exists(folder):
         print('Creating new directory %s' % folder)
         os.makedirs(folder)
-        print('Downloading MRS data from SDR ...')
+        
+    for k, v in md5_dict.items():
+        fname = pjoin(folder, k)
+        if not os.path.exists(fname):
+            print('Downloading %s from SDR ...'%k)
+            _get_file_data(fname, url + k)
+            check_md5(fname, v)
+        else:
+            print('File %s is already in place. If you want to fetch it again, please first remove it from the folder %s ' % (fname, folder))
 
-        for k, v in md5_dict.items():
-            _get_file_data(pjoin(folder, k), url + k)
-            check_md5(pjoin(folder, k), v)
-
-        print('Done.')
-        print('Files copied in folder %s' % folder)
-    else:
-        print('Dataset is already in place. If you want to fetch it again, please first remove the folder %s ' % folder)
-
+    print('Done.')
+    print('Files copied in folder %s' % folder)
+        
 
 
 
