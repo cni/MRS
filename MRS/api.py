@@ -35,8 +35,12 @@ class GABA(object):
         Parameters
         ----------
 
-        in_data : str
-            Path to a nifti file containing MRS data.
+        in_data : ndarray, or str
+            An array of shape (transients, echos, channels timepoints), or a
+            full path to a nifti file containing MRS data, with shape:
+            (timepoints, 1, 1, transients, echos, channels). If the data
+            follows the nifti convention, it will be reshaped to the array
+            shape. 
 
         w_idx : list (optional)
             The indices to the non-water-suppressed transients. Per default we

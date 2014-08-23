@@ -8,7 +8,13 @@
    __not_case_sensitive__, so only one target definition is needed for
    nipy, NIPY, Nipy, etc...
 
-
+.. nbviewer
+.. _nbviewer-index: http://nbviewer.ipython.org/github/arokem/MRS/blob/refactor-for-release/ipynb/index.ipynb
+   
+.. Stanford
+.. _cni: http://cni.stanford.edu/
+.. _SDR: https://sdr.stanford.edu/
+.. _purl: http://purl.stanford.edu/fn662rv4961
 
 .. MRS-github
 .. _mrs-github: http://github.com/cni/MRS
