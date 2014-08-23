@@ -1,19 +1,18 @@
 
-Stanford CNI MRS library
-========================
+The Stanford CNI MRS library (SMAL) Documentation
+=================================
+
+This library provides algorithms and methods to read and analyze data from
+Magnetic Resonance Spectroscopy (MRS) experiments. It provides an API for
+fitting models of the spectral line-widths of several different molecular
+species, and quantify their relative abundance in human brain tissue.
 
 Contents:
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    getting_started
    reference/index
-
-
-Indices and tables
-==================
-
+   
 * :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
