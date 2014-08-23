@@ -9,6 +9,16 @@
    nipy, NIPY, Nipy, etc...
 
 
+.. Stanford
+
+.. _cni: http://cni.stanford.edu
+.. _sdr: http://sdr.stanford.edu
+.. _sdr-purl: http://purl.stanford.edu/fn662rv4961
+
+
+.. nbviewer
+
+.. _nbviewer-index: http://nbviewer.ipython.org/github/arokem/MRS/blob/refactor-for-release/ipynb/index.ipynb
 
 .. MRS-github
 .. _mrs-github: http://github.com/cni/MRS

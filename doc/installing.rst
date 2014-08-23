@@ -35,7 +35,7 @@ Getting the `SMAL` code
 Once you have downloaded and installed these dependencies, you can go ahead and
 install `SMAL`. The source code can be downloaded from our `github`__
 repository. The most recent cutting edge version of the code can be downloaded
-in `zip`__ or `tar`__ formats. A stable release version is availabe to dowload `here`__  
+in `zip`__ or `tar`__ formats. A stable release version is availabe to download `here`__  
 
 __ mrs-github_
 __ download-zip_

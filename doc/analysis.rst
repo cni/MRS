@@ -1,8 +1,8 @@
 Data analysis in SMAL
 ---------------------
 
-We provide several examples of data analysis as  `IPython`_ notebooks. These
-can be viewed and downloaded `here`_.
+We provide several examples of data analysis as  `IPython`__ notebooks. These
+can be viewed and downloaded `here`__.
 
 __ nbviewer
 
