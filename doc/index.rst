@@ -7,7 +7,9 @@ Magnetic Resonance Spectroscopy (MRS) experiments. It provides an API for
 fitting models of the spectral line-widths of several different molecular
 species, and quantify their relative abundance in human brain tissue.
 
-Contents:
+
+.. image:: _static/front-page.png
+
 
 .. toctree::
    :maxdepth: 1
