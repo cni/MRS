@@ -113,8 +113,12 @@ main module to use when performing routine analysis of MRS data.</p>
 <dt id="MRS.api.GABA.__init__">
 <tt class="descname">__init__</tt><big>(</big><em>in_data, w_idx=[1, 2, 3], line_broadening=5, zerofill=100, filt_method=None, spect_method={'BW': 2, 'NFFT': 1024, 'n_overlap': 1023}, min_ppm=-0.7, max_ppm=4.3, sampling_rate=5000.0</em><big>)</big><a class="headerlink" href="#MRS.api.GABA.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="docutils">
-<dt>in_data <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd>Path to a nifti file containing MRS data.</dd>
+<dt>in_data <span class="classifier-delimiter">:</span> <span class="classifier">ndarray, or str</span></dt>
+<dd>An array of shape (transients, echos, channels timepoints), or a
+full path to a nifti file containing MRS data, with shape:
+(timepoints, 1, 1, transients, echos, channels). If the data
+follows the nifti convention, it will be reshaped to the array
+shape.</dd>
 <dt>w_idx <span class="classifier-delimiter">:</span> <span class="classifier">list (optional)</span></dt>
 <dd>The indices to the non-water-suppressed transients. Per default we
 take the 2nd-4th transients. We dump the first one, because it

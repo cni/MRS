@@ -9,7 +9,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Getting started &mdash; MRS 0.1 documentation</title>
+    <title>Organizing your data &mdash; MRS 0.1 documentation</title>
     
     <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -27,8 +27,9 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="MRS 0.1 documentation" href="index.html" />
-    <link rel="next" title="Installing SMAL" href="installing.html" />
-    <link rel="prev" title="The Stanford CNI MRS library (SMAL) Documentation" href="index.html" /> 
+    <link rel="up" title="Getting started" href="getting_started.html" />
+    <link rel="next" title="Data analysis in SMAL" href="analysis.html" />
+    <link rel="prev" title="Installing SMAL" href="installing.html" /> 
   </head>
   <body>
     <div class="related">
@@ -41,25 +42,26 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="installing.html" title="Installing SMAL"
+          <a href="analysis.html" title="Data analysis in SMAL"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="index.html" title="The Stanford CNI MRS library (SMAL) Documentation"
+          <a href="installing.html" title="Installing SMAL"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">MRS 0.1 documentation</a> &raquo;</li> 
+        <li><a href="index.html">MRS 0.1 documentation</a> &raquo;</li>
+          <li><a href="getting_started.html" accesskey="U">Getting started</a> &raquo;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="index.html"
-                        title="previous chapter">The Stanford CNI MRS library (SMAL) Documentation</a></p>
-  <h4>Next topic</h4>
   <p class="topless"><a href="installing.html"
-                        title="next chapter">Installing SMAL</a></p>
+                        title="previous chapter">Installing SMAL</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="analysis.html"
+                        title="next chapter">Data analysis in SMAL</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
-    <li><a href="_sources/getting_started.txt"
+    <li><a href="_sources/data.txt"
            rel="nofollow">Show Source</a></li>
   </ul>
 <div id="searchbox" style="display: none">
@@ -83,15 +85,25 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="getting-started">
-<h1>Getting started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="installing.html">Installing SMAL</a></li>
-<li class="toctree-l1"><a class="reference internal" href="data.html">Organizing your data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="analysis.html">Data analysis in SMAL</a></li>
-</ul>
-</div>
+  <div class="section" id="organizing-your-data">
+<h1>Organizing your data<a class="headerlink" href="#organizing-your-data" title="Permalink to this headline">¶</a></h1>
+<p>For its analysis, <cite>SMAL</cite> uses the raw MRS data, acquired with a phased array
+coil. To achieve proper coil combination, we assume that the raw data from each
+coil is provided as as a separate channel in the data. There are defaults set
+for the number of non-water-suppressed transients, and sampling rate, but these
+can be set as optional inputs to the user interface.</p>
+<p>The main <a class="reference internal" href="reference/MRS.api.html#module-MRS.api" title="MRS.api"><tt class="xref py py-mod docutils literal"><span class="pre">MRS.api</span></tt></a> user interface assumes that the data is organized as an
+array with shape: <cite>(transients, echos, channels, timepoints)</cite>. For example,
+typical data might have the shape: <cite>(68, 2, 32, 4096)</cite>, where 68 transients are
+acquired, each with two echos (GABA-edited and not GABA-edited), with a
+32-channel phased array coil, acquiring 4096 samples in each FID curve at 5 kHz.</p>
+<p>Alternatively, we can accept a full path to the data saved as a nifti
+file. Following the nifti convention, the data array in the file needs to be
+saved with the shape:  <cite>(transients, 1, 1, echos, channels, timepoints)</cite>. That
+is, for this data, the data array in the nifti file will have the shape:
+<cite>(4096, 1, 1, 68, 2, 32)</cite>. Data acquired at the <a class="reference external" href="http://cni.stanford.edu/">Stanford CNI</a>, will be saved
+as a nifti file in this convention (see also the example data provided at the
+<a class="reference external" href="http://purl.stanford.edu/fn662rv4961">Stanford Data Repository</a>).</p>
 </div>
 
 
@@ -110,12 +122,13 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="installing.html" title="Installing SMAL"
+          <a href="analysis.html" title="Data analysis in SMAL"
              >next</a> |</li>
         <li class="right" >
-          <a href="index.html" title="The Stanford CNI MRS library (SMAL) Documentation"
+          <a href="installing.html" title="Installing SMAL"
              >previous</a> |</li>
-        <li><a href="index.html">MRS 0.1 documentation</a> &raquo;</li> 
+        <li><a href="index.html">MRS 0.1 documentation</a> &raquo;</li>
+          <li><a href="getting_started.html" >Getting started</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

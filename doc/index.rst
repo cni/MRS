@@ -8,12 +8,7 @@ fitting models of the spectral line-widths of several different molecular
 species, and quantify their relative abundance in human brain tissue.
 
 
-.. image:: _static/resonances.png
-
-.. image:: _static/gaba.svg
-
-
-"GABA 3D ball" by Jynto (talk) - Own workThis chemical image was created with Discovery Studio Visualizer.. Licensed under Creative Commons Zero, Public Domain Dedication via Wikimedia Commons - http://commons.wikimedia.org/wiki/File:GABA_3D_ball.png#mediaviewer/File:GABA_3D_ball.png
+.. image:: _static/front-page.png
 
 
 .. toctree::
