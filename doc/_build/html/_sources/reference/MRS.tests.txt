@@ -1,0 +1,151 @@
+.. AUTO-GENERATED FILE -- DO NOT EDIT!
+
+Module: :mod:`tests.test_analysis`
+----------------------------------
+.. automodule:: MRS.tests.test_analysis
+
+.. currentmodule:: MRS.tests.test_analysis
+.. autosummary::
+
+   test_bootstrap_stat
+   test_coil_combine
+   test_get_spectra
+   test_mrs_analyze
+   test_separate_signals
+
+.. AUTO-GENERATED FILE -- DO NOT EDIT!
+
+Module: :mod:`tests.test_api`
+-----------------------------
+.. automodule:: MRS.tests.test_api
+
+.. currentmodule:: MRS.tests.test_api
+.. autosummary::
+
+   test_fitting
+
+.. AUTO-GENERATED FILE -- DO NOT EDIT!
+
+Module: :mod:`tests.test_io`
+----------------------------
+.. automodule:: MRS.tests.test_io
+
+.. currentmodule:: MRS.tests.test_io
+.. autosummary::
+
+   test_get_data
+
+.. AUTO-GENERATED FILE -- DO NOT EDIT!
+
+Module: :mod:`tests.test_qc`
+----------------------------
+.. automodule:: MRS.tests.test_qc
+
+.. currentmodule:: MRS.tests.test_qc
+.. autosummary::
+
+   InTemporaryDirectory
+   test_motion
+
+.. AUTO-GENERATED FILE -- DO NOT EDIT!
+
+Module: :mod:`tests.test_utils`
+-------------------------------
+.. automodule:: MRS.tests.test_utils
+
+.. currentmodule:: MRS.tests.test_utils
+.. autosummary::
+
+   test_detect_outliers
+   test_line_broadening
+   test_lorentzian
+   test_phase_correct_first
+   test_phase_correct_zero
+
+
+.. currentmodule:: MRS.tests.test_analysis
+test_bootstrap_stat
+~~~~~~~~~~~~~~~~~~~
+
+.. autofunction:: test_bootstrap_stat
+
+test_coil_combine
+~~~~~~~~~~~~~~~~~
+
+.. autofunction:: test_coil_combine
+
+test_get_spectra
+~~~~~~~~~~~~~~~~
+
+.. autofunction:: test_get_spectra
+
+test_mrs_analyze
+~~~~~~~~~~~~~~~~
+
+.. autofunction:: test_mrs_analyze
+
+test_separate_signals
+~~~~~~~~~~~~~~~~~~~~~
+
+.. autofunction:: test_separate_signals
+
+
+.. currentmodule:: MRS.tests.test_api
+test_fitting
+~~~~~~~~~~~~
+
+.. autofunction:: test_fitting
+
+
+.. currentmodule:: MRS.tests.test_io
+test_get_data
+~~~~~~~~~~~~~
+
+.. autofunction:: test_get_data
+
+
+.. currentmodule:: MRS.tests.test_qc
+
+:class:`InTemporaryDirectory`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+.. autoclass:: InTemporaryDirectory
+  :members:
+  :undoc-members:
+  :show-inheritance:
+
+  .. automethod:: __init__
+
+test_motion
+~~~~~~~~~~~
+
+.. autofunction:: test_motion
+
+
+.. currentmodule:: MRS.tests.test_utils
+test_detect_outliers
+~~~~~~~~~~~~~~~~~~~~
+
+.. autofunction:: test_detect_outliers
+
+test_line_broadening
+~~~~~~~~~~~~~~~~~~~~
+
+.. autofunction:: test_line_broadening
+
+test_lorentzian
+~~~~~~~~~~~~~~~
+
+.. autofunction:: test_lorentzian
+
+test_phase_correct_first
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. autofunction:: test_phase_correct_first
+
+test_phase_correct_zero
+~~~~~~~~~~~~~~~~~~~~~~~
+
+.. autofunction:: test_phase_correct_zero
+
