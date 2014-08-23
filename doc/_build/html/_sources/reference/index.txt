@@ -1,0 +1,18 @@
+.. AUTO-GENERATED FILE -- DO NOT EDIT!
+
+API Reference
+=============
+
+.. toctree::
+
+   MRS.rst
+   MRS.analysis.rst
+   MRS.api.rst
+   MRS.corr.rst
+   MRS.data.rst
+   MRS.freesurfer.rst
+   MRS.leastsqbound.rst
+   MRS.optimize.rst
+   MRS.qc.rst
+   MRS.tests.rst
+   MRS.utils.rst

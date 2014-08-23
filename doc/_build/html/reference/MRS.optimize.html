@@ -1,0 +1,158 @@
+<html>
+</html>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>optimize &mdash; MRS 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="MRS 0.1 documentation" href="../index.html" />
+    <link rel="up" title="API Reference" href="index.html" />
+    <link rel="next" title="qc" href="MRS.qc.html" />
+    <link rel="prev" title="leastsqbound" href="MRS.leastsqbound.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="MRS.qc.html" title="qc"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="MRS.leastsqbound.html" title="leastsqbound"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">MRS 0.1 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">API Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#"><tt class="docutils literal"><span class="pre">optimize</span></tt></a><ul>
+<li><a class="reference internal" href="#err-func">err_func</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="MRS.leastsqbound.html"
+                        title="previous chapter"><tt class="docutils literal"><span class="pre">leastsqbound</span></tt></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="MRS.qc.html"
+                        title="next chapter"><tt class="docutils literal"><span class="pre">qc</span></tt></a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/reference/MRS.optimize.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-MRS.optimize">
+<span id="optimize"></span><h1><tt class="xref py py-mod docutils literal"><span class="pre">optimize</span></tt><a class="headerlink" href="#module-MRS.optimize" title="Permalink to this headline">¶</a></h1>
+<p>Functions for optimization and fitting</p>
+<div class="section" id="err-func">
+<h2>err_func<a class="headerlink" href="#err-func" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MRS.optimize.err_func">
+<tt class="descclassname">MRS.optimize.</tt><tt class="descname">err_func</tt><big>(</big><em>params</em>, <em>x</em>, <em>y</em>, <em>func</em>, <em>w=None</em>, <em>func_list=None</em><big>)</big><a class="headerlink" href="#MRS.optimize.err_func" title="Permalink to this definition">¶</a></dt>
+<dd><p>Error function for fitting a function</p>
+<p>params : tuple</p>
+<blockquote>
+<div>A tuple with the parameters of <cite>func</cite> according to their order of
+input</div></blockquote>
+<dl class="docutils">
+<dt>x <span class="classifier-delimiter">:</span> <span class="classifier">float array </span></dt>
+<dd>An independent variable.</dd>
+<dt>y <span class="classifier-delimiter">:</span> <span class="classifier">float array</span></dt>
+<dd>The dependent variable.</dd>
+<dt>func <span class="classifier-delimiter">:</span> <span class="classifier">function</span></dt>
+<dd>A function with inputs: <cite>(x, *params)</cite></dd>
+<dt>w <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
+<dd>A weighting function. Allows emphasizing certain parts of the
+original function. Should have the same length as x/y.</dd>
+<dt>func_list <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd>dict of callables, each with it&#8217;s own set of indices into the params</dd>
+</dl>
+<p>The marginals of the fit to x/y given the params.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="MRS.qc.html" title="qc"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="MRS.leastsqbound.html" title="leastsqbound"
+             >previous</a> |</li>
+        <li><a href="../index.html">MRS 0.1 documentation</a> &raquo;</li>
+          <li><a href="index.html" >API Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Ariel Rokem, Grace Tang, Stanford CNI.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

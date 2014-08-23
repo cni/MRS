@@ -1,0 +1,144 @@
+.. AUTO-GENERATED FILE -- DO NOT EDIT!
+
+:mod:`utils`
+============
+.. automodule:: MRS.utils
+
+.. currentmodule:: MRS.utils
+.. autosummary::
+
+   bi_square
+   detect_outliers
+   do_kernel
+   epanechnikov
+   freq_to_ppm
+   gaussian
+   l2_norm
+   line_broadening
+   lorentzian
+   lowess
+   make_idx
+   ols_matrix
+   phase_correct_first
+   phase_correct_zero
+   ppm_idx
+   ppm_to_freq
+   rmse
+   tri_cube
+   two_gaussian
+   two_lorentzian
+   unit_vector
+   zero_pad
+
+
+.. currentmodule:: MRS.utils
+bi_square
+~~~~~~~~~
+
+.. autofunction:: bi_square
+
+detect_outliers
+~~~~~~~~~~~~~~~
+
+.. autofunction:: detect_outliers
+
+do_kernel
+~~~~~~~~~
+
+.. autofunction:: do_kernel
+
+epanechnikov
+~~~~~~~~~~~~
+
+.. autofunction:: epanechnikov
+
+freq_to_ppm
+~~~~~~~~~~~
+
+.. autofunction:: freq_to_ppm
+
+gaussian
+~~~~~~~~
+
+.. autofunction:: gaussian
+
+l2_norm
+~~~~~~~
+
+.. autofunction:: l2_norm
+
+line_broadening
+~~~~~~~~~~~~~~~
+
+.. autofunction:: line_broadening
+
+lorentzian
+~~~~~~~~~~
+
+.. autofunction:: lorentzian
+
+lowess
+~~~~~~
+
+.. autofunction:: lowess
+
+make_idx
+~~~~~~~~
+
+.. autofunction:: make_idx
+
+ols_matrix
+~~~~~~~~~~
+
+.. autofunction:: ols_matrix
+
+phase_correct_first
+~~~~~~~~~~~~~~~~~~~
+
+.. autofunction:: phase_correct_first
+
+phase_correct_zero
+~~~~~~~~~~~~~~~~~~
+
+.. autofunction:: phase_correct_zero
+
+ppm_idx
+~~~~~~~
+
+.. autofunction:: ppm_idx
+
+ppm_to_freq
+~~~~~~~~~~~
+
+.. autofunction:: ppm_to_freq
+
+rmse
+~~~~
+
+.. autofunction:: rmse
+
+tri_cube
+~~~~~~~~
+
+.. autofunction:: tri_cube
+
+two_gaussian
+~~~~~~~~~~~~
+
+.. autofunction:: two_gaussian
+
+two_lorentzian
+~~~~~~~~~~~~~~
+
+.. autofunction:: two_lorentzian
+
+unit_vector
+~~~~~~~~~~~
+
+.. autofunction:: unit_vector
+
+zero_pad
+~~~~~~~~
+
+.. autofunction:: zero_pad
+
