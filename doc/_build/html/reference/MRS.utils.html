@@ -1,3 +1,6 @@
+<html>
+</html>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,7 +11,7 @@
     
     <title>utils &mdash; MRS 0.1 documentation</title>
     
-    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
@@ -43,7 +46,61 @@
         <li><a href="../index.html">MRS 0.1 documentation</a> &raquo;</li>
           <li><a href="index.html" accesskey="U">API Reference</a> &raquo;</li> 
       </ul>
-    </div>  
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#"><tt class="docutils literal"><span class="pre">utils</span></tt></a><ul>
+<li><a class="reference internal" href="#bi-square">bi_square</a></li>
+<li><a class="reference internal" href="#detect-outliers">detect_outliers</a></li>
+<li><a class="reference internal" href="#do-kernel">do_kernel</a></li>
+<li><a class="reference internal" href="#epanechnikov">epanechnikov</a></li>
+<li><a class="reference internal" href="#freq-to-ppm">freq_to_ppm</a></li>
+<li><a class="reference internal" href="#gaussian">gaussian</a></li>
+<li><a class="reference internal" href="#l2-norm">l2_norm</a></li>
+<li><a class="reference internal" href="#line-broadening">line_broadening</a></li>
+<li><a class="reference internal" href="#lorentzian">lorentzian</a></li>
+<li><a class="reference internal" href="#lowess">lowess</a></li>
+<li><a class="reference internal" href="#make-idx">make_idx</a></li>
+<li><a class="reference internal" href="#ols-matrix">ols_matrix</a></li>
+<li><a class="reference internal" href="#phase-correct-first">phase_correct_first</a></li>
+<li><a class="reference internal" href="#phase-correct-zero">phase_correct_zero</a></li>
+<li><a class="reference internal" href="#ppm-idx">ppm_idx</a></li>
+<li><a class="reference internal" href="#ppm-to-freq">ppm_to_freq</a></li>
+<li><a class="reference internal" href="#rmse">rmse</a></li>
+<li><a class="reference internal" href="#tri-cube">tri_cube</a></li>
+<li><a class="reference internal" href="#two-gaussian">two_gaussian</a></li>
+<li><a class="reference internal" href="#two-lorentzian">two_lorentzian</a></li>
+<li><a class="reference internal" href="#unit-vector">unit_vector</a></li>
+<li><a class="reference internal" href="#zero-pad">zero_pad</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="MRS.tests.html"
+                        title="previous chapter">Module: <tt class="docutils literal"><span class="pre">tests.test_analysis</span></tt></a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/reference/MRS.utils.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
 
     <div class="document">
       <div class="documentwrapper">
@@ -88,7 +145,7 @@ an outlier. Default = 3.0</dd>
 <h2>do_kernel<a class="headerlink" href="#do-kernel" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MRS.utils.do_kernel">
-<tt class="descclassname">MRS.utils.</tt><tt class="descname">do_kernel</tt><big>(</big><em>x0</em>, <em>x</em>, <em>l=1.0</em>, <em>kernel=&lt;function epanechnikov at 0x10d4219b0&gt;</em><big>)</big><a class="headerlink" href="#MRS.utils.do_kernel" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MRS.utils.</tt><tt class="descname">do_kernel</tt><big>(</big><em>x0</em>, <em>x</em>, <em>l=1.0</em>, <em>kernel=&lt;function epanechnikov at 0x10d51f9b0&gt;</em><big>)</big><a class="headerlink" href="#MRS.utils.do_kernel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate a kernel function on x in the neighborhood of x0</p>
 <dl class="docutils">
 <dt>x: float array</dt>
@@ -195,7 +252,7 @@ edition. Wiley (West Sussex, UK).</td></tr>
 <h2>lowess<a class="headerlink" href="#lowess" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MRS.utils.lowess">
-<tt class="descclassname">MRS.utils.</tt><tt class="descname">lowess</tt><big>(</big><em>x</em>, <em>w</em>, <em>x0</em>, <em>kernel=&lt;function epanechnikov at 0x10d4219b0&gt;</em>, <em>l=1</em>, <em>robust=False</em><big>)</big><a class="headerlink" href="#MRS.utils.lowess" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MRS.utils.</tt><tt class="descname">lowess</tt><big>(</big><em>x</em>, <em>w</em>, <em>x0</em>, <em>kernel=&lt;function epanechnikov at 0x10d51f9b0&gt;</em>, <em>l=1</em>, <em>robust=False</em><big>)</big><a class="headerlink" href="#MRS.utils.lowess" title="Permalink to this definition">¶</a></dt>
 <dd><p>Locally linear regression with the LOWESS algorithm.</p>
 <dl class="docutils">
 <dt>x: float n-d array  </dt>
@@ -430,7 +487,7 @@ and phase, but they share common offset and drift parameters.</p>
 <h2>unit_vector<a class="headerlink" href="#unit-vector" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MRS.utils.unit_vector">
-<tt class="descclassname">MRS.utils.</tt><tt class="descname">unit_vector</tt><big>(</big><em>arr</em>, <em>norm_func=&lt;function l2_norm at 0x10d421c80&gt;</em><big>)</big><a class="headerlink" href="#MRS.utils.unit_vector" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MRS.utils.</tt><tt class="descname">unit_vector</tt><big>(</big><em>arr</em>, <em>norm_func=&lt;function l2_norm at 0x10d51fc80&gt;</em><big>)</big><a class="headerlink" href="#MRS.utils.unit_vector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Normalize the array by a norm function (defaults to the l2_norm)</p>
 <p>arr: ndarray</p>
 <dl class="docutils">
@@ -457,60 +514,6 @@ data</p>
 
 
           </div>
-        </div>
-      </div>
-      <div class="sphinxsidebar">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="../index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#"><tt class="docutils literal"><span class="pre">utils</span></tt></a><ul>
-<li><a class="reference internal" href="#bi-square">bi_square</a></li>
-<li><a class="reference internal" href="#detect-outliers">detect_outliers</a></li>
-<li><a class="reference internal" href="#do-kernel">do_kernel</a></li>
-<li><a class="reference internal" href="#epanechnikov">epanechnikov</a></li>
-<li><a class="reference internal" href="#freq-to-ppm">freq_to_ppm</a></li>
-<li><a class="reference internal" href="#gaussian">gaussian</a></li>
-<li><a class="reference internal" href="#l2-norm">l2_norm</a></li>
-<li><a class="reference internal" href="#line-broadening">line_broadening</a></li>
-<li><a class="reference internal" href="#lorentzian">lorentzian</a></li>
-<li><a class="reference internal" href="#lowess">lowess</a></li>
-<li><a class="reference internal" href="#make-idx">make_idx</a></li>
-<li><a class="reference internal" href="#ols-matrix">ols_matrix</a></li>
-<li><a class="reference internal" href="#phase-correct-first">phase_correct_first</a></li>
-<li><a class="reference internal" href="#phase-correct-zero">phase_correct_zero</a></li>
-<li><a class="reference internal" href="#ppm-idx">ppm_idx</a></li>
-<li><a class="reference internal" href="#ppm-to-freq">ppm_to_freq</a></li>
-<li><a class="reference internal" href="#rmse">rmse</a></li>
-<li><a class="reference internal" href="#tri-cube">tri_cube</a></li>
-<li><a class="reference internal" href="#two-gaussian">two_gaussian</a></li>
-<li><a class="reference internal" href="#two-lorentzian">two_lorentzian</a></li>
-<li><a class="reference internal" href="#unit-vector">unit_vector</a></li>
-<li><a class="reference internal" href="#zero-pad">zero_pad</a></li>
-</ul>
-</li>
-</ul>
-
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="MRS.tests.html"
-                        title="previous chapter">Module: <tt class="docutils literal"><span class="pre">tests.test_analysis</span></tt></a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="../_sources/reference/MRS.utils.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
-  <h3>Quick search</h3>
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>

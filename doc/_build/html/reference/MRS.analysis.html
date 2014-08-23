@@ -1,3 +1,6 @@
+<html>
+</html>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,7 +11,7 @@
     
     <title>analysis &mdash; MRS 0.1 documentation</title>
     
-    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
@@ -47,7 +50,57 @@
         <li><a href="../index.html">MRS 0.1 documentation</a> &raquo;</li>
           <li><a href="index.html" accesskey="U">API Reference</a> &raquo;</li> 
       </ul>
-    </div>  
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#"><tt class="docutils literal"><span class="pre">analysis</span></tt></a><ul>
+<li><a class="reference internal" href="#mrs-analysis">MRS.analysis</a></li>
+<li><a class="reference internal" href="#bootstrap-stat">bootstrap_stat</a></li>
+<li><a class="reference internal" href="#coil-combine">coil_combine</a></li>
+<li><a class="reference internal" href="#fit-gaussian">fit_gaussian</a></li>
+<li><a class="reference internal" href="#fit-lorentzian">fit_lorentzian</a></li>
+<li><a class="reference internal" href="#fit-two-gaussian">fit_two_gaussian</a></li>
+<li><a class="reference internal" href="#fit-two-lorentzian">fit_two_lorentzian</a></li>
+<li><a class="reference internal" href="#get-spectra">get_spectra</a></li>
+<li><a class="reference internal" href="#integrate">integrate</a></li>
+<li><a class="reference internal" href="#scalemodel">scalemodel</a></li>
+<li><a class="reference internal" href="#separate-signals">separate_signals</a></li>
+<li><a class="reference internal" href="#simple-auc">simple_auc</a></li>
+<li><a class="reference internal" href="#simps">simps</a></li>
+<li><a class="reference internal" href="#subtract-water">subtract_water</a></li>
+<li><a class="reference internal" href="#trapz">trapz</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="MRS.html"
+                        title="previous chapter"><tt class="docutils literal"><span class="pre">MRS</span></tt></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="MRS.api.html"
+                        title="next chapter"><tt class="docutils literal"><span class="pre">api</span></tt></a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/reference/MRS.analysis.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
 
     <div class="document">
       <div class="documentwrapper">
@@ -66,7 +119,7 @@ in <a class="reference internal" href="MRS.api.html#module-MRS.api" title="MRS.a
 <h2>bootstrap_stat<a class="headerlink" href="#bootstrap-stat" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MRS.analysis.bootstrap_stat">
-<tt class="descclassname">MRS.analysis.</tt><tt class="descname">bootstrap_stat</tt><big>(</big><em>arr</em>, <em>stat=&lt;function mean at 0x104c5e140&gt;</em>, <em>n_iters=1000</em>, <em>alpha=0.05</em><big>)</big><a class="headerlink" href="#MRS.analysis.bootstrap_stat" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MRS.analysis.</tt><tt class="descname">bootstrap_stat</tt><big>(</big><em>arr</em>, <em>stat=&lt;function mean at 0x104c5d140&gt;</em>, <em>n_iters=1000</em>, <em>alpha=0.05</em><big>)</big><a class="headerlink" href="#MRS.analysis.bootstrap_stat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Produce a boot-strap distribution of the mean of an array on axis 0</p>
 <dl class="docutils">
 <dt>arr <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
@@ -543,56 +596,6 @@ the red lines.</p>
 
 
           </div>
-        </div>
-      </div>
-      <div class="sphinxsidebar">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="../index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#"><tt class="docutils literal"><span class="pre">analysis</span></tt></a><ul>
-<li><a class="reference internal" href="#mrs-analysis">MRS.analysis</a></li>
-<li><a class="reference internal" href="#bootstrap-stat">bootstrap_stat</a></li>
-<li><a class="reference internal" href="#coil-combine">coil_combine</a></li>
-<li><a class="reference internal" href="#fit-gaussian">fit_gaussian</a></li>
-<li><a class="reference internal" href="#fit-lorentzian">fit_lorentzian</a></li>
-<li><a class="reference internal" href="#fit-two-gaussian">fit_two_gaussian</a></li>
-<li><a class="reference internal" href="#fit-two-lorentzian">fit_two_lorentzian</a></li>
-<li><a class="reference internal" href="#get-spectra">get_spectra</a></li>
-<li><a class="reference internal" href="#integrate">integrate</a></li>
-<li><a class="reference internal" href="#scalemodel">scalemodel</a></li>
-<li><a class="reference internal" href="#separate-signals">separate_signals</a></li>
-<li><a class="reference internal" href="#simple-auc">simple_auc</a></li>
-<li><a class="reference internal" href="#simps">simps</a></li>
-<li><a class="reference internal" href="#subtract-water">subtract_water</a></li>
-<li><a class="reference internal" href="#trapz">trapz</a></li>
-</ul>
-</li>
-</ul>
-
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="MRS.html"
-                        title="previous chapter"><tt class="docutils literal"><span class="pre">MRS</span></tt></a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="MRS.api.html"
-                        title="next chapter"><tt class="docutils literal"><span class="pre">api</span></tt></a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="../_sources/reference/MRS.analysis.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
-  <h3>Quick search</h3>
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>

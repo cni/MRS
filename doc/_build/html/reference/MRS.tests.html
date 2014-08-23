@@ -1,3 +1,6 @@
+<html>
+</html>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,7 +11,7 @@
     
     <title>Module: tests.test_analysis &mdash; MRS 0.1 documentation</title>
     
-    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
@@ -47,7 +50,60 @@
         <li><a href="../index.html">MRS 0.1 documentation</a> &raquo;</li>
           <li><a href="index.html" accesskey="U">API Reference</a> &raquo;</li> 
       </ul>
-    </div>  
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Module: <tt class="docutils literal"><span class="pre">tests.test_analysis</span></tt></a></li>
+<li><a class="reference internal" href="#module-MRS.tests.test_api">Module: <tt class="docutils literal"><span class="pre">tests.test_api</span></tt></a></li>
+<li><a class="reference internal" href="#module-MRS.tests.test_io">Module: <tt class="docutils literal"><span class="pre">tests.test_io</span></tt></a></li>
+<li><a class="reference internal" href="#module-MRS.tests.test_qc">Module: <tt class="docutils literal"><span class="pre">tests.test_qc</span></tt></a></li>
+<li><a class="reference internal" href="#module-MRS.tests.test_utils">Module: <tt class="docutils literal"><span class="pre">tests.test_utils</span></tt></a><ul>
+<li><a class="reference internal" href="#test-bootstrap-stat">test_bootstrap_stat</a></li>
+<li><a class="reference internal" href="#test-coil-combine">test_coil_combine</a></li>
+<li><a class="reference internal" href="#test-get-spectra">test_get_spectra</a></li>
+<li><a class="reference internal" href="#test-mrs-analyze">test_mrs_analyze</a></li>
+<li><a class="reference internal" href="#test-separate-signals">test_separate_signals</a></li>
+<li><a class="reference internal" href="#test-fitting">test_fitting</a></li>
+<li><a class="reference internal" href="#test-get-data">test_get_data</a></li>
+<li><a class="reference internal" href="#intemporarydirectory"><tt class="docutils literal"><span class="pre">InTemporaryDirectory</span></tt></a></li>
+<li><a class="reference internal" href="#test-motion">test_motion</a></li>
+<li><a class="reference internal" href="#test-detect-outliers">test_detect_outliers</a></li>
+<li><a class="reference internal" href="#test-line-broadening">test_line_broadening</a></li>
+<li><a class="reference internal" href="#test-lorentzian">test_lorentzian</a></li>
+<li><a class="reference internal" href="#test-phase-correct-first">test_phase_correct_first</a></li>
+<li><a class="reference internal" href="#test-phase-correct-zero">test_phase_correct_zero</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="MRS.qc.html"
+                        title="previous chapter"><tt class="docutils literal"><span class="pre">qc</span></tt></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="MRS.utils.html"
+                        title="next chapter"><tt class="docutils literal"><span class="pre">utils</span></tt></a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/reference/MRS.tests.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
 
     <div class="document">
       <div class="documentwrapper">
@@ -216,59 +272,6 @@ module.</p>
 
 
           </div>
-        </div>
-      </div>
-      <div class="sphinxsidebar">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="../index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Module: <tt class="docutils literal"><span class="pre">tests.test_analysis</span></tt></a></li>
-<li><a class="reference internal" href="#module-MRS.tests.test_api">Module: <tt class="docutils literal"><span class="pre">tests.test_api</span></tt></a></li>
-<li><a class="reference internal" href="#module-MRS.tests.test_io">Module: <tt class="docutils literal"><span class="pre">tests.test_io</span></tt></a></li>
-<li><a class="reference internal" href="#module-MRS.tests.test_qc">Module: <tt class="docutils literal"><span class="pre">tests.test_qc</span></tt></a></li>
-<li><a class="reference internal" href="#module-MRS.tests.test_utils">Module: <tt class="docutils literal"><span class="pre">tests.test_utils</span></tt></a><ul>
-<li><a class="reference internal" href="#test-bootstrap-stat">test_bootstrap_stat</a></li>
-<li><a class="reference internal" href="#test-coil-combine">test_coil_combine</a></li>
-<li><a class="reference internal" href="#test-get-spectra">test_get_spectra</a></li>
-<li><a class="reference internal" href="#test-mrs-analyze">test_mrs_analyze</a></li>
-<li><a class="reference internal" href="#test-separate-signals">test_separate_signals</a></li>
-<li><a class="reference internal" href="#test-fitting">test_fitting</a></li>
-<li><a class="reference internal" href="#test-get-data">test_get_data</a></li>
-<li><a class="reference internal" href="#intemporarydirectory"><tt class="docutils literal"><span class="pre">InTemporaryDirectory</span></tt></a></li>
-<li><a class="reference internal" href="#test-motion">test_motion</a></li>
-<li><a class="reference internal" href="#test-detect-outliers">test_detect_outliers</a></li>
-<li><a class="reference internal" href="#test-line-broadening">test_line_broadening</a></li>
-<li><a class="reference internal" href="#test-lorentzian">test_lorentzian</a></li>
-<li><a class="reference internal" href="#test-phase-correct-first">test_phase_correct_first</a></li>
-<li><a class="reference internal" href="#test-phase-correct-zero">test_phase_correct_zero</a></li>
-</ul>
-</li>
-</ul>
-
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="MRS.qc.html"
-                        title="previous chapter"><tt class="docutils literal"><span class="pre">qc</span></tt></a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="MRS.utils.html"
-                        title="next chapter"><tt class="docutils literal"><span class="pre">utils</span></tt></a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="../_sources/reference/MRS.tests.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
-  <h3>Quick search</h3>
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
