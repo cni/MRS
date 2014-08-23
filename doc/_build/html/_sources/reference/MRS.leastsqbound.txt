@@ -1,0 +1,84 @@
+.. AUTO-GENERATED FILE -- DO NOT EDIT!
+
+:mod:`leastsqbound`
+===================
+.. automodule:: MRS.leastsqbound
+
+.. currentmodule:: MRS.leastsqbound
+.. autosummary::
+
+   leastsqbound
+
+.. AUTO-GENERATED FILE -- DO NOT EDIT!
+
+Module: :mod:`leastsqbound.leastsqbound`
+----------------------------------------
+.. automodule:: MRS.leastsqbound.leastsqbound
+
+.. currentmodule:: MRS.leastsqbound.leastsqbound
+.. autosummary::
+
+   array
+   dot
+   empty_like
+   eye
+   leastsq
+   leastsqbound
+   take
+   transpose
+   triu
+
+
+.. currentmodule:: MRS.leastsqbound
+leastsqbound
+~~~~~~~~~~~~
+
+.. autofunction:: leastsqbound
+
+
+.. currentmodule:: MRS.leastsqbound.leastsqbound
+array
+~~~~~
+
+.. autofunction:: array
+
+dot
+~~~
+
+.. autofunction:: dot
+
+empty_like
+~~~~~~~~~~
+
+.. autofunction:: empty_like
+
+eye
+~~~
+
+.. autofunction:: eye
+
+leastsq
+~~~~~~~
+
+.. autofunction:: leastsq
+
+leastsqbound
+~~~~~~~~~~~~
+
+.. autofunction:: leastsqbound
+
+take
+~~~~
+
+.. autofunction:: take
+
+transpose
+~~~~~~~~~
+
+.. autofunction:: transpose
+
+triu
+~~~~
+
+.. autofunction:: triu
+
