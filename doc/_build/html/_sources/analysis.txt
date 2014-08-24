@@ -1,7 +1,7 @@
 Data analysis in SMAL
 ---------------------
 
-Programming with SMAL:
+Programming with SMAL
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The simplest form of the analysis is in a python session (or script)::
 

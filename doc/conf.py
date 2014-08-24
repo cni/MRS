@@ -113,7 +113,7 @@ html_theme_options = {
     'sidebarlinkcolor' : '#c4bfa9',
     'rightsidebar': True,
     'linkcolor': '#820000',
-    'codebgcolor' : "c4bfa9",
+    'codebgcolor' : "#e9e6df",
     }
 
 
