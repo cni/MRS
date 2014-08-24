@@ -112,7 +112,7 @@ html_theme_options = {
     'textcolor' : '#3f3c30',
     'sidebarlinkcolor' : '#c4bfa9',
     'rightsidebar': True,
-    'linkcolor': '#9d9573',
+    'linkcolor': '#820000',
     }
 
 
