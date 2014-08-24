@@ -85,7 +85,7 @@ exclude_patterns = ['_build']
 #show_authors = False
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'colorful'
+pygments_style = 'sphinx'
 
 # A list of ignored prefixes for module index sorting.
 #modindex_common_prefix = []
@@ -113,7 +113,7 @@ html_theme_options = {
     'sidebarlinkcolor' : '#c4bfa9',
     'rightsidebar': True,
     'linkcolor': '#820000',
-    'codebgcolor' : "c4bfa9",
+    'codebgcolor' : "#e9e6df",
     }
 
 
