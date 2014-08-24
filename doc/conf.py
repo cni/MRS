@@ -45,7 +45,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'MRS'
+project = u'Stanford CNI MRS Library (SMAL)'
 copyright = u'2014, Ariel Rokem, Grace Tang, Stanford CNI'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -96,42 +96,25 @@ pygments_style = 'sphinx'
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-#html_theme = 'sphinxdoc'
-html_theme = 'basicstrap'
-
+html_theme = 'default'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-#html_theme_options = {}
-# -- HTML theme options for `basicstrap` style --------------------------------
 
 html_theme_options = {
-    'lang': 'en',
-    'nosidebar': False,
+    'footerbgcolor': "#8C1515",
+    'sidebarbgcolor' : "#8C1515",
+    'relbarbgcolor' : "#8C1515",
+    'relbartextcolor' : '#565347',
+    'bodyfont': "HelveticaNeue-Light",
+    'headfont': "HelveticaNeue",
+    'headtextcolor' : '#820000',
+    'textcolor' : '#3f3c30',
+    'sidebarlinkcolor' : '#c4bfa9',
     'rightsidebar': True,
-    'sidebar_span': 3,
-    'nav_fixed': False,
-    'nav_width': '900px',
-    'content_fixed': False,
-    'content_width': '900px',
-    'row_fixed': False,
-    'noresponsive': False,
-    'googlewebfont': False,
-    'googlewebfont_url': 'http://fonts.googleapis.com/css?family=Lily+Script+One',
-    'googlewebfont_style': u"font-family: 'Lily Script One' cursive;",
-    'header_inverse': True,
-    'relbar_inverse': True,
-    'inner_theme': True,
-    #'inner_theme_name': 'bootswatch-spacelab',
-    
-#    'h1_size': '3.0em',
-#    'h2_size': '2.6em',
-#    'h3_size': '2.2em',
-#    'h4_size': '1.8em',
-#    'h5_size': '1.4em',
-#    'h6_size': '1.1em',
-}
+    'linkcolor': '#9d9573',
+    }
 
 
 # Add any paths that contain custom themes here, relative to this directory.
