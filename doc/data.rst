@@ -1,3 +1,6 @@
+.. _data:
+
+
 Organizing your data
 ---------------------
 
@@ -19,12 +22,12 @@ saved with the shape:  `(transients, 1, 1, echos, channels, timepoints)`. That
 is, for this data, the data array in the nifti file will have the shape:
 `(4096, 1, 1, 68, 2, 32)`. Data acquired at the `Stanford CNI`__, will be saved
 as a nifti file in this convention (see also the example data provided at the
-`Standord Data Repository`__).
+`Stanford Data Repository`__).
 
 See also 
 
 __ cni_
-__ purl_
+__ sdr-purl_
 
 .. include:: links_names.inc
 
