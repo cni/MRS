@@ -170,6 +170,7 @@ upload:
 	git add _build/html
 	git commit -a -m"New version of the docs"
 	git checkout gh-pages
-	git merge -X theirs temp-branch -m"Merging"
+	git merge -X theirs temp-branch
+	git push upstream gh-pages
 	git branch -d temp-branch
 	git checkout master
