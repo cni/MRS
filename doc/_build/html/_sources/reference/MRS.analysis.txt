@@ -1,0 +1,96 @@
+.. AUTO-GENERATED FILE -- DO NOT EDIT!
+
+:mod:`analysis`
+===============
+.. automodule:: MRS.analysis
+
+.. currentmodule:: MRS.analysis
+.. autosummary::
+
+   bootstrap_stat
+   coil_combine
+   fit_gaussian
+   fit_lorentzian
+   fit_two_gaussian
+   fit_two_lorentzian
+   get_spectra
+   integrate
+   scalemodel
+   separate_signals
+   simple_auc
+   simps
+   subtract_water
+   trapz
+
+
+.. currentmodule:: MRS.analysis
+bootstrap_stat
+~~~~~~~~~~~~~~
+
+.. autofunction:: bootstrap_stat
+
+coil_combine
+~~~~~~~~~~~~
+
+.. autofunction:: coil_combine
+
+fit_gaussian
+~~~~~~~~~~~~
+
+.. autofunction:: fit_gaussian
+
+fit_lorentzian
+~~~~~~~~~~~~~~
+
+.. autofunction:: fit_lorentzian
+
+fit_two_gaussian
+~~~~~~~~~~~~~~~~
+
+.. autofunction:: fit_two_gaussian
+
+fit_two_lorentzian
+~~~~~~~~~~~~~~~~~~
+
+.. autofunction:: fit_two_lorentzian
+
+get_spectra
+~~~~~~~~~~~
+
+.. autofunction:: get_spectra
+
+integrate
+~~~~~~~~~
+
+.. autofunction:: integrate
+
+scalemodel
+~~~~~~~~~~
+
+.. autofunction:: scalemodel
+
+separate_signals
+~~~~~~~~~~~~~~~~
+
+.. autofunction:: separate_signals
+
+simple_auc
+~~~~~~~~~~
+
+.. autofunction:: simple_auc
+
+simps
+~~~~~
+
+.. autofunction:: simps
+
+subtract_water
+~~~~~~~~~~~~~~
+
+.. autofunction:: subtract_water
+
+trapz
+~~~~~
+
+.. autofunction:: trapz
+

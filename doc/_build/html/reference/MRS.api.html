@@ -1,0 +1,368 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>SMAL &mdash; Stanford CNI MRS Library (SMAL) 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Stanford CNI MRS Library (SMAL) 0.1 documentation" href="../index.html" />
+    <link rel="up" title="API Reference" href="index.html" />
+    <link rel="next" title="corr" href="MRS.corr.html" />
+    <link rel="prev" title="analysis" href="MRS.analysis.html" />
+  <meta name="keywords" content="MRI, Stanford, Python, Neuroscience, MR
+  spectroscopy, MRS">
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="MRS.corr.html" title="corr"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="MRS.analysis.html" title="analysis"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Stanford CNI MRS Library (SMAL) 0.1 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">API Reference</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-MRS.api">
+<span id="api"></span><h1><tt class="xref py py-mod docutils literal"><span class="pre">api</span></tt><a class="headerlink" href="#module-MRS.api" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="mrs-api">
+<h2>MRS.api<a class="headerlink" href="#mrs-api" title="Permalink to this headline">¶</a></h2>
+<p>Functions and classes for representation and analysis of MRS data. This is the
+main module to use when performing routine analysis of MRS data.</p>
+</div>
+<div class="section" id="gaba">
+<h2><a class="reference internal" href="#MRS.api.GABA" title="MRS.api.GABA"><tt class="xref py py-class docutils literal"><span class="pre">GABA</span></tt></a><a class="headerlink" href="#gaba" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="MRS.api.GABA">
+<em class="property">class </em><tt class="descclassname">MRS.api.</tt><tt class="descname">GABA</tt><big>(</big><em>in_data, w_idx=[1, 2, 3], line_broadening=5, zerofill=100, filt_method=None, spect_method={'BW': 2, 'NFFT': 1024, 'n_overlap': 1023}, min_ppm=-0.7, max_ppm=4.3, sampling_rate=5000.0</em><big>)</big><a class="headerlink" href="#MRS.api.GABA" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Class for analysis of GABA MRS.</p>
+<dl class="method">
+<dt id="MRS.api.GABA.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>in_data, w_idx=[1, 2, 3], line_broadening=5, zerofill=100, filt_method=None, spect_method={'BW': 2, 'NFFT': 1024, 'n_overlap': 1023}, min_ppm=-0.7, max_ppm=4.3, sampling_rate=5000.0</em><big>)</big><a class="headerlink" href="#MRS.api.GABA.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>in_data <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd>Path to a nifti file containing MRS data.</dd>
+<dt>w_idx <span class="classifier-delimiter">:</span> <span class="classifier">list (optional)</span></dt>
+<dd>The indices to the non-water-suppressed transients. Per default we
+take the 2nd-4th transients. We dump the first one, because it
+seems to be quite different than the rest of them.</dd>
+<dt>line_broadening <span class="classifier-delimiter">:</span> <span class="classifier">float (optional)</span></dt>
+<dd>How much to broaden the spectral line-widths (Hz). Default: 5</dd>
+<dt>zerofill <span class="classifier-delimiter">:</span> <span class="classifier">int (optional)</span></dt>
+<dd>How many zeros to add to the spectrum for additional spectral
+resolution. Default: 100</dd>
+<dt>filt_method <span class="classifier-delimiter">:</span> <span class="classifier">dict (optional)</span></dt>
+<dd>How/whether to filter the data. Default: None (#nofilter)</dd>
+<dt>spect_method: dict (optional)</dt>
+<dd>How to derive spectra. Per default, a simple Fourier transform will
+be derived from apodized time-series, but other methods can also be
+used (see <cite>nitime</cite> documentation for details)</dd>
+<dt>min_ppm, max_ppm <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd>The limits of the spectra that are represented</dd>
+<dt>sampling_rate <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd>The sampling rate in Hz.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="MRS.api.GABA.est_gaba_conc">
+<tt class="descname">est_gaba_conc</tt><big>(</big><big>)</big><a class="headerlink" href="#MRS.api.GABA.est_gaba_conc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimate gaba concentration based on equation adapted from Sanacora
+1999, p1045</p>
+<p>Ref: Sanacora, G., Mason, G. F., Rothman, D. L., Behar, K. L., Hyder,
+F., Petroff, O. A., ... &amp; Krystal, J. H. (1999). Reduced cortical
+$gamma$-aminobutyric acid levels in depressed patients determined by
+proton magnetic resonance spectroscopy. Archives of general psychiatry,
+56(11), 1043.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MRS.api.GABA.fit_creatine">
+<tt class="descname">fit_creatine</tt><big>(</big><em>reject_outliers=3.0</em>, <em>fit_lb=2.7</em>, <em>fit_ub=3.5</em><big>)</big><a class="headerlink" href="#MRS.api.GABA.fit_creatine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit a model to the portion of the summed spectra containing the
+creatine and choline signals.</p>
+<dl class="docutils">
+<dt>reject_outliers <span class="classifier-delimiter">:</span> <span class="classifier">float or bool</span></dt>
+<dd>If set to a float, this is the z score threshold for rejection (on
+any of the parameters). If set to False, no outlier rejection</dd>
+<dt>fit_lb, fit_ub <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd>What part of the spectrum (in ppm) contains the creatine peak.
+Default (2.7, 3.5)</dd>
+</dl>
+<p>We use upper and lower bounds that are a variation on the bounds
+mentioned on the GANNET ISMRM2013 poster <a href="#id3"><span class="problematic" id="id4"><span id="id1"></span>[1]_</span></a>.</p>
+<p>[1] RAE Edden et al (2013). Gannet GABA analysis toolkit. ISMRM
+conference poster.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MRS.api.GABA.fit_gaba">
+<tt class="descname">fit_gaba</tt><big>(</big><em>reject_outliers=3.0</em>, <em>fit_lb=2.8</em>, <em>fit_ub=3.4</em>, <em>phase_correct=True</em>, <em>fit_func=None</em><big>)</big><a class="headerlink" href="#MRS.api.GABA.fit_gaba" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit either a single Gaussian, or a two-Gaussian to the GABA 3 PPM
+peak.</p>
+<dl class="docutils">
+<dt>reject_outliers <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd>Z-score criterion for rejection of outliers, based on their model
+parameter</dd>
+<dt>fit_lb, fit_ub <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd>Frequency bounds (in ppm) for the region of the spectrum to be
+fit.</dd>
+<dt>phase_correct <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
+<dd>Where to perform zero-order phase correction based on the fit of
+the creatine peaks in the sum spectra</dd>
+<dt>fit_func <span class="classifier-delimiter">:</span> <span class="classifier">None or callable (default None).</span></dt>
+<dd>If this is set to <cite>False</cite>, an automatic selection will take place,
+choosing between a two-Gaussian and a single Gaussian, based on a
+split-half cross-validation procedure. Otherwise, the requested
+callable function will be fit. Needs to conform to the conventions
+of <cite>fit_gaussian</cite>/<cite>fit_two_gaussian</cite> and
+<cite>ut.gaussian</cite>/<cite>ut.two_gaussian</cite>.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="MRS.api.GABA.fit_glx">
+<tt class="descname">fit_glx</tt><big>(</big><em>reject_outliers=3.0</em>, <em>fit_lb=3.6</em>, <em>fit_ub=3.9</em>, <em>fit_func=None</em><big>)</big><a class="headerlink" href="#MRS.api.GABA.fit_glx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit a Gaussian function to the Glu/Gln (GLX) peak at 3.75ppm, +/-
+0.15ppm <a class="reference internal" href="#hurd2004" id="id2">[Hurd2004]</a>.  Compare this model to a model
+that treats the Glx signal as two gaussian peaks.  Glx signal
+at. Select between them based on cross-validation</p>
+<dl class="docutils">
+<dt>reject_outliers <span class="classifier-delimiter">:</span> <span class="classifier">float or bool</span></dt>
+<dd>If set to a float, this is the z score threshold for rejection (on
+any of the parameters). If set to False, no outlier rejection</dd>
+<dt>fit_lb, fit_ub <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd>What part of the spectrum (in ppm) contains the GLX peak.
+Default (3.5, 4.5)</dd>
+<dt>scalefit <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
+<dd>If this is set to true, attempt is made to tighten the fit to the
+peak with a second round of fitting where the fitted curve
+is fit with a scale factor. (default false)</dd>
+</dl>
+<table class="docutils citation" frame="void" id="hurd2004" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id2">[Hurd2004]</a></td><td>2004, Measurement of brain glutamate using TE-averaged</td></tr>
+</tbody>
+</table>
+<p>PRESS at 3T</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MRS.api.GABA.fit_glx2">
+<tt class="descname">fit_glx2</tt><big>(</big><em>reject_outliers=3.0</em>, <em>fit_lb=3.6</em>, <em>fit_ub=3.9</em>, <em>phase_correct=True</em>, <em>scalefit=False</em><big>)</big><a class="headerlink" href="#MRS.api.GABA.fit_glx2" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>reject_outliers <span class="classifier-delimiter">:</span> <span class="classifier">float or bool</span></dt>
+<dd>If set to a float, this is the z score threshold for rejection (on
+any of the parameters). If set to False, no outlier rejection</dd>
+<dt>fit_lb, fit_ub <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd>What part of the spectrum (in ppm) contains the creatine peak.
+Default (3.5, 4.2)</dd>
+<dt>scalefit <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
+<dd>If this is set to true, attempt is made to tighten the fit to the
+peak with a second round of fitting where the fitted curve
+is fit with a scale factor. (default false)</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="MRS.api.GABA.fit_naa">
+<tt class="descname">fit_naa</tt><big>(</big><em>reject_outliers=3.0</em>, <em>fit_lb=1.8</em>, <em>fit_ub=2.4</em>, <em>phase_correct=True</em><big>)</big><a class="headerlink" href="#MRS.api.GABA.fit_naa" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit a Lorentzian function to the NAA peak at ~ 2 ppm.  Example of
+fitting inverted peak: Foerster et al. 2013, An imbalance between
+excitatory and inhibitory neurotransmitters in amyothrophic lateral
+sclerosis revealed by use of 3T proton MRS</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MRS.api.GABA.fit_water">
+<tt class="descname">fit_water</tt><big>(</big><em>line_broadening=5</em>, <em>zerofill=100</em>, <em>filt_method=None</em>, <em>min_ppm=-5.0</em>, <em>max_ppm=5.0</em><big>)</big><a class="headerlink" href="#MRS.api.GABA.fit_water" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="MRS.api.GABA.reset_fits">
+<tt class="descname">reset_fits</tt><big>(</big><big>)</big><a class="headerlink" href="#MRS.api.GABA.reset_fits" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is used to restore the original state of the fits.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MRS.api.GABA.voxel_seg">
+<tt class="descname">voxel_seg</tt><big>(</big><em>segfile</em>, <em>MRSfile</em><big>)</big><a class="headerlink" href="#MRS.api.GABA.voxel_seg" title="Permalink to this definition">¶</a></dt>
+<dd><p>add voxel segmentation info</p>
+<dl class="docutils">
+<dt>segfile <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd>Path to nifti file with segmentation info (e.g. XXXX_aseg.nii.gz)</dd>
+<dt>MRSfile <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd>Path to MRS nifti file</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="singlevoxel">
+<h2><a class="reference internal" href="#MRS.api.SingleVoxel" title="MRS.api.SingleVoxel"><tt class="xref py py-class docutils literal"><span class="pre">SingleVoxel</span></tt></a><a class="headerlink" href="#singlevoxel" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="MRS.api.SingleVoxel">
+<em class="property">class </em><tt class="descclassname">MRS.api.</tt><tt class="descname">SingleVoxel</tt><big>(</big><em>in_file</em>, <em>line_broadening=5</em>, <em>zerofill=100</em>, <em>filt_method=None</em>, <em>min_ppm=-0.7</em>, <em>max_ppm=4.3</em><big>)</big><a class="headerlink" href="#MRS.api.SingleVoxel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Class for representation and analysis of single voxel (SV) -PROBE
+experiments.</p>
+<dl class="method">
+<dt id="MRS.api.SingleVoxel.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>in_file</em>, <em>line_broadening=5</em>, <em>zerofill=100</em>, <em>filt_method=None</em>, <em>min_ppm=-0.7</em>, <em>max_ppm=4.3</em><big>)</big><a class="headerlink" href="#MRS.api.SingleVoxel.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>in_file <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd>Path to a nifti file with SV-PROBE MRS data.</dd>
+<dt>line_broadening <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd>How much to broaden the spectral line-widths (Hz)</dd>
+<dt>zerofill <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd>How many zeros to add to the spectrum for additional spectral
+resolution</dd>
+<dt>min_ppm, max_ppm <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd>The limits of the spectra that are represented</dd>
+<dt>fit_lb, fit_ub <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd>The limits for the part of the spectrum for which we fit the
+creatine and GABA peaks.</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  
+<h4> Stanford CNI </h4>
+  <ul class="simple">
+    <li><a class="reference external"
+	href="http://cni.stanford.edu/">Home Page</a></li>
+    <li><a class="reference external"
+	href="https://scitran.stanford.edu/">PoST</a></li>
+    <li><a class="reference external"
+	href="https://cni.stanford.edu/nims/">NIMS</a></li>
+    <li><a class="reference external"
+	href="http://cni.stanford.edu/wiki/Main_Page">Wiki</a></li>
+  </ul>
+
+
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#"><tt class="docutils literal"><span class="pre">api</span></tt></a><ul>
+<li><a class="reference internal" href="#mrs-api">MRS.api</a></li>
+<li><a class="reference internal" href="#gaba"><tt class="docutils literal"><span class="pre">GABA</span></tt></a></li>
+<li><a class="reference internal" href="#singlevoxel"><tt class="docutils literal"><span class="pre">SingleVoxel</span></tt></a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="MRS.analysis.html"
+                        title="previous chapter"><tt class="docutils literal"><span class="pre">analysis</span></tt></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="MRS.corr.html"
+                        title="next chapter"><tt class="docutils literal"><span class="pre">corr</span></tt></a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/reference/MRS.api.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+  
+<div id="searchbox-site" style="display: none">
+  <h3>Search this site</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="13" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox-ml').show(0);</script>
+<script type="text/javascript">$('#searchbox-site').show(0);</script>
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="MRS.corr.html" title="corr"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="MRS.analysis.html" title="analysis"
+             >previous</a> |</li>
+        <li><a href="../index.html">Stanford CNI MRS Library (SMAL) 0.1 documentation</a> &raquo;</li>
+          <li><a href="index.html" >API Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+
+    <div class="footer">
+        &copy; Copyright 2014, Ariel Rokem, Grace Tang, Stanford CNI.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+<!-- Global footer snippet start -->
+<div id="global-footer">
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-54034205-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+  </body>
+</html>
