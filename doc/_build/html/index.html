@@ -1,157 +1,56 @@
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 
-
-
-<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>SMAL &mdash; MRS 0.1 documentation</title>
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
+    <title>SMAL &mdash; Stanford CNI MRS Library (SMAL) 0.1 documentation</title>
     
-<link rel="stylesheet" href="_static/css/basicstrap-base.css" type="text/css" />
-<link rel="stylesheet" href="_static/css/bootswatch-amelia.css" type="text/css" />
-<link rel="stylesheet" href="_static/css/font-awesome.min.css">
-<!--[if IE 7]>
-<link rel="stylesheet" href="_static/css/font-awesome-ie7.min.css">
-<![endif]-->
-<style type="text/css">
-  body {
-    padding-top: 60px;
-    padding-bottom: 40px;
-  }
-}
-</style>
-<link rel="stylesheet" href="_static/basicstrap.css" type="text/css" />
-<link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-<link rel="stylesheet" href="_static/css/bootstrap-responsive.min.css" type="text/css" />
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
-<script type="text/javascript">
-  var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:    './',
-            VERSION:     '0.1',
-            COLLAPSE_INDEX: false,
-            FILE_SUFFIX: '.html',
-            HAS_SOURCE:  true
-  };
-</script>
-<script type="text/javascript" src="_static/js/jquery.min.js"></script>
-<script type="text/javascript" src="_static/underscore.js"></script>
-<script type="text/javascript" src="_static/doctools.js"></script>
-<script type="text/javascript" src="_static/js/bootstrap.min.js"></script>
-<script type="text/javascript">
-  $(document).ready(function(){
-    $('.show-sidebar').click(function(e) {
-       e.preventDefault();
-       if ($(".show-sidebar").html() == "Open Table Of Contents") {
-          $('.for-mobile').removeClass('hidden-phone');
-          $(".show-sidebar").html("Close Table Of Contents");
-       } else {
-          $(".show-sidebar").html("Open Table Of Contents");
-       }
-    });
-  });
-</script>
-    <link rel="top" title="MRS 0.1 documentation" href="#" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Stanford CNI MRS Library (SMAL) 0.1 documentation" href="#" />
     <link rel="next" title="Getting started" href="getting_started.html" />
   <meta name="keywords" content="MRI, Stanford, Python, Neuroscience, MR
   spectroscopy, MRS">
 
   </head>
   <body>
-<link href="https://www.stanford.edu/su-identity/css/su-identity.css" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700" rel="stylesheet" type="text/css">
-<!--[if lt IE 9]>
-  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-<![endif]-->
-<!--[if IE 8]>
-  <link rel="stylesheet" type="text/css" href="https://www.stanford.edu/su-identity/css/ie/ie8.css" />
-<![endif]-->
-<!--[if IE 7]>
-  <link rel="stylesheet" type="text/css" href="https://www.stanford.edu/su-identity/css/ie/ie7.css" />
-<![endif]-->
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="getting_started.html" title="Getting started"
+             accesskey="N">next</a> |</li>
+        <li><a href="#">Stanford CNI MRS Library (SMAL) 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
 
-<!-- Brandbar snippet start -->
-<div id="brandbar">
-  <div class="container">
-    <a href="http://cni.github.io/MRS/doc/_build/html/index.html">
-    Stanford CNI MRS Library (SMAL)
-    </a>
-  </div> <!-- .container end -->
-</div> <!-- #brandbar end -->
-<!-- Brandbar snippet end -->
-
-
-
-    <!-- container -->
-    <div class="container-fluid">
-
-
-      
-      <div class="row-fluid hidden-desktop hidden-tablet">
-      
-<div class="span3 ">
-  <a class="visible-phone btn btn-small show-sidebar" data-toggle="collapse" data-target=".for-mobile">Open Table Of Contents</a>
-  <div class="for-mobile sidebar hidden-phone">
-  
-<h4> Stanford CNI </h4>
-  <ul class="simple">
-    <li><a class="reference external"
-	href="http://cni.stanford.edu/">Home Page</a></li>
-    <li><a class="reference external"
-	href="https://scitran.stanford.edu/">PoST</a></li>
-    <li><a class="reference external"
-	href="https://cni.stanford.edu/nims/">NIMS</a></li>
-    <li><a class="reference external"
-	href="http://cni.stanford.edu/wiki/Main_Page">Wiki</a></li>
-  </ul>
-
-
-  <h4>Next topic</h4>
-  <p class="topless"><a href="getting_started.html"
-                        title="next chapter">Getting started</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="_sources/index.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-  
-<div id="searchbox-site" style="display: none">
-  <h3>Search this site</h3>
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" size="13" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    <p class="searchtip" style="font-size: 90%">
-    </p>
-</div>
-<script type="text/javascript">$('#searchbox-ml').show(0);</script>
-<script type="text/javascript">$('#searchbox-site').show(0);</script>
-
-
-  </div>
-</div>
-      </div>
-      
-
-      <!-- row -->
-      <div class="row-fluid">
-        
-        
-
-        <div class="span9">
-          <div class="document">
-            <div class="documentwrapper">
-              <div class="bodywrapper">
-                <div class="body">
-                  
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
   <div class="section" id="the-stanford-cni-mrs-library-smal">
 <h1>The Stanford CNI MRS Library (SMAL)<a class="headerlink" href="#the-stanford-cni-mrs-library-smal" title="Permalink to this headline">¶</a></h1>
 <p>This library provides algorithms and methods to read and analyze data from
@@ -171,14 +70,11 @@ species, and quantify their relative abundance in human brain tissue.</p>
 </div>
 
 
-                </div>
-              </div>
-            </div>
           </div>
         </div>
-         
-<div class="span3 visible-desktop visible-tablet">
-  <div class=" sidebar hidden-phone">
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
   
 <h4> Stanford CNI </h4>
   <ul class="simple">
@@ -217,65 +113,32 @@ species, and quantify their relative abundance in human brain tissue.</p>
 <script type="text/javascript">$('#searchbox-site').show(0);</script>
 
 
-  </div>
-</div> 
-        
-      </div><!-- /row -->
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="getting_started.html" title="Getting started"
+             >next</a> |</li>
+        <li><a href="#">Stanford CNI MRS Library (SMAL) 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
 
-      <!-- row -->
-      <div class="row-fluid">
-<div class="related navbar navbar-inverse">
-  <div class="navbar-inner">
-    <ul class="nav pull-right">
-      
-        <li><a href="genindex.html" title="General Index" accesskey="I">index</a></li>
-        <li><a href="py-modindex.html" title="Python Module Index" >modules</a></li>
-        <li><a href="getting_started.html" title="Getting started" accesskey="N">next</a></li>
-        <li><a href="#">MRS 0.1 documentation</a></li> 
-      
-    </ul>
-  </div>
-</div>
-      </div><!-- /row -->
-
-      <!-- footer -->
-
-      <footer>
-          &copy; Copyright 2014, Ariel Rokem, Grace Tang, Stanford CNI.
-        Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.2.
-      </footer>
-
-  </div> <!-- #su-content end -->
-</div> <!-- #su-wrap end -->
-
+    <div class="footer">
+        &copy; Copyright 2014, Ariel Rokem, Grace Tang, Stanford CNI.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
 <!-- Global footer snippet start -->
 <div id="global-footer">
-  <div class="container">
-    <div class="row">
-      <div id="bottom-logo" class="span2">
-        <a href="http://www.stanford.edu">
-          <img src="https://www.stanford.edu/su-identity/images/footer-stanford-logo@2x.png" alt="Stanford University" width="105" height="49"/>
-        </a>
-      </div>
-      <!-- #bottom-logo end -->
-      <div id="bottom-text" class="span10">
-        <ul>
-          <li class="home"><a href="http://www.stanford.edu">SU Home</a></li>
-          <li class="maps alt"><a href="http://visit.stanford.edu/plan/maps.html">Maps &amp; Directions</a></li>
-          <li class="search-stanford"><a href="http://www.stanford.edu/search/">Search Stanford</a></li>
-          <li class="terms alt"><a href="http://www.stanford.edu/site/terms.html">Terms of Use</a></li>
-          <li class="emergency-info"><a href="http://emergency.stanford.edu">Emergency Info</a></li>
-        </ul>
-      </div> <!-- .bottom-text end -->
-      <div class="clear"></div>
-      <br><p class="copyright vcard">&copy; <span class="fn org">Stanford University</span>, <span class="adr"> <span class="locality">Stanford</span>, <span class="region">California</span> <span class="postal-code">94305</span></span>.&nbsp;&nbsp;
-      <span id="copyright-complaint"><a href="http://www.stanford.edu/group/security/dmca.html" class="copyright-complaint" >Copyright Complaints</a></span>
-      </p>
-    </div> <!-- .row end --> 
-  </div> <!-- .container end --> 
-</div> <!-- global-footer end -->
-<!-- Global footer snippet end -->
-
 <script type="text/javascript">
 var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
 document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
@@ -285,11 +148,6 @@ try {
 var pageTracker = _gat._getTracker("UA-54034205-1");
 pageTracker._trackPageview();
 } catch(err) {}</script>
-
-      <!-- /footer -->
-
-    </div>
-    <!-- /container -->
 
   </body>
 </html>

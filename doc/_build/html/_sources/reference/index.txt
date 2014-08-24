@@ -11,8 +11,6 @@ API Reference
    MRS.corr.rst
    MRS.data.rst
    MRS.freesurfer.rst
-   MRS.leastsqbound.rst
    MRS.optimize.rst
    MRS.qc.rst
-   MRS.tests.rst
    MRS.utils.rst

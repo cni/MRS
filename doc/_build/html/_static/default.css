@@ -14,16 +14,16 @@
 /* -- page layout ----------------------------------------------------------- */
 
 body {
-    font-family: sans-serif;
+    font-family: HelveticaNeue-Light;
     font-size: 100%;
-    background-color: #11303d;
+    background-color: #8C1515;
     color: #000;
     margin: 0;
     padding: 0;
 }
 
 div.document {
-    background-color: #1c4e63;
+    background-color: #8C1515;
 }
 
 div.documentwrapper {
@@ -37,8 +37,11 @@ div.bodywrapper {
 
 div.body {
     background-color: #ffffff;
-    color: #000000;
+    color: #3f3c30;
     padding: 0 20px 30px 20px;
+}
+div.bodywrapper {
+    margin: 0 230px 0 0;
 }
 
 div.footer {
@@ -55,9 +58,9 @@ div.footer a {
 }
 
 div.related {
-    background-color: #133f52;
+    background-color: #8C1515;
     line-height: 30px;
-    color: #ffffff;
+    color: #565347;
 }
 
 div.related a {
@@ -65,10 +68,11 @@ div.related a {
 }
 
 div.sphinxsidebar {
+    float: right;
 }
 
 div.sphinxsidebar h3 {
-    font-family: 'Trebuchet MS', sans-serif;
+    font-family: HelveticaNeue;
     color: #ffffff;
     font-size: 1.4em;
     font-weight: normal;
@@ -81,7 +85,7 @@ div.sphinxsidebar h3 a {
 }
 
 div.sphinxsidebar h4 {
-    font-family: 'Trebuchet MS', sans-serif;
+    font-family: HelveticaNeue;
     color: #ffffff;
     font-size: 1.3em;
     font-weight: normal;
@@ -104,11 +108,11 @@ div.sphinxsidebar ul {
 }
 
 div.sphinxsidebar a {
-    color: #98dbcc;
+    color: #c4bfa9;
 }
 
 div.sphinxsidebar input {
-    border: 1px solid #98dbcc;
+    border: 1px solid #c4bfa9;
     font-family: sans-serif;
     font-size: 1em;
 }
@@ -118,7 +122,7 @@ div.sphinxsidebar input {
 /* -- hyperlink styles ------------------------------------------------------ */
 
 a {
-    color: #355f7c;
+    color: #9d9573;
     text-decoration: none;
 }
 
@@ -141,10 +145,10 @@ div.body h3,
 div.body h4,
 div.body h5,
 div.body h6 {
-    font-family: 'Trebuchet MS', sans-serif;
+    font-family: HelveticaNeue;
     background-color: #f2f2f2;
     font-weight: normal;
-    color: #20435c;
+    color: #820000;
     border-bottom: 1px solid #ccc;
     margin: 20px -20px 10px -20px;
     padding: 3px 0 3px 10px;
@@ -246,7 +250,7 @@ th {
 }
 
 .viewcode-back {
-    font-family: sans-serif;
+    font-family: HelveticaNeue-Light;
 }
 
 div.viewcode-block:target {

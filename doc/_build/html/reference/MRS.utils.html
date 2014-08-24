@@ -1,187 +1,58 @@
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 
-
-
-<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>SMAL &mdash; MRS 0.1 documentation</title>
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
+    <title>SMAL &mdash; Stanford CNI MRS Library (SMAL) 0.1 documentation</title>
     
-<link rel="stylesheet" href="../_static/css/basicstrap-base.css" type="text/css" />
-<link rel="stylesheet" href="../_static/css/bootswatch-amelia.css" type="text/css" />
-<link rel="stylesheet" href="../_static/css/font-awesome.min.css">
-<!--[if IE 7]>
-<link rel="stylesheet" href="../_static/css/font-awesome-ie7.min.css">
-<![endif]-->
-<style type="text/css">
-  body {
-    padding-top: 60px;
-    padding-bottom: 40px;
-  }
-}
-</style>
-<link rel="stylesheet" href="../_static/basicstrap.css" type="text/css" />
-<link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-<link rel="stylesheet" href="../_static/css/bootstrap-responsive.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
-<script type="text/javascript">
-  var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:    '../',
-            VERSION:     '0.1',
-            COLLAPSE_INDEX: false,
-            FILE_SUFFIX: '.html',
-            HAS_SOURCE:  true
-  };
-</script>
-<script type="text/javascript" src="../_static/js/jquery.min.js"></script>
-<script type="text/javascript" src="../_static/underscore.js"></script>
-<script type="text/javascript" src="../_static/doctools.js"></script>
-<script type="text/javascript" src="../_static/js/bootstrap.min.js"></script>
-<script type="text/javascript">
-  $(document).ready(function(){
-    $('.show-sidebar').click(function(e) {
-       e.preventDefault();
-       if ($(".show-sidebar").html() == "Open Table Of Contents") {
-          $('.for-mobile').removeClass('hidden-phone');
-          $(".show-sidebar").html("Close Table Of Contents");
-       } else {
-          $(".show-sidebar").html("Open Table Of Contents");
-       }
-    });
-  });
-</script>
-    <link rel="top" title="MRS 0.1 documentation" href="../index.html" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Stanford CNI MRS Library (SMAL) 0.1 documentation" href="../index.html" />
     <link rel="up" title="API Reference" href="index.html" />
-    <link rel="prev" title="Module: tests.test_analysis" href="MRS.tests.html" />
+    <link rel="prev" title="qc" href="MRS.qc.html" />
   <meta name="keywords" content="MRI, Stanford, Python, Neuroscience, MR
   spectroscopy, MRS">
 
   </head>
   <body>
-<link href="https://www.stanford.edu/su-identity/css/su-identity.css" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700" rel="stylesheet" type="text/css">
-<!--[if lt IE 9]>
-  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-<![endif]-->
-<!--[if IE 8]>
-  <link rel="stylesheet" type="text/css" href="https://www.stanford.edu/su-identity/css/ie/ie8.css" />
-<![endif]-->
-<!--[if IE 7]>
-  <link rel="stylesheet" type="text/css" href="https://www.stanford.edu/su-identity/css/ie/ie7.css" />
-<![endif]-->
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="MRS.qc.html" title="qc"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Stanford CNI MRS Library (SMAL) 0.1 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">API Reference</a> &raquo;</li> 
+      </ul>
+    </div>  
 
-<!-- Brandbar snippet start -->
-<div id="brandbar">
-  <div class="container">
-    <a href="http://cni.github.io/MRS/doc/_build/html/index.html">
-    Stanford CNI MRS Library (SMAL)
-    </a>
-  </div> <!-- .container end -->
-</div> <!-- #brandbar end -->
-<!-- Brandbar snippet end -->
-
-
-
-    <!-- container -->
-    <div class="container-fluid">
-
-
-      
-      <div class="row-fluid hidden-desktop hidden-tablet">
-      
-<div class="span3 ">
-  <a class="visible-phone btn btn-small show-sidebar" data-toggle="collapse" data-target=".for-mobile">Open Table Of Contents</a>
-  <div class="for-mobile sidebar hidden-phone">
-  
-<h4> Stanford CNI </h4>
-  <ul class="simple">
-    <li><a class="reference external"
-	href="http://cni.stanford.edu/">Home Page</a></li>
-    <li><a class="reference external"
-	href="https://scitran.stanford.edu/">PoST</a></li>
-    <li><a class="reference external"
-	href="https://cni.stanford.edu/nims/">NIMS</a></li>
-    <li><a class="reference external"
-	href="http://cni.stanford.edu/wiki/Main_Page">Wiki</a></li>
-  </ul>
-
-
-  <h3><a href="../index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#"><tt class="docutils literal"><span class="pre">utils</span></tt></a><ul>
-<li><a class="reference internal" href="#bi-square">bi_square</a></li>
-<li><a class="reference internal" href="#detect-outliers">detect_outliers</a></li>
-<li><a class="reference internal" href="#do-kernel">do_kernel</a></li>
-<li><a class="reference internal" href="#epanechnikov">epanechnikov</a></li>
-<li><a class="reference internal" href="#freq-to-ppm">freq_to_ppm</a></li>
-<li><a class="reference internal" href="#gaussian">gaussian</a></li>
-<li><a class="reference internal" href="#l2-norm">l2_norm</a></li>
-<li><a class="reference internal" href="#line-broadening">line_broadening</a></li>
-<li><a class="reference internal" href="#lorentzian">lorentzian</a></li>
-<li><a class="reference internal" href="#lowess">lowess</a></li>
-<li><a class="reference internal" href="#make-idx">make_idx</a></li>
-<li><a class="reference internal" href="#ols-matrix">ols_matrix</a></li>
-<li><a class="reference internal" href="#phase-correct-first">phase_correct_first</a></li>
-<li><a class="reference internal" href="#phase-correct-zero">phase_correct_zero</a></li>
-<li><a class="reference internal" href="#ppm-idx">ppm_idx</a></li>
-<li><a class="reference internal" href="#ppm-to-freq">ppm_to_freq</a></li>
-<li><a class="reference internal" href="#rmse">rmse</a></li>
-<li><a class="reference internal" href="#tri-cube">tri_cube</a></li>
-<li><a class="reference internal" href="#two-gaussian">two_gaussian</a></li>
-<li><a class="reference internal" href="#two-lorentzian">two_lorentzian</a></li>
-<li><a class="reference internal" href="#unit-vector">unit_vector</a></li>
-<li><a class="reference internal" href="#zero-pad">zero_pad</a></li>
-</ul>
-</li>
-</ul>
-
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="MRS.tests.html"
-                        title="previous chapter">Module: <tt class="docutils literal"><span class="pre">tests.test_analysis</span></tt></a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="../_sources/reference/MRS.utils.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-  
-<div id="searchbox-site" style="display: none">
-  <h3>Search this site</h3>
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" size="13" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    <p class="searchtip" style="font-size: 90%">
-    </p>
-</div>
-<script type="text/javascript">$('#searchbox-ml').show(0);</script>
-<script type="text/javascript">$('#searchbox-site').show(0);</script>
-
-
-  </div>
-</div>
-      </div>
-      
-
-      <!-- row -->
-      <div class="row-fluid">
-        
-        
-
-        <div class="span9">
-          <div class="document">
-            <div class="documentwrapper">
-              <div class="bodywrapper">
-                <div class="body">
-                  
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
   <div class="section" id="module-MRS.utils">
 <span id="utils"></span><h1><tt class="xref py py-mod docutils literal"><span class="pre">utils</span></tt><a class="headerlink" href="#module-MRS.utils" title="Permalink to this headline">¶</a></h1>
 <p>Utility functions for analysis of MRS data.</p>
@@ -220,7 +91,7 @@ an outlier. Default = 3.0</dd>
 <h2>do_kernel<a class="headerlink" href="#do-kernel" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MRS.utils.do_kernel">
-<tt class="descclassname">MRS.utils.</tt><tt class="descname">do_kernel</tt><big>(</big><em>x0</em>, <em>x</em>, <em>l=1.0</em>, <em>kernel=&lt;function epanechnikov at 0x10d8f68c0&gt;</em><big>)</big><a class="headerlink" href="#MRS.utils.do_kernel" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MRS.utils.</tt><tt class="descname">do_kernel</tt><big>(</big><em>x0</em>, <em>x</em>, <em>l=1.0</em>, <em>kernel=&lt;function epanechnikov at 0x10d581848&gt;</em><big>)</big><a class="headerlink" href="#MRS.utils.do_kernel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate a kernel function on x in the neighborhood of x0</p>
 <dl class="docutils">
 <dt>x: float array</dt>
@@ -327,7 +198,7 @@ edition. Wiley (West Sussex, UK).</td></tr>
 <h2>lowess<a class="headerlink" href="#lowess" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MRS.utils.lowess">
-<tt class="descclassname">MRS.utils.</tt><tt class="descname">lowess</tt><big>(</big><em>x</em>, <em>w</em>, <em>x0</em>, <em>kernel=&lt;function epanechnikov at 0x10d8f68c0&gt;</em>, <em>l=1</em>, <em>robust=False</em><big>)</big><a class="headerlink" href="#MRS.utils.lowess" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MRS.utils.</tt><tt class="descname">lowess</tt><big>(</big><em>x</em>, <em>w</em>, <em>x0</em>, <em>kernel=&lt;function epanechnikov at 0x10d581848&gt;</em>, <em>l=1</em>, <em>robust=False</em><big>)</big><a class="headerlink" href="#MRS.utils.lowess" title="Permalink to this definition">¶</a></dt>
 <dd><p>Locally linear regression with the LOWESS algorithm.</p>
 <dl class="docutils">
 <dt>x: float n-d array  </dt>
@@ -562,7 +433,7 @@ and phase, but they share common offset and drift parameters.</p>
 <h2>unit_vector<a class="headerlink" href="#unit-vector" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MRS.utils.unit_vector">
-<tt class="descclassname">MRS.utils.</tt><tt class="descname">unit_vector</tt><big>(</big><em>arr</em>, <em>norm_func=&lt;function l2_norm at 0x10d8f6b90&gt;</em><big>)</big><a class="headerlink" href="#MRS.utils.unit_vector" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MRS.utils.</tt><tt class="descname">unit_vector</tt><big>(</big><em>arr</em>, <em>norm_func=&lt;function l2_norm at 0x10d581b18&gt;</em><big>)</big><a class="headerlink" href="#MRS.utils.unit_vector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Normalize the array by a norm function (defaults to the l2_norm)</p>
 <p>arr: ndarray</p>
 <dl class="docutils">
@@ -588,14 +459,11 @@ data</p>
 </div>
 
 
-                </div>
-              </div>
-            </div>
           </div>
         </div>
-         
-<div class="span3 visible-desktop visible-tablet">
-  <div class=" sidebar hidden-phone">
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
   
 <h4> Stanford CNI </h4>
   <ul class="simple">
@@ -640,8 +508,8 @@ data</p>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="MRS.tests.html"
-                        title="previous chapter">Module: <tt class="docutils literal"><span class="pre">tests.test_analysis</span></tt></a></p>
+  <p class="topless"><a href="MRS.qc.html"
+                        title="previous chapter"><tt class="docutils literal"><span class="pre">qc</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../_sources/reference/MRS.utils.txt"
@@ -663,66 +531,33 @@ data</p>
 <script type="text/javascript">$('#searchbox-site').show(0);</script>
 
 
-  </div>
-</div> 
-        
-      </div><!-- /row -->
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="MRS.qc.html" title="qc"
+             >previous</a> |</li>
+        <li><a href="../index.html">Stanford CNI MRS Library (SMAL) 0.1 documentation</a> &raquo;</li>
+          <li><a href="index.html" >API Reference</a> &raquo;</li> 
+      </ul>
+    </div>
 
-      <!-- row -->
-      <div class="row-fluid">
-<div class="related navbar navbar-inverse">
-  <div class="navbar-inner">
-    <ul class="nav pull-right">
-      
-        <li><a href="../genindex.html" title="General Index" accesskey="I">index</a></li>
-        <li><a href="../py-modindex.html" title="Python Module Index" >modules</a></li>
-        <li><a href="MRS.tests.html" title="Module: tests.test_analysis" accesskey="P">previous</a></li>
-        <li><a href="../index.html">MRS 0.1 documentation</a></li>
-        <li><a href="index.html" accesskey="U">API Reference</a></li> 
-      
-    </ul>
-  </div>
-</div>
-      </div><!-- /row -->
-
-      <!-- footer -->
-
-      <footer>
-          &copy; Copyright 2014, Ariel Rokem, Grace Tang, Stanford CNI.
-        Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.2.
-      </footer>
-
-  </div> <!-- #su-content end -->
-</div> <!-- #su-wrap end -->
-
+    <div class="footer">
+        &copy; Copyright 2014, Ariel Rokem, Grace Tang, Stanford CNI.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
 <!-- Global footer snippet start -->
 <div id="global-footer">
-  <div class="container">
-    <div class="row">
-      <div id="bottom-logo" class="span2">
-        <a href="http://www.stanford.edu">
-          <img src="https://www.stanford.edu/su-identity/images/footer-stanford-logo@2x.png" alt="Stanford University" width="105" height="49"/>
-        </a>
-      </div>
-      <!-- #bottom-logo end -->
-      <div id="bottom-text" class="span10">
-        <ul>
-          <li class="home"><a href="http://www.stanford.edu">SU Home</a></li>
-          <li class="maps alt"><a href="http://visit.stanford.edu/plan/maps.html">Maps &amp; Directions</a></li>
-          <li class="search-stanford"><a href="http://www.stanford.edu/search/">Search Stanford</a></li>
-          <li class="terms alt"><a href="http://www.stanford.edu/site/terms.html">Terms of Use</a></li>
-          <li class="emergency-info"><a href="http://emergency.stanford.edu">Emergency Info</a></li>
-        </ul>
-      </div> <!-- .bottom-text end -->
-      <div class="clear"></div>
-      <br><p class="copyright vcard">&copy; <span class="fn org">Stanford University</span>, <span class="adr"> <span class="locality">Stanford</span>, <span class="region">California</span> <span class="postal-code">94305</span></span>.&nbsp;&nbsp;
-      <span id="copyright-complaint"><a href="http://www.stanford.edu/group/security/dmca.html" class="copyright-complaint" >Copyright Complaints</a></span>
-      </p>
-    </div> <!-- .row end --> 
-  </div> <!-- .container end --> 
-</div> <!-- global-footer end -->
-<!-- Global footer snippet end -->
-
 <script type="text/javascript">
 var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
 document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
@@ -732,11 +567,6 @@ try {
 var pageTracker = _gat._getTracker("UA-54034205-1");
 pageTracker._trackPageview();
 } catch(err) {}</script>
-
-      <!-- /footer -->
-
-    </div>
-    <!-- /container -->
 
   </body>
 </html>
