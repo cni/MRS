@@ -40,7 +40,7 @@ in `zip`__ or `tar`__ formats. A stable release version is availabe to download 
 __ mrs-github_
 __ download-zip_
 __ download-tar_
-__ github-releases_
+__ github-releases
 
 
 Installing

@@ -1,6 +1,6 @@
 
-The Stanford CNI MRS library (SMAL) Documentation
-=================================
+The Stanford CNI MRS Library (SMAL) 
+=======================
 
 This library provides algorithms and methods to read and analyze data from
 Magnetic Resonance Spectroscopy (MRS) experiments. It provides an API for
