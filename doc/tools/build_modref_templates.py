@@ -52,9 +52,11 @@ if __name__ == '__main__':
     docwriter = ApiDocWriter(package, rst_extension='.rst')
     
     docwriter.package_skip_patterns += [r'\.version$',
-                                        r'\MRS',
-                                        r'.*test.*$',
+                                        r'\MRS$',
+                                        r'.*test.*',
                                         r'.*leastsqbound*']
+
+    
     docwriter.write_api_docs(outdir)
     docwriter.write_index(outdir, 'index', relative_to='reference')
     print('%d files written' % len(docwriter.written_modules))
