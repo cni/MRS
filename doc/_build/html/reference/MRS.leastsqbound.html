@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+
+
+
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    
+    <title>SMAL &mdash; MRS 0.1 documentation</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    
+<link rel="stylesheet" href="../_static/css/basicstrap-base.css" type="text/css" />
+<link rel="stylesheet" href="../_static/css/bootswatch-amelia.css" type="text/css" />
+<link rel="stylesheet" href="../_static/css/font-awesome.min.css">
+<!--[if IE 7]>
+<link rel="stylesheet" href="../_static/css/font-awesome-ie7.min.css">
+<![endif]-->
+<style type="text/css">
+  body {
+    padding-top: 60px;
+    padding-bottom: 40px;
+  }
+}
+</style>
+<link rel="stylesheet" href="../_static/basicstrap.css" type="text/css" />
+<link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+<link rel="stylesheet" href="../_static/css/bootstrap-responsive.min.css" type="text/css" />
+    
+<script type="text/javascript">
+  var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:    '../',
+            VERSION:     '0.1',
+            COLLAPSE_INDEX: false,
+            FILE_SUFFIX: '.html',
+            HAS_SOURCE:  true
+  };
+</script>
+<script type="text/javascript" src="../_static/js/jquery.min.js"></script>
+<script type="text/javascript" src="../_static/underscore.js"></script>
+<script type="text/javascript" src="../_static/doctools.js"></script>
+<script type="text/javascript" src="../_static/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('.show-sidebar').click(function(e) {
+       e.preventDefault();
+       if ($(".show-sidebar").html() == "Open Table Of Contents") {
+          $('.for-mobile').removeClass('hidden-phone');
+          $(".show-sidebar").html("Close Table Of Contents");
+       } else {
+          $(".show-sidebar").html("Open Table Of Contents");
+       }
+    });
+  });
+</script>
+    <link rel="top" title="MRS 0.1 documentation" href="../index.html" />
+    <link rel="up" title="API Reference" href="index.html" />
+    <link rel="next" title="optimize" href="MRS.optimize.html" />
+    <link rel="prev" title="freesurfer" href="MRS.freesurfer.html" />
+  <meta name="keywords" content="MRI, Stanford, Python, Neuroscience, MR
+  spectroscopy, MRS">
+
+  </head>
+  <body>
+<link href="https://www.stanford.edu/su-identity/css/su-identity.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700" rel="stylesheet" type="text/css">
+<!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+<!--[if IE 8]>
+  <link rel="stylesheet" type="text/css" href="https://www.stanford.edu/su-identity/css/ie/ie8.css" />
+<![endif]-->
+<!--[if IE 7]>
+  <link rel="stylesheet" type="text/css" href="https://www.stanford.edu/su-identity/css/ie/ie7.css" />
+<![endif]-->
+
+<!-- Brandbar snippet start -->
+<div id="brandbar">
+  <div class="container">
+    <a href="http://cni.github.io/MRS/doc/_build/html/index.html">
+    Stanford CNI MRS Library (SMAL)
+    </a>
+  </div> <!-- .container end -->
+</div> <!-- #brandbar end -->
+<!-- Brandbar snippet end -->
+
+
+
+    <!-- container -->
+    <div class="container-fluid">
+
+
+      
+      <div class="row-fluid hidden-desktop hidden-tablet">
+      
+<div class="span3 ">
+  <a class="visible-phone btn btn-small show-sidebar" data-toggle="collapse" data-target=".for-mobile">Open Table Of Contents</a>
+  <div class="for-mobile sidebar hidden-phone">
+  
+<h4> Stanford CNI </h4>
+  <ul class="simple">
+    <li><a class="reference external"
+	href="http://cni.stanford.edu/">Home Page</a></li>
+    <li><a class="reference external"
+	href="https://scitran.stanford.edu/">PoST</a></li>
+    <li><a class="reference external"
+	href="https://cni.stanford.edu/nims/">NIMS</a></li>
+    <li><a class="reference external"
+	href="http://cni.stanford.edu/wiki/Main_Page">Wiki</a></li>
+  </ul>
+
+
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#"><tt class="docutils literal"><span class="pre">leastsqbound</span></tt></a><ul>
+<li><a class="reference internal" href="#module-MRS.leastsqbound.leastsqbound">Module: <tt class="docutils literal"><span class="pre">leastsqbound.leastsqbound</span></tt></a><ul>
+<li><a class="reference internal" href="#id1">leastsqbound</a></li>
+<li><a class="reference internal" href="#array">array</a></li>
+<li><a class="reference internal" href="#dot">dot</a></li>
+<li><a class="reference internal" href="#empty-like">empty_like</a></li>
+<li><a class="reference internal" href="#eye">eye</a></li>
+<li><a class="reference internal" href="#leastsq">leastsq</a></li>
+<li><a class="reference internal" href="#id2">leastsqbound</a></li>
+<li><a class="reference internal" href="#take">take</a></li>
+<li><a class="reference internal" href="#transpose">transpose</a></li>
+<li><a class="reference internal" href="#triu">triu</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="MRS.freesurfer.html"
+                        title="previous chapter"><tt class="docutils literal"><span class="pre">freesurfer</span></tt></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="MRS.optimize.html"
+                        title="next chapter"><tt class="docutils literal"><span class="pre">optimize</span></tt></a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/reference/MRS.leastsqbound.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+  
+<div id="searchbox-site" style="display: none">
+  <h3>Search this site</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="13" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox-ml').show(0);</script>
+<script type="text/javascript">$('#searchbox-site').show(0);</script>
+
+
+  </div>
+</div>
+      </div>
+      
+
+      <!-- row -->
+      <div class="row-fluid">
+        
+        
+
+        <div class="span9">
+          <div class="document">
+            <div class="documentwrapper">
+              <div class="bodywrapper">
+                <div class="body">
+                  
+  <div class="section" id="module-MRS.leastsqbound">
+<span id="leastsqbound"></span><h1><tt class="xref py py-mod docutils literal"><span class="pre">leastsqbound</span></tt><a class="headerlink" href="#module-MRS.leastsqbound" title="Permalink to this headline">¶</a></h1>
+<p>leastsqbound: Constrained least-squares optimization</p>
+<p>Taken from: <a class="reference external" href="https://github.com/jjhelmus/leastsqbound-scipy">https://github.com/jjhelmus/leastsqbound-scipy</a></p>
+<div class="section" id="module-MRS.leastsqbound.leastsqbound">
+<span id="module-leastsqbound-leastsqbound"></span><h2>Module: <tt class="xref py py-mod docutils literal"><span class="pre">leastsqbound.leastsqbound</span></tt><a class="headerlink" href="#module-MRS.leastsqbound.leastsqbound" title="Permalink to this headline">¶</a></h2>
+<p>Constrained multivariate least-squares optimization</p>
+<div class="section" id="id1">
+<h3>leastsqbound<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="MRS.leastsqbound.leastsqbound">
+<tt class="descclassname">MRS.leastsqbound.</tt><tt class="descname">leastsqbound</tt><big>(</big><em>func</em>, <em>x0</em>, <em>args=()</em>, <em>bounds=None</em>, <em>Dfun=None</em>, <em>full_output=0</em>, <em>col_deriv=0</em>, <em>ftol=1.49012e-08</em>, <em>xtol=1.49012e-08</em>, <em>gtol=0.0</em>, <em>maxfev=0</em>, <em>epsfcn=0.0</em>, <em>factor=100</em>, <em>diag=None</em><big>)</big><a class="headerlink" href="#MRS.leastsqbound.leastsqbound" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bounded minimization of the sum of squares of a set of equations.</p>
+<div class="highlight-python"><div class="highlight"><pre>x = arg min(sum(func(y)**2,axis=0))
+         y
+</pre></div>
+</div>
+<dl class="docutils">
+<dt>func <span class="classifier-delimiter">:</span> <span class="classifier">callable</span></dt>
+<dd>should take at least one (possibly length N vector) argument and
+returns M floating point numbers.</dd>
+<dt>x0 <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
+<dd>The starting estimate for the minimization.</dd>
+<dt>args <span class="classifier-delimiter">:</span> <span class="classifier">tuple</span></dt>
+<dd>Any extra arguments to func are placed in this tuple.</dd>
+<dt>bounds <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><tt class="docutils literal"><span class="pre">(min,</span> <span class="pre">max)</span></tt> pairs for each element in <tt class="docutils literal"><span class="pre">x</span></tt>, defining
+the bounds on that parameter. Use None for one of <tt class="docutils literal"><span class="pre">min</span></tt> or
+<tt class="docutils literal"><span class="pre">max</span></tt> when there is no bound in that direction.</dd>
+<dt>Dfun <span class="classifier-delimiter">:</span> <span class="classifier">callable</span></dt>
+<dd>A function or method to compute the Jacobian of func with derivatives
+across the rows. If this is None, the Jacobian will be estimated.</dd>
+<dt>full_output <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
+<dd>non-zero to return all optional outputs.</dd>
+<dt>col_deriv <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
+<dd>non-zero to specify that the Jacobian function computes derivatives
+down the columns (faster, because there is no transpose operation).</dd>
+<dt>ftol <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd>Relative error desired in the sum of squares.</dd>
+<dt>xtol <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd>Relative error desired in the approximate solution.</dd>
+<dt>gtol <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd>Orthogonality desired between the function vector and the columns of
+the Jacobian.</dd>
+<dt>maxfev <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd>The maximum number of calls to the function. If zero, then 100*(N+1) is
+the maximum where N is the number of elements in x0.</dd>
+<dt>epsfcn <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd>A suitable step length for the forward-difference approximation of the
+Jacobian (for Dfun=None). If epsfcn is less than the machine precision,
+it is assumed that the relative errors in the functions are of the
+order of the machine precision.</dd>
+<dt>factor <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd>A parameter determining the initial step bound
+(<tt class="docutils literal"><span class="pre">factor</span> <span class="pre">*</span> <span class="pre">||</span> <span class="pre">diag</span> <span class="pre">*</span> <span class="pre">x||</span></tt>). Should be in interval <tt class="docutils literal"><span class="pre">(0.1,</span> <span class="pre">100)</span></tt>.</dd>
+<dt>diag <span class="classifier-delimiter">:</span> <span class="classifier">sequence</span></dt>
+<dd>N positive entries that serve as a scale factors for the variables.</dd>
+</dl>
+<dl class="docutils">
+<dt>x <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
+<dd>The solution (or the result of the last iteration for an unsuccessful
+call).</dd>
+<dt>cov_x <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
+<dd>Uses the fjac and ipvt optional outputs to construct an
+estimate of the jacobian around the solution.  <tt class="docutils literal"><span class="pre">None</span></tt> if a
+singular matrix encountered (indicates very flat curvature in
+some direction).  This matrix must be multiplied by the
+residual standard deviation to get the covariance of the
+parameter estimates &#8211; see curve_fit.</dd>
+<dt>infodict <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first">a dictionary of optional outputs with the key s:</p>
+<div class="last highlight-python"><div class="highlight"><pre>- &#39;nfev&#39; : the number of function calls
+- &#39;fvec&#39; : the function evaluated at the output
+- &#39;fjac&#39; : A permutation of the R matrix of a QR
+         factorization of the final approximate
+         Jacobian matrix, stored column wise.
+         Together with ipvt, the covariance of the
+         estimate can be approximated.
+- &#39;ipvt&#39; : an integer array of length N which defines
+         a permutation matrix, p, such that
+         fjac*p = q*r, where r is upper triangular
+         with diagonal elements of nonincreasing
+         magnitude. Column j of p is column ipvt(j)
+         of the identity matrix.
+- &#39;qtf&#39;  : the vector (transpose(q) * fvec).
+</pre></div>
+</div>
+</dd>
+<dt>mesg <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd>A string message giving information about the cause of failure.</dd>
+<dt>ier <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd>An integer flag.  If it is equal to 1, 2, 3 or 4, the solution was
+found.  Otherwise, the solution was not found. In either case, the
+optional output variable &#8216;mesg&#8217; gives more information.</dd>
+</dl>
+<p>&#8220;leastsq&#8221; is a wrapper around MINPACK&#8217;s lmdif and lmder algorithms.</p>
+<p>cov_x is a Jacobian approximation to the Hessian of the least squares
+objective function.
+This approximation assumes that the objective function is based on the
+difference between some observed target data (ydata) and a (non-linear)
+function of the parameters <cite>f(xdata, params)</cite></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">func</span><span class="p">(</span><span class="n">params</span><span class="p">)</span> <span class="o">=</span> <span class="n">ydata</span> <span class="o">-</span> <span class="n">f</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>so that the objective function is</p>
+<div class="highlight-python"><div class="highlight"><pre>  min   sum((ydata - f(xdata, params))**2, axis=0)
+params
+</pre></div>
+</div>
+<p>Contraints on the parameters are enforced using an internal parameter list 
+with appropiate transformations such that these internal parameters can be
+optimized without constraints. The transfomation between a given internal 
+parameter, p_i, and a external parameter, p_e, are as follows:</p>
+<p>With <tt class="docutils literal"><span class="pre">min</span></tt> and <tt class="docutils literal"><span class="pre">max</span></tt> bounds defined</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">p_i</span> <span class="o">=</span> <span class="n">arcsin</span><span class="p">((</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">p_e</span> <span class="o">-</span> <span class="nb">min</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="nb">max</span> <span class="o">-</span> <span class="nb">min</span><span class="p">))</span> <span class="o">-</span> <span class="mf">1.</span><span class="p">)</span>
+<span class="n">p_e</span> <span class="o">=</span> <span class="nb">min</span> <span class="o">+</span> <span class="p">((</span><span class="nb">max</span> <span class="o">-</span> <span class="nb">min</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">sin</span><span class="p">(</span><span class="n">p_i</span><span class="p">)</span> <span class="o">+</span> <span class="mf">1.</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>With only <tt class="docutils literal"><span class="pre">max</span></tt> defined</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">p_i</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">((</span><span class="n">p_e</span> <span class="o">-</span> <span class="nb">max</span> <span class="o">+</span> <span class="mf">1.</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="mf">1.</span><span class="p">)</span>
+<span class="n">p_e</span> <span class="o">=</span> <span class="nb">max</span> <span class="o">+</span> <span class="mf">1.</span> <span class="o">-</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">p_i</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mf">1.</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>With only <tt class="docutils literal"><span class="pre">min</span></tt> defined</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">p_i</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">((</span><span class="n">p_e</span> <span class="o">-</span> <span class="nb">min</span> <span class="o">+</span> <span class="mf">1.</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="mf">1.</span><span class="p">)</span>
+<span class="n">p_e</span> <span class="o">=</span> <span class="nb">min</span> <span class="o">-</span> <span class="mf">1.</span> <span class="o">+</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">p_i</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mf">1.</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>These transfomations are used in the MINUIT package, and described in 
+detail in the section 1.3.1 of the MINUIT User&#8217;s Guide.</p>
+<p>Currently the <tt class="docutils literal"><span class="pre">factor</span></tt> and <tt class="docutils literal"><span class="pre">diag</span></tt> parameters scale the 
+internal parameter list, but should scale the external parameter list.</p>
+<p>The <cite>qtf</cite> vector in the infodic dictionary reflects internal parameter 
+list, it should be correct to reflect the external parameter list.</p>
+<ul class="simple">
+<li><ol class="first upperalpha" start="6">
+<li>James and M. Winkler. MINUIT User&#8217;s Guide, July 16, 2004.</li>
+</ol>
+</li>
+</ul>
+</dd></dl>
+
+</div>
+<div class="section" id="array">
+<h3>array<a class="headerlink" href="#array" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="MRS.leastsqbound.leastsqbound.array">
+<tt class="descclassname">MRS.leastsqbound.leastsqbound.</tt><tt class="descname">array</tt><big>(</big><em>object</em>, <em>dtype=None</em>, <em>copy=True</em>, <em>order=None</em>, <em>subok=False</em>, <em>ndmin=0</em><big>)</big><a class="headerlink" href="#MRS.leastsqbound.leastsqbound.array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create an array.</p>
+<dl class="docutils">
+<dt>object <span class="classifier-delimiter">:</span> <span class="classifier">array_like</span></dt>
+<dd>An array, any object exposing the array interface, an
+object whose __array__ method returns an array, or any
+(nested) sequence.</dd>
+<dt>dtype <span class="classifier-delimiter">:</span> <span class="classifier">data-type, optional</span></dt>
+<dd>The desired data-type for the array.  If not given, then
+the type will be determined as the minimum type required
+to hold the objects in the sequence.  This argument can only
+be used to &#8216;upcast&#8217; the array.  For downcasting, use the
+.astype(t) method.</dd>
+<dt>copy <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd>If true (default), then the object is copied.  Otherwise, a copy
+will only be made if __array__ returns a copy, if obj is a
+nested sequence, or if a copy is needed to satisfy any of the other
+requirements (<cite>dtype</cite>, <cite>order</cite>, etc.).</dd>
+<dt>order <span class="classifier-delimiter">:</span> <span class="classifier">{&#8216;C&#8217;, &#8216;F&#8217;, &#8216;A&#8217;}, optional</span></dt>
+<dd>Specify the order of the array.  If order is &#8216;C&#8217; (default), then the
+array will be in C-contiguous order (last-index varies the
+fastest).  If order is &#8216;F&#8217;, then the returned array
+will be in Fortran-contiguous order (first-index varies the
+fastest).  If order is &#8216;A&#8217;, then the returned array may
+be in any order (either C-, Fortran-contiguous, or even
+discontiguous).</dd>
+<dt>subok <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd>If True, then sub-classes will be passed-through, otherwise
+the returned array will be forced to be a base-class array (default).</dd>
+<dt>ndmin <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd>Specifies the minimum number of dimensions that the resulting
+array should have.  Ones will be pre-pended to the shape as
+needed to meet this requirement.</dd>
+</dl>
+<dl class="docutils">
+<dt>out <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
+<dd>An array object satisfying the specified requirements.</dd>
+</dl>
+<p>empty, empty_like, zeros, zeros_like, ones, ones_like, fill</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="go">array([1, 2, 3])</span>
+</pre></div>
+</div>
+<p>Upcasting:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">])</span>
+<span class="go">array([ 1.,  2.,  3.])</span>
+</pre></div>
+</div>
+<p>More than one dimension:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]])</span>
+<span class="go">array([[1, 2],</span>
+<span class="go">       [3, 4]])</span>
+</pre></div>
+</div>
+<p>Minimum dimensions 2:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">ndmin</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">array([[1, 2, 3]])</span>
+</pre></div>
+</div>
+<p>Type provided:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span>
+<span class="go">array([ 1.+0.j,  2.+0.j,  3.+0.j])</span>
+</pre></div>
+</div>
+<p>Data-type consisting of more than one element:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),(</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">)],</span><span class="n">dtype</span><span class="o">=</span><span class="p">[(</span><span class="s">&#39;a&#39;</span><span class="p">,</span><span class="s">&#39;&lt;i4&#39;</span><span class="p">),(</span><span class="s">&#39;b&#39;</span><span class="p">,</span><span class="s">&#39;&lt;i4&#39;</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">]</span>
+<span class="go">array([1, 3])</span>
+</pre></div>
+</div>
+<p>Creating an array from sub-classes:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mat</span><span class="p">(</span><span class="s">&#39;1 2; 3 4&#39;</span><span class="p">))</span>
+<span class="go">array([[1, 2],</span>
+<span class="go">       [3, 4]])</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mat</span><span class="p">(</span><span class="s">&#39;1 2; 3 4&#39;</span><span class="p">),</span> <span class="n">subok</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="go">matrix([[1, 2],</span>
+<span class="go">        [3, 4]])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="dot">
+<h3>dot<a class="headerlink" href="#dot" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="MRS.leastsqbound.leastsqbound.dot">
+<tt class="descclassname">MRS.leastsqbound.leastsqbound.</tt><tt class="descname">dot</tt><big>(</big><em>a</em>, <em>b</em>, <em>out=None</em><big>)</big><a class="headerlink" href="#MRS.leastsqbound.leastsqbound.dot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dot product of two arrays.</p>
+<p>For 2-D arrays it is equivalent to matrix multiplication, and for 1-D
+arrays to inner product of vectors (without complex conjugation). For
+N dimensions it is a sum product over the last axis of <cite>a</cite> and
+the second-to-last of <cite>b</cite>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">dot</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">m</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,:]</span> <span class="o">*</span> <span class="n">b</span><span class="p">[</span><span class="n">k</span><span class="p">,:,</span><span class="n">m</span><span class="p">])</span>
+</pre></div>
+</div>
+<dl class="docutils">
+<dt>a <span class="classifier-delimiter">:</span> <span class="classifier">array_like</span></dt>
+<dd>First argument.</dd>
+<dt>b <span class="classifier-delimiter">:</span> <span class="classifier">array_like</span></dt>
+<dd>Second argument.</dd>
+<dt>out <span class="classifier-delimiter">:</span> <span class="classifier">ndarray, optional</span></dt>
+<dd>Output argument. This must have the exact kind that would be returned
+if it was not used. In particular, it must have the right type, must be
+C-contiguous, and its dtype must be the dtype that would be returned
+for <cite>dot(a,b)</cite>. This is a performance feature. Therefore, if these
+conditions are not met, an exception is raised, instead of attempting
+to be flexible.</dd>
+</dl>
+<dl class="docutils">
+<dt>output <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
+<dd>Returns the dot product of <cite>a</cite> and <cite>b</cite>.  If <cite>a</cite> and <cite>b</cite> are both
+scalars or both 1-D arrays then a scalar is returned; otherwise
+an array is returned.
+If <cite>out</cite> is given, then it is returned.</dd>
+</dl>
+<dl class="docutils">
+<dt>ValueError</dt>
+<dd>If the last dimension of <cite>a</cite> is not the same size as
+the second-to-last dimension of <cite>b</cite>.</dd>
+</dl>
+<p>vdot : Complex-conjugating dot product.
+tensordot : Sum products over arbitrary axes.
+einsum : Einstein summation convention.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="go">12</span>
+</pre></div>
+</div>
+<p>Neither argument is complex-conjugated:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">([</span><span class="mi">2j</span><span class="p">,</span> <span class="mi">3j</span><span class="p">],</span> <span class="p">[</span><span class="mi">2j</span><span class="p">,</span> <span class="mi">3j</span><span class="p">])</span>
+<span class="go">(-13+0j)</span>
+</pre></div>
+</div>
+<p>For 2-D arrays it&#8217;s the matrix product:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+<span class="go">array([[4, 1],</span>
+<span class="go">       [2, 2]])</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">3</span><span class="o">*</span><span class="mi">4</span><span class="o">*</span><span class="mi">5</span><span class="o">*</span><span class="mi">6</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">3</span><span class="o">*</span><span class="mi">4</span><span class="o">*</span><span class="mi">5</span><span class="o">*</span><span class="mi">6</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span>
+<span class="go">499128</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">sum</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">,:]</span> <span class="o">*</span> <span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,:,</span><span class="mi">2</span><span class="p">])</span>
+<span class="go">499128</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="empty-like">
+<h3>empty_like<a class="headerlink" href="#empty-like" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="MRS.leastsqbound.leastsqbound.empty_like">
+<tt class="descclassname">MRS.leastsqbound.leastsqbound.</tt><tt class="descname">empty_like</tt><big>(</big><em>a</em>, <em>dtype=None</em>, <em>order='K'</em>, <em>subok=True</em><big>)</big><a class="headerlink" href="#MRS.leastsqbound.leastsqbound.empty_like" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new array with the same shape and type as a given array.</p>
+<dl class="docutils">
+<dt>a <span class="classifier-delimiter">:</span> <span class="classifier">array_like</span></dt>
+<dd>The shape and data-type of <cite>a</cite> define these same attributes of the
+returned array.</dd>
+<dt>dtype <span class="classifier-delimiter">:</span> <span class="classifier">data-type, optional</span></dt>
+<dd><div class="first versionadded">
+<p><span class="versionmodified">New in version 1.6.0.</span></p>
+</div>
+<p class="last">Overrides the data type of the result.</p>
+</dd>
+<dt>order <span class="classifier-delimiter">:</span> <span class="classifier">{&#8216;C&#8217;, &#8216;F&#8217;, &#8216;A&#8217;, or &#8216;K&#8217;}, optional</span></dt>
+<dd><div class="first versionadded">
+<p><span class="versionmodified">New in version 1.6.0.</span></p>
+</div>
+<p class="last">Overrides the memory layout of the result. &#8216;C&#8217; means C-order,
+&#8216;F&#8217; means F-order, &#8216;A&#8217; means &#8216;F&#8217; if <tt class="docutils literal"><span class="pre">a</span></tt> is Fortran contiguous,
+&#8216;C&#8217; otherwise. &#8216;K&#8217; means match the layout of <tt class="docutils literal"><span class="pre">a</span></tt> as closely
+as possible.</p>
+</dd>
+<dt>subok <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional.</span></dt>
+<dd>If True, then the newly created array will use the sub-class
+type of &#8216;a&#8217;, otherwise it will be a base-class array. Defaults
+to True.</dd>
+</dl>
+<dl class="docutils">
+<dt>out <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
+<dd>Array of uninitialized (arbitrary) data with the same
+shape and type as <cite>a</cite>.</dd>
+</dl>
+<p>ones_like : Return an array of ones with shape and type of input.
+zeros_like : Return an array of zeros with shape and type of input.
+empty : Return a new uninitialized array.
+ones : Return a new array setting values to one.
+zeros : Return a new array setting values to zero.</p>
+<p>This function does <em>not</em> initialize the returned array; to do that use
+<cite>zeros_like</cite> or <cite>ones_like</cite> instead.  It may be marginally faster than
+the functions that do set the array values.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">])</span>                         <span class="c"># a is array-like</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="go">array([[-1073741821, -1073741821,           3],    #random</span>
+<span class="go">       [          0,           0, -1073741821]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">],[</span><span class="mf">4.</span><span class="p">,</span><span class="mf">5.</span><span class="p">,</span><span class="mf">6.</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="go">array([[ -2.00000715e+000,   1.48219694e-323,  -2.00000572e+000],#random</span>
+<span class="go">       [  4.38791518e-305,  -2.00000715e+000,   4.17269252e-309]])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="eye">
+<h3>eye<a class="headerlink" href="#eye" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="MRS.leastsqbound.leastsqbound.eye">
+<tt class="descclassname">MRS.leastsqbound.leastsqbound.</tt><tt class="descname">eye</tt><big>(</big><em>N</em>, <em>M=None</em>, <em>k=0</em>, <em>dtype=&lt;type 'float'&gt;</em><big>)</big><a class="headerlink" href="#MRS.leastsqbound.leastsqbound.eye" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a 2-D array with ones on the diagonal and zeros elsewhere.</p>
+<dl class="docutils">
+<dt>N <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd>Number of rows in the output.</dd>
+<dt>M <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd>Number of columns in the output. If None, defaults to <cite>N</cite>.</dd>
+<dt>k <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd>Index of the diagonal: 0 (the default) refers to the main diagonal,
+a positive value refers to an upper diagonal, and a negative value
+to a lower diagonal.</dd>
+<dt>dtype <span class="classifier-delimiter">:</span> <span class="classifier">data-type, optional</span></dt>
+<dd>Data-type of the returned array.</dd>
+</dl>
+<dl class="docutils">
+<dt>I <span class="classifier-delimiter">:</span> <span class="classifier">ndarray of shape (N,M)</span></dt>
+<dd>An array where all elements are equal to zero, except for the <cite>k</cite>-th
+diagonal, whose values are equal to one.</dd>
+</dl>
+<p>identity : (almost) equivalent function
+diag : diagonal 2-D array from a 1-D array specified by the user.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+<span class="go">array([[1, 0],</span>
+<span class="go">       [0, 1]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">array([[ 0.,  1.,  0.],</span>
+<span class="go">       [ 0.,  0.,  1.],</span>
+<span class="go">       [ 0.,  0.,  0.]])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="leastsq">
+<h3>leastsq<a class="headerlink" href="#leastsq" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="MRS.leastsqbound.leastsqbound.leastsq">
+<tt class="descclassname">MRS.leastsqbound.leastsqbound.</tt><tt class="descname">leastsq</tt><big>(</big><em>func</em>, <em>x0</em>, <em>args=()</em>, <em>Dfun=None</em>, <em>full_output=0</em>, <em>col_deriv=0</em>, <em>ftol=1.49012e-08</em>, <em>xtol=1.49012e-08</em>, <em>gtol=0.0</em>, <em>maxfev=0</em>, <em>epsfcn=None</em>, <em>factor=100</em>, <em>diag=None</em><big>)</big><a class="headerlink" href="#MRS.leastsqbound.leastsqbound.leastsq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Minimize the sum of squares of a set of equations.</p>
+<div class="highlight-python"><div class="highlight"><pre>x = arg min(sum(func(y)**2,axis=0))
+         y
+</pre></div>
+</div>
+<dl class="docutils">
+<dt>func <span class="classifier-delimiter">:</span> <span class="classifier">callable</span></dt>
+<dd>should take at least one (possibly length N vector) argument and
+returns M floating point numbers.</dd>
+<dt>x0 <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
+<dd>The starting estimate for the minimization.</dd>
+<dt>args <span class="classifier-delimiter">:</span> <span class="classifier">tuple</span></dt>
+<dd>Any extra arguments to func are placed in this tuple.</dd>
+<dt>Dfun <span class="classifier-delimiter">:</span> <span class="classifier">callable</span></dt>
+<dd>A function or method to compute the Jacobian of func with derivatives
+across the rows. If this is None, the Jacobian will be estimated.</dd>
+<dt>full_output <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
+<dd>non-zero to return all optional outputs.</dd>
+<dt>col_deriv <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
+<dd>non-zero to specify that the Jacobian function computes derivatives
+down the columns (faster, because there is no transpose operation).</dd>
+<dt>ftol <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd>Relative error desired in the sum of squares.</dd>
+<dt>xtol <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd>Relative error desired in the approximate solution.</dd>
+<dt>gtol <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd>Orthogonality desired between the function vector and the columns of
+the Jacobian.</dd>
+<dt>maxfev <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd>The maximum number of calls to the function. If zero, then 100*(N+1) is
+the maximum where N is the number of elements in x0.</dd>
+<dt>epsfcn <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd>A suitable step length for the forward-difference approximation of the
+Jacobian (for Dfun=None). If epsfcn is less than the machine precision,
+it is assumed that the relative errors in the functions are of the
+order of the machine precision.</dd>
+<dt>factor <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd>A parameter determining the initial step bound
+(<tt class="docutils literal"><span class="pre">factor</span> <span class="pre">*</span> <span class="pre">||</span> <span class="pre">diag</span> <span class="pre">*</span> <span class="pre">x||</span></tt>). Should be in interval <tt class="docutils literal"><span class="pre">(0.1,</span> <span class="pre">100)</span></tt>.</dd>
+<dt>diag <span class="classifier-delimiter">:</span> <span class="classifier">sequence</span></dt>
+<dd>N positive entries that serve as a scale factors for the variables.</dd>
+</dl>
+<dl class="docutils">
+<dt>x <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
+<dd>The solution (or the result of the last iteration for an unsuccessful
+call).</dd>
+<dt>cov_x <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
+<dd>Uses the fjac and ipvt optional outputs to construct an
+estimate of the jacobian around the solution. None if a
+singular matrix encountered (indicates very flat curvature in
+some direction).  This matrix must be multiplied by the
+residual variance to get the covariance of the
+parameter estimates &#8211; see curve_fit.</dd>
+<dt>infodict <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first">a dictionary of optional outputs with the key s:</p>
+<dl class="last docutils">
+<dt><tt class="docutils literal"><span class="pre">nfev</span></tt></dt>
+<dd>The number of function calls</dd>
+<dt><tt class="docutils literal"><span class="pre">fvec</span></tt></dt>
+<dd>The function evaluated at the output</dd>
+<dt><tt class="docutils literal"><span class="pre">fjac</span></tt></dt>
+<dd>A permutation of the R matrix of a QR
+factorization of the final approximate
+Jacobian matrix, stored column wise.
+Together with ipvt, the covariance of the
+estimate can be approximated.</dd>
+<dt><tt class="docutils literal"><span class="pre">ipvt</span></tt></dt>
+<dd>An integer array of length N which defines
+a permutation matrix, p, such that
+fjac*p = q*r, where r is upper triangular
+with diagonal elements of nonincreasing
+magnitude. Column j of p is column ipvt(j)
+of the identity matrix.</dd>
+<dt><tt class="docutils literal"><span class="pre">qtf</span></tt></dt>
+<dd>The vector (transpose(q) * fvec).</dd>
+</dl>
+</dd>
+<dt>mesg <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd>A string message giving information about the cause of failure.</dd>
+<dt>ier <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd>An integer flag.  If it is equal to 1, 2, 3 or 4, the solution was
+found.  Otherwise, the solution was not found. In either case, the
+optional output variable &#8216;mesg&#8217; gives more information.</dd>
+</dl>
+<p>&#8220;leastsq&#8221; is a wrapper around MINPACK&#8217;s lmdif and lmder algorithms.</p>
+<p>cov_x is a Jacobian approximation to the Hessian of the least squares
+objective function.
+This approximation assumes that the objective function is based on the
+difference between some observed target data (ydata) and a (non-linear)
+function of the parameters <cite>f(xdata, params)</cite></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">func</span><span class="p">(</span><span class="n">params</span><span class="p">)</span> <span class="o">=</span> <span class="n">ydata</span> <span class="o">-</span> <span class="n">f</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>so that the objective function is</p>
+<div class="highlight-python"><div class="highlight"><pre>  min   sum((ydata - f(xdata, params))**2, axis=0)
+params
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="id2">
+<h3>leastsqbound<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="MRS.leastsqbound.leastsqbound.leastsqbound">
+<tt class="descclassname">MRS.leastsqbound.leastsqbound.</tt><tt class="descname">leastsqbound</tt><big>(</big><em>func</em>, <em>x0</em>, <em>args=()</em>, <em>bounds=None</em>, <em>Dfun=None</em>, <em>full_output=0</em>, <em>col_deriv=0</em>, <em>ftol=1.49012e-08</em>, <em>xtol=1.49012e-08</em>, <em>gtol=0.0</em>, <em>maxfev=0</em>, <em>epsfcn=0.0</em>, <em>factor=100</em>, <em>diag=None</em><big>)</big><a class="headerlink" href="#MRS.leastsqbound.leastsqbound.leastsqbound" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bounded minimization of the sum of squares of a set of equations.</p>
+<div class="highlight-python"><div class="highlight"><pre>x = arg min(sum(func(y)**2,axis=0))
+         y
+</pre></div>
+</div>
+<dl class="docutils">
+<dt>func <span class="classifier-delimiter">:</span> <span class="classifier">callable</span></dt>
+<dd>should take at least one (possibly length N vector) argument and
+returns M floating point numbers.</dd>
+<dt>x0 <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
+<dd>The starting estimate for the minimization.</dd>
+<dt>args <span class="classifier-delimiter">:</span> <span class="classifier">tuple</span></dt>
+<dd>Any extra arguments to func are placed in this tuple.</dd>
+<dt>bounds <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><tt class="docutils literal"><span class="pre">(min,</span> <span class="pre">max)</span></tt> pairs for each element in <tt class="docutils literal"><span class="pre">x</span></tt>, defining
+the bounds on that parameter. Use None for one of <tt class="docutils literal"><span class="pre">min</span></tt> or
+<tt class="docutils literal"><span class="pre">max</span></tt> when there is no bound in that direction.</dd>
+<dt>Dfun <span class="classifier-delimiter">:</span> <span class="classifier">callable</span></dt>
+<dd>A function or method to compute the Jacobian of func with derivatives
+across the rows. If this is None, the Jacobian will be estimated.</dd>
+<dt>full_output <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
+<dd>non-zero to return all optional outputs.</dd>
+<dt>col_deriv <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
+<dd>non-zero to specify that the Jacobian function computes derivatives
+down the columns (faster, because there is no transpose operation).</dd>
+<dt>ftol <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd>Relative error desired in the sum of squares.</dd>
+<dt>xtol <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd>Relative error desired in the approximate solution.</dd>
+<dt>gtol <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd>Orthogonality desired between the function vector and the columns of
+the Jacobian.</dd>
+<dt>maxfev <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd>The maximum number of calls to the function. If zero, then 100*(N+1) is
+the maximum where N is the number of elements in x0.</dd>
+<dt>epsfcn <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd>A suitable step length for the forward-difference approximation of the
+Jacobian (for Dfun=None). If epsfcn is less than the machine precision,
+it is assumed that the relative errors in the functions are of the
+order of the machine precision.</dd>
+<dt>factor <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd>A parameter determining the initial step bound
+(<tt class="docutils literal"><span class="pre">factor</span> <span class="pre">*</span> <span class="pre">||</span> <span class="pre">diag</span> <span class="pre">*</span> <span class="pre">x||</span></tt>). Should be in interval <tt class="docutils literal"><span class="pre">(0.1,</span> <span class="pre">100)</span></tt>.</dd>
+<dt>diag <span class="classifier-delimiter">:</span> <span class="classifier">sequence</span></dt>
+<dd>N positive entries that serve as a scale factors for the variables.</dd>
+</dl>
+<dl class="docutils">
+<dt>x <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
+<dd>The solution (or the result of the last iteration for an unsuccessful
+call).</dd>
+<dt>cov_x <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
+<dd>Uses the fjac and ipvt optional outputs to construct an
+estimate of the jacobian around the solution.  <tt class="docutils literal"><span class="pre">None</span></tt> if a
+singular matrix encountered (indicates very flat curvature in
+some direction).  This matrix must be multiplied by the
+residual standard deviation to get the covariance of the
+parameter estimates &#8211; see curve_fit.</dd>
+<dt>infodict <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first">a dictionary of optional outputs with the key s:</p>
+<div class="last highlight-python"><div class="highlight"><pre>- &#39;nfev&#39; : the number of function calls
+- &#39;fvec&#39; : the function evaluated at the output
+- &#39;fjac&#39; : A permutation of the R matrix of a QR
+         factorization of the final approximate
+         Jacobian matrix, stored column wise.
+         Together with ipvt, the covariance of the
+         estimate can be approximated.
+- &#39;ipvt&#39; : an integer array of length N which defines
+         a permutation matrix, p, such that
+         fjac*p = q*r, where r is upper triangular
+         with diagonal elements of nonincreasing
+         magnitude. Column j of p is column ipvt(j)
+         of the identity matrix.
+- &#39;qtf&#39;  : the vector (transpose(q) * fvec).
+</pre></div>
+</div>
+</dd>
+<dt>mesg <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd>A string message giving information about the cause of failure.</dd>
+<dt>ier <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd>An integer flag.  If it is equal to 1, 2, 3 or 4, the solution was
+found.  Otherwise, the solution was not found. In either case, the
+optional output variable &#8216;mesg&#8217; gives more information.</dd>
+</dl>
+<p>&#8220;leastsq&#8221; is a wrapper around MINPACK&#8217;s lmdif and lmder algorithms.</p>
+<p>cov_x is a Jacobian approximation to the Hessian of the least squares
+objective function.
+This approximation assumes that the objective function is based on the
+difference between some observed target data (ydata) and a (non-linear)
+function of the parameters <cite>f(xdata, params)</cite></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">func</span><span class="p">(</span><span class="n">params</span><span class="p">)</span> <span class="o">=</span> <span class="n">ydata</span> <span class="o">-</span> <span class="n">f</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>so that the objective function is</p>
+<div class="highlight-python"><div class="highlight"><pre>  min   sum((ydata - f(xdata, params))**2, axis=0)
+params
+</pre></div>
+</div>
+<p>Contraints on the parameters are enforced using an internal parameter list 
+with appropiate transformations such that these internal parameters can be
+optimized without constraints. The transfomation between a given internal 
+parameter, p_i, and a external parameter, p_e, are as follows:</p>
+<p>With <tt class="docutils literal"><span class="pre">min</span></tt> and <tt class="docutils literal"><span class="pre">max</span></tt> bounds defined</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">p_i</span> <span class="o">=</span> <span class="n">arcsin</span><span class="p">((</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">p_e</span> <span class="o">-</span> <span class="nb">min</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="nb">max</span> <span class="o">-</span> <span class="nb">min</span><span class="p">))</span> <span class="o">-</span> <span class="mf">1.</span><span class="p">)</span>
+<span class="n">p_e</span> <span class="o">=</span> <span class="nb">min</span> <span class="o">+</span> <span class="p">((</span><span class="nb">max</span> <span class="o">-</span> <span class="nb">min</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">sin</span><span class="p">(</span><span class="n">p_i</span><span class="p">)</span> <span class="o">+</span> <span class="mf">1.</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>With only <tt class="docutils literal"><span class="pre">max</span></tt> defined</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">p_i</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">((</span><span class="n">p_e</span> <span class="o">-</span> <span class="nb">max</span> <span class="o">+</span> <span class="mf">1.</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="mf">1.</span><span class="p">)</span>
+<span class="n">p_e</span> <span class="o">=</span> <span class="nb">max</span> <span class="o">+</span> <span class="mf">1.</span> <span class="o">-</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">p_i</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mf">1.</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>With only <tt class="docutils literal"><span class="pre">min</span></tt> defined</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">p_i</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">((</span><span class="n">p_e</span> <span class="o">-</span> <span class="nb">min</span> <span class="o">+</span> <span class="mf">1.</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="mf">1.</span><span class="p">)</span>
+<span class="n">p_e</span> <span class="o">=</span> <span class="nb">min</span> <span class="o">-</span> <span class="mf">1.</span> <span class="o">+</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">p_i</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mf">1.</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>These transfomations are used in the MINUIT package, and described in 
+detail in the section 1.3.1 of the MINUIT User&#8217;s Guide.</p>
+<p>Currently the <tt class="docutils literal"><span class="pre">factor</span></tt> and <tt class="docutils literal"><span class="pre">diag</span></tt> parameters scale the 
+internal parameter list, but should scale the external parameter list.</p>
+<p>The <cite>qtf</cite> vector in the infodic dictionary reflects internal parameter 
+list, it should be correct to reflect the external parameter list.</p>
+<ul class="simple">
+<li><ol class="first upperalpha" start="6">
+<li>James and M. Winkler. MINUIT User&#8217;s Guide, July 16, 2004.</li>
+</ol>
+</li>
+</ul>
+</dd></dl>
+
+</div>
+<div class="section" id="take">
+<h3>take<a class="headerlink" href="#take" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="MRS.leastsqbound.leastsqbound.take">
+<tt class="descclassname">MRS.leastsqbound.leastsqbound.</tt><tt class="descname">take</tt><big>(</big><em>a</em>, <em>indices</em>, <em>axis=None</em>, <em>out=None</em>, <em>mode='raise'</em><big>)</big><a class="headerlink" href="#MRS.leastsqbound.leastsqbound.take" title="Permalink to this definition">¶</a></dt>
+<dd><p>Take elements from an array along an axis.</p>
+<p>This function does the same thing as &#8220;fancy&#8221; indexing (indexing arrays
+using arrays); however, it can be easier to use if you need elements
+along a given axis.</p>
+<dl class="docutils">
+<dt>a <span class="classifier-delimiter">:</span> <span class="classifier">array_like</span></dt>
+<dd>The source array.</dd>
+<dt>indices <span class="classifier-delimiter">:</span> <span class="classifier">array_like</span></dt>
+<dd><p class="first">The indices of the values to extract.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.8.0.</span></p>
+</div>
+<p class="last">Also allow scalars for indices.</p>
+</dd>
+<dt>axis <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd>The axis over which to select values. By default, the flattened
+input array is used.</dd>
+<dt>out <span class="classifier-delimiter">:</span> <span class="classifier">ndarray, optional</span></dt>
+<dd>If provided, the result will be placed in this array. It should
+be of the appropriate shape and dtype.</dd>
+<dt>mode <span class="classifier-delimiter">:</span> <span class="classifier">{&#8216;raise&#8217;, &#8216;wrap&#8217;, &#8216;clip&#8217;}, optional</span></dt>
+<dd><p class="first">Specifies how out-of-bounds indices will behave.</p>
+<ul class="simple">
+<li>&#8216;raise&#8217; &#8211; raise an error (default)</li>
+<li>&#8216;wrap&#8217; &#8211; wrap around</li>
+<li>&#8216;clip&#8217; &#8211; clip to the range</li>
+</ul>
+<p class="last">&#8216;clip&#8217; mode means that all indices that are too large are replaced
+by the index that addresses the last element along that axis. Note
+that this disables indexing with negative numbers.</p>
+</dd>
+</dl>
+<dl class="docutils">
+<dt>subarray <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
+<dd>The returned array has the same type as <cite>a</cite>.</dd>
+</dl>
+<p>ndarray.take : equivalent method</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">indices</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">indices</span><span class="p">)</span>
+<span class="go">array([4, 3, 6])</span>
+</pre></div>
+</div>
+<p>In this example if <cite>a</cite> is an ndarray, &#8220;fancy&#8221; indexing can be used.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
+<span class="go">array([4, 3, 6])</span>
+</pre></div>
+</div>
+<p>If <cite>indices</cite> is not one dimensional, the output also has these dimensions.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]])</span>
+<span class="go">array([[4, 3],</span>
+<span class="go">       [5, 7]])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="transpose">
+<h3>transpose<a class="headerlink" href="#transpose" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="MRS.leastsqbound.leastsqbound.transpose">
+<tt class="descclassname">MRS.leastsqbound.leastsqbound.</tt><tt class="descname">transpose</tt><big>(</big><em>a</em>, <em>axes=None</em><big>)</big><a class="headerlink" href="#MRS.leastsqbound.leastsqbound.transpose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Permute the dimensions of an array.</p>
+<dl class="docutils">
+<dt>a <span class="classifier-delimiter">:</span> <span class="classifier">array_like</span></dt>
+<dd>Input array.</dd>
+<dt>axes <span class="classifier-delimiter">:</span> <span class="classifier">list of ints, optional</span></dt>
+<dd>By default, reverse the dimensions, otherwise permute the axes
+according to the values given.</dd>
+</dl>
+<dl class="docutils">
+<dt>p <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
+<dd><cite>a</cite> with its axes permuted.  A view is returned whenever
+possible.</dd>
+</dl>
+<p>rollaxis</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span>
+<span class="go">array([[0, 1],</span>
+<span class="go">       [2, 3]])</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">array([[0, 2],</span>
+<span class="go">       [1, 3]])</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">(2, 1, 3)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="triu">
+<h3>triu<a class="headerlink" href="#triu" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="MRS.leastsqbound.leastsqbound.triu">
+<tt class="descclassname">MRS.leastsqbound.leastsqbound.</tt><tt class="descname">triu</tt><big>(</big><em>m</em>, <em>k=0</em><big>)</big><a class="headerlink" href="#MRS.leastsqbound.leastsqbound.triu" title="Permalink to this definition">¶</a></dt>
+<dd><p>Upper triangle of an array.</p>
+<p>Return a copy of a matrix with the elements below the <cite>k</cite>-th diagonal
+zeroed.</p>
+<p>Please refer to the documentation for <cite>tril</cite> for further details.</p>
+<p>tril : lower triangle of an array</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">triu</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">],[</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">],[</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">]],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">array([[ 1,  2,  3],</span>
+<span class="go">       [ 4,  5,  6],</span>
+<span class="go">       [ 0,  8,  9],</span>
+<span class="go">       [ 0,  0, 12]])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+         
+<div class="span3 visible-desktop visible-tablet">
+  <div class=" sidebar hidden-phone">
+  
+<h4> Stanford CNI </h4>
+  <ul class="simple">
+    <li><a class="reference external"
+	href="http://cni.stanford.edu/">Home Page</a></li>
+    <li><a class="reference external"
+	href="https://scitran.stanford.edu/">PoST</a></li>
+    <li><a class="reference external"
+	href="https://cni.stanford.edu/nims/">NIMS</a></li>
+    <li><a class="reference external"
+	href="http://cni.stanford.edu/wiki/Main_Page">Wiki</a></li>
+  </ul>
+
+
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#"><tt class="docutils literal"><span class="pre">leastsqbound</span></tt></a><ul>
+<li><a class="reference internal" href="#module-MRS.leastsqbound.leastsqbound">Module: <tt class="docutils literal"><span class="pre">leastsqbound.leastsqbound</span></tt></a><ul>
+<li><a class="reference internal" href="#id1">leastsqbound</a></li>
+<li><a class="reference internal" href="#array">array</a></li>
+<li><a class="reference internal" href="#dot">dot</a></li>
+<li><a class="reference internal" href="#empty-like">empty_like</a></li>
+<li><a class="reference internal" href="#eye">eye</a></li>
+<li><a class="reference internal" href="#leastsq">leastsq</a></li>
+<li><a class="reference internal" href="#id2">leastsqbound</a></li>
+<li><a class="reference internal" href="#take">take</a></li>
+<li><a class="reference internal" href="#transpose">transpose</a></li>
+<li><a class="reference internal" href="#triu">triu</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="MRS.freesurfer.html"
+                        title="previous chapter"><tt class="docutils literal"><span class="pre">freesurfer</span></tt></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="MRS.optimize.html"
+                        title="next chapter"><tt class="docutils literal"><span class="pre">optimize</span></tt></a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/reference/MRS.leastsqbound.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+  
+<div id="searchbox-site" style="display: none">
+  <h3>Search this site</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="13" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox-ml').show(0);</script>
+<script type="text/javascript">$('#searchbox-site').show(0);</script>
+
+
+  </div>
+</div> 
+        
+      </div><!-- /row -->
+
+      <!-- row -->
+      <div class="row-fluid">
+<div class="related navbar navbar-inverse">
+  <div class="navbar-inner">
+    <ul class="nav pull-right">
+      
+        <li><a href="../genindex.html" title="General Index" accesskey="I">index</a></li>
+        <li><a href="../py-modindex.html" title="Python Module Index" >modules</a></li>
+        <li><a href="MRS.optimize.html" title="optimize" accesskey="N">next</a></li>
+        <li><a href="MRS.freesurfer.html" title="freesurfer" accesskey="P">previous</a></li>
+        <li><a href="../index.html">MRS 0.1 documentation</a></li>
+        <li><a href="index.html" accesskey="U">API Reference</a></li> 
+      
+    </ul>
+  </div>
+</div>
+      </div><!-- /row -->
+
+      <!-- footer -->
+
+      <footer>
+          &copy; Copyright 2014, Ariel Rokem, Grace Tang, Stanford CNI.
+        Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.2.
+      </footer>
+
+  </div> <!-- #su-content end -->
+</div> <!-- #su-wrap end -->
+
+<!-- Global footer snippet start -->
+<div id="global-footer">
+  <div class="container">
+    <div class="row">
+      <div id="bottom-logo" class="span2">
+        <a href="http://www.stanford.edu">
+          <img src="https://www.stanford.edu/su-identity/images/footer-stanford-logo@2x.png" alt="Stanford University" width="105" height="49"/>
+        </a>
+      </div>
+      <!-- #bottom-logo end -->
+      <div id="bottom-text" class="span10">
+        <ul>
+          <li class="home"><a href="http://www.stanford.edu">SU Home</a></li>
+          <li class="maps alt"><a href="http://visit.stanford.edu/plan/maps.html">Maps &amp; Directions</a></li>
+          <li class="search-stanford"><a href="http://www.stanford.edu/search/">Search Stanford</a></li>
+          <li class="terms alt"><a href="http://www.stanford.edu/site/terms.html">Terms of Use</a></li>
+          <li class="emergency-info"><a href="http://emergency.stanford.edu">Emergency Info</a></li>
+        </ul>
+      </div> <!-- .bottom-text end -->
+      <div class="clear"></div>
+      <br><p class="copyright vcard">&copy; <span class="fn org">Stanford University</span>, <span class="adr"> <span class="locality">Stanford</span>, <span class="region">California</span> <span class="postal-code">94305</span></span>.&nbsp;&nbsp;
+      <span id="copyright-complaint"><a href="http://www.stanford.edu/group/security/dmca.html" class="copyright-complaint" >Copyright Complaints</a></span>
+      </p>
+    </div> <!-- .row end --> 
+  </div> <!-- .container end --> 
+</div> <!-- global-footer end -->
+<!-- Global footer snippet end -->
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-54034205-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+      <!-- /footer -->
+
+    </div>
+    <!-- /container -->
+
+  </body>
+</html>

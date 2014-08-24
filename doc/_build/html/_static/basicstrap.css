@@ -1,0 +1,160 @@
+/*  Bootstrap
+    ------------------------------------------------------- */
+
+/*  apply font awesome
+    ------------------------------------------------------- */
+
+div.danger p.admonition-title:before,
+div.error p.admonition-title:before,
+div.warning p.admonition-title:before,
+div.caution p.admonition-title:before,
+div.attention p.admonition-title:before,
+div.important p.admonition-title:before,
+div.note p.admonition-title:before,
+div.hint p.admonition-title:before,
+div.tip p.admonition-title:before
+{
+  font-family: FontAwesome;
+  font-weight: normal;
+  font-style: normal;
+  text-decoration: inherit;
+  -webkit-font-smoothing: antialiased;
+  margin-right: 5px;
+}
+
+div.danger p.admonition-title:before,
+div.error p.admonition-title:before {
+  content: "\f06a";
+}
+div.warning p.admonition-title:before,
+div.caution p.admonition-title:before,
+div.attention p.admonition-title:before {
+  content: "\f071";
+}
+div.important p.admonition-title:before,
+div.note p.admonition-title:before {
+  content: "\f05a";
+}
+div.hint p.admonition-title:before,
+div.tip p.admonition-title:before {
+  content: "\f0eb";
+}
+
+    
+    
+    
+
+    
+    
+    
+
+    
+    
+    
+
+    
+    
+    
+
+    
+    
+    
+
+
+table.docutils th,
+table.docutils td {
+  border-top: 1px solid #1cafbd;
+}
+table.docutils tbody + tbody {
+  border-top: 2px solid #1cafbd;
+}
+table.docutils {
+  border: none;
+  border-top: 1px solid #1cafbd;
+  border-right: 1px solid #1cafbd;
+  border-bottom: 1px solid #1cafbd;
+}
+table.docutils th,
+table.docutils td {
+  border-left: 1px solid #1cafbd;
+}
+
+table.docutils tbody tr:nth-child(odd) td,
+table.docutils tbody tr:nth-child(odd) th {
+  background-color: #1ebccb;
+}
+
+table.docutils tbody tr:hover td,
+table.docutils tbody tr:hover th {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+table.docutils.field-list {
+  border: none;
+}
+
+table.width-adjust {
+  width: 0;
+}
+
+/* -- admonition -- */
+div.admonition {
+  color: rgba(255, 255, 255, 0.9);
+  background-color: #df6e1e;
+  border-color: #df6e1e;
+}
+
+/* -- danger, error -- */
+div.danger,
+div.error {
+  color: rgba(255, 255, 255, 0.9);
+  background-color: #d5b321;
+  border-color: #d5b321;
+}
+
+/* -- warning, caution, attention -- */
+div.warning,
+div.caution,
+div.attention {
+  color: rgba(255, 255, 255, 0.9);
+  background-color: #df6e1e;
+  border-color: #df6e1e;
+}
+
+/* -- note, important -- */
+div.note,
+div.important {
+  color: rgba(255, 255, 255, 0.9);
+  background-color: #48ca3b;
+  border-color: #48ca3b;
+}
+
+/* -- hint, tip -- */
+div.hint,
+div.tip {
+  color: rgba(255, 255, 255, 0.9);
+  background-color: #4d3a7d;
+  border-color: #4d3a7d;
+}
+
+div.topic {
+  background-color: #1ebccb;
+  border-color: #1cafbd;
+}
+
+
+
+/* for mobile */
+@media (max-width: 480px) {
+  a.brand {
+    width: 80%;
+  }
+  searchbox .search-query {
+    width: 60%;
+  }
+}
+
+/* for desktop */
+@media (min-width: 768px) {
+  
+  
+}
