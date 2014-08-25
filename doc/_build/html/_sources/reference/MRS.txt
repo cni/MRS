@@ -1,0 +1,12 @@
+.. AUTO-GENERATED FILE -- DO NOT EDIT!
+
+:mod:`MRS`
+==========
+.. automodule:: MRS
+
+.. currentmodule:: MRS
+.. autosummary::
+
+
+
+.. currentmodule:: MRS
