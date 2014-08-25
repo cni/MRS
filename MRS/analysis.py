@@ -103,11 +103,11 @@ def coil_combine(data, w_idx=[1,2,3], coil_dim=2, sampling_rate=5000.):
 
     .. math::
         
-        signal = sum_{i}(w(i)sig(i))
+        signal = \sum_{i}{w_i sig_i}
 
-        w(i) = s(i)/(sqrt(sum(s(i)))
+        w_i = \frac{s_i}{\sqrt{\sum{s_i}}}
         
-    where s(i) is the amplitude of the water peak in each coil.
+    where $s_i$ is the amplitude of the water peak in each coil.
 
     In addition, we apply a phase-correction, so that all the phases of the
     signals from each coil are 0

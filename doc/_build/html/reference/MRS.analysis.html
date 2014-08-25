@@ -69,7 +69,7 @@ in <a class="reference internal" href="MRS.api.html#module-MRS.api" title="MRS.a
 <h2>bootstrap_stat<a class="headerlink" href="#bootstrap-stat" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MRS.analysis.bootstrap_stat">
-<tt class="descclassname">MRS.analysis.</tt><tt class="descname">bootstrap_stat</tt><big>(</big><em>arr</em>, <em>stat=&lt;function mean at 0x1051b27d0&gt;</em>, <em>n_iters=1000</em>, <em>alpha=0.05</em><big>)</big><a class="headerlink" href="#MRS.analysis.bootstrap_stat" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MRS.analysis.</tt><tt class="descname">bootstrap_stat</tt><big>(</big><em>arr</em>, <em>stat=&lt;function mean at 0x1050831b8&gt;</em>, <em>n_iters=1000</em>, <em>alpha=0.05</em><big>)</big><a class="headerlink" href="#MRS.analysis.bootstrap_stat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Produce a boot-strap distribution of the mean of an array on axis 0</p>
 <dl class="docutils">
 <dt>arr <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
@@ -90,40 +90,17 @@ needs to accept that call signature.</dd>
 <dl class="function">
 <dt id="MRS.analysis.coil_combine">
 <tt class="descclassname">MRS.analysis.</tt><tt class="descname">coil_combine</tt><big>(</big><em>data, w_idx=[1, 2, 3], coil_dim=2, sampling_rate=5000.0</em><big>)</big><a class="headerlink" href="#MRS.analysis.coil_combine" title="Permalink to this definition">¶</a></dt>
-<dd><p>Combine data across coils based on the amplitude of the water peak,
+<dd><blockquote>
+<div><p>Combine data across coils based on the amplitude of the water peak,
 according to:</p>
-<div class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">signal = sum_{i}(w(i)sig(i))
+<div class="math">
+<p><img src="../_images/math/d57c6b551f1e4ff936778025122739859b9360a6.png" alt="signal = \sum_{i}{w_i sig_i}
 
-w(i) = s(i)/(sqrt(sum(s(i)))</tt>)</p>
-latex exited with error
-[stdout]
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013)
- restricted \write18 enabled.
-entering extended mode
-(./math.tex
-LaTeX2e &lt;2011/06/27&gt;
-Babel &lt;3.9f&gt; and hyphenation patterns for 21 languages loaded.
-(/usr/local/texlive/2013basic/texmf-dist/tex/latex/base/article.cls
-Document Class: article 2007/10/19 v1.4h Standard LaTeX document class
-(/usr/local/texlive/2013basic/texmf-dist/tex/latex/base/size12.clo))
-(/usr/local/texlive/2013basic/texmf-dist/tex/latex/base/inputenc.sty
-
-! LaTeX Error: File `utf8x.def&#8217; not found.
-
-Type X to quit or &lt;RETURN&gt; to proceed,
-or enter new name. (Default extension: def)
-
-Enter file name: 
-! Emergency stop.
-&lt;read *&gt; 
-         
-l.131 \endinput
-               ^^M
-No pages of output.
-Transcript written on math.log.
-</div>
-<p>where s(i) is the amplitude of the water peak in each coil.</p>
+w_i ="/></p>
+</div></div></blockquote>
+<p>rac{s_i}{sqrt{sum{s_i}}}</p>
+<blockquote>
+<div><p>where $s_i$ is the amplitude of the water peak in each coil.</p>
 <p>In addition, we apply a phase-correction, so that all the phases of the
 signals from each coil are 0</p>
 <dl class="docutils">
@@ -145,36 +122,9 @@ quite different than the rest of them...</dd>
 <p>Following <a class="reference internal" href="#hall2013" id="id1">[Hall2013]</a>, we compute weights on the different coils based on
 the amplitudes and phases of the water peak. The signal from different
 coils is combined as:</p>
-<div class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">S = \sum_{i=1}^{n}{w_i * S_i}</tt>)</p>
-latex exited with error
-[stdout]
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013)
- restricted \write18 enabled.
-entering extended mode
-(./math.tex
-LaTeX2e &lt;2011/06/27&gt;
-Babel &lt;3.9f&gt; and hyphenation patterns for 21 languages loaded.
-(/usr/local/texlive/2013basic/texmf-dist/tex/latex/base/article.cls
-Document Class: article 2007/10/19 v1.4h Standard LaTeX document class
-(/usr/local/texlive/2013basic/texmf-dist/tex/latex/base/size12.clo))
-(/usr/local/texlive/2013basic/texmf-dist/tex/latex/base/inputenc.sty
-
-! LaTeX Error: File `utf8x.def&#8217; not found.
-
-Type X to quit or &lt;RETURN&gt; to proceed,
-or enter new name. (Default extension: def)
-
-Enter file name: 
-! Emergency stop.
-&lt;read *&gt; 
-         
-l.131 \endinput
-               ^^M
-No pages of output.
-Transcript written on math.log.
-</div>
-<p>In addition, a phase correction is applied, so that all coils have the same
+<div class="math">
+<p><img src="../_images/math/f725967ed66cc40611536f9d5e238c3a84f87d1f.png" alt="S = \sum_{i=1}^{n}{w_i * S_i}"/></p>
+</div><p>In addition, a phase correction is applied, so that all coils have the same
 phase.</p>
 <table class="docutils citation" frame="void" id="hall2013" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
@@ -199,6 +149,7 @@ array coils in MR spectroscopy. NMR in Biomedicine, 10: 394-410.</td></tr>
 edition. Wiley (West Sussex, UK).</td></tr>
 </tbody>
 </table>
+</div></blockquote>
 </dd></dl>
 
 </div>
@@ -549,7 +500,14 @@ the red lines.</p>
         </div>
       </div>
       <div class="sphinxsidebar">
-        <div class="sphinxsidebarwrapper">
+        <div class="sphinxsidebarwrapper">  
+
+<h4> Site Navigation </h4>
+  <ul class="simple">
+  <li><a href="../index.html">Home</a> </li>
+  <li><a href="../getting_started.html">Getting started</a> </li>
+  <li><a href="index.html">Module reference</a> </li>
+  </ul>
   
 <h4> Stanford CNI </h4>
   <ul class="simple">
