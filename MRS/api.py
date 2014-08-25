@@ -21,8 +21,16 @@ class GABA(object):
     Class for analysis of GABA MRS.
     """
 
-    def __init__(self, in_data, line_broadening=5, zerofill=100,
-                 filt_method=None, min_ppm=-0.7, max_ppm=4.3):
+    def __init__(self,
+                 in_data,
+                 w_idx=[1,2,3],
+                 line_broadening=5,
+                 zerofill=100,
+                 filt_method=None,
+                 spect_method=dict(NFFT=1024, n_overlap=1023, BW=2),
+                 min_ppm=-0.7,
+                 max_ppm=4.3,
+                 sampling_rate=5000.):
         """
         Parameters
         ----------
@@ -30,19 +38,31 @@ class GABA(object):
         in_data : str
             Path to a nifti file containing MRS data.
 
-        line_broadening : float
-           How much to broaden the spectral line-widths (Hz)
-           
-        zerofill : int
-           How many zeros to add to the spectrum for additional spectral
-           resolution
+        w_idx : list (optional)
+            The indices to the non-water-suppressed transients. Per default we
+            take the 2nd-4th transients. We dump the first one, because it
+            seems to be quite different than the rest of them. 
 
+        line_broadening : float (optional)
+           How much to broaden the spectral line-widths (Hz). Default: 5
+           
+        zerofill : int (optional)
+           How many zeros to add to the spectrum for additional spectral
+           resolution. Default: 100
+
+        filt_method : dict (optional)
+            How/whether to filter the data. Default: None (#nofilter)
+
+        spect_method: dict (optional)
+            How to derive spectra. Per default, a simple Fourier transform will
+            be derived from apodized time-series, but other methods can also be
+            used (see `nitime` documentation for details)
+            
         min_ppm, max_ppm : float
            The limits of the spectra that are represented
 
-        fit_lb, fit_ub : float
-           The limits for the part of the spectrum for which we fit the
-           creatine and GABA peaks. 
+        sampling_rate : float
+           The sampling rate in Hz.
         
         """
         if isinstance(in_data, str):
@@ -54,11 +74,13 @@ class GABA(object):
         elif isinstance(in_data, np.ndarray):
             self.raw_data = in_data
 
-        w_data, w_supp_data = ana.coil_combine(self.raw_data)
+        w_data, w_supp_data = ana.coil_combine(self.raw_data, w_idx=w_idx,
+                                               sampling_rate=sampling_rate)
         f_hz, w_supp_spectra = ana.get_spectra(w_supp_data,
                                            line_broadening=line_broadening,
                                            zerofill=zerofill,
-                                           filt_method=filt_method)
+                                           filt_method=filt_method,
+                                           spect_method=spect_method)
 
         self.w_supp_spectra = w_supp_spectra
 
@@ -169,8 +191,6 @@ class GABA(object):
            calculated.
 
         """
-
-
         # Here's what we are going to do: For each transient, we generate
         # the spectrum for two distinct sets of parameters: one is exactly as
         # fit to the data, the other is the same expect with amplitude set to

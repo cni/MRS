@@ -20,7 +20,7 @@ def test_phase_correct_first():
     freqs = np.linspace(1, np.pi, 1024)
     arr = np.random.rand(10,10,10,1024) * np.exp(1j * np.pi)
     corr_arr = ut.phase_correct_first(arr, freqs, 1)
-    
+
     
 def test_line_broadening():
     # Complex time series:
@@ -48,12 +48,13 @@ def test_detect_outliers():
     """
     Test that outlier detection works.
     """
-    # Make random numbers, with two outliers
-    b = np.random.rand(1,1000)
+    # Make random numbers, with at least two outliers
+    b = np.random.rand(1000)
     st = np.std(b)
-    b[0][0] = b[0][0] + 5 * st
-    b[0][1] = b[0][1] - 5 * st
+    b[0] = b[0] + 5 * st
+    b[1] = b[1] - 5 * st
     thresh = 2.5
-    idx = ut.detect_outliers(b,thresh)
-    npt.assert_equal(sum(x),2)
+    idx = ut.detect_outliers(b, thresh)
+    
+    npt.assert_(sum(idx) >= 2)
      

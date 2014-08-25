@@ -357,10 +357,16 @@ def line_broadening(ts, width):
 
 def freq_to_ppm(f, water_hz=0.0, water_ppm=4.7, hz_per_ppm=127.680):
     """
-    Convert a set of numbers from frequeny in hertz to chemical shift in ppm
+    Convert a set of numbers from frequenxy in hertz to chemical shift in ppm
     """
     return water_ppm - (f - water_hz)/hz_per_ppm
 
+
+def ppm_to_freq(ppm, water_hz=0.0, water_ppm=4.7, hz_per_ppm=127.680):
+    """
+    Convert an array from chemical shift to Hz
+    """
+    return water_hz + (ppm - water_ppm) * hz_per_ppm
 
 def ppm_idx(f_ppm, lb, ub):
     """
@@ -568,42 +574,32 @@ def rmse(arr1, arr2):
     """
     return np.sqrt(np.mean((arr1 - arr2)**2))
 
-def detect_outliers(in_list,thresh=3.0):
+def detect_outliers(in_arr, thresh=3.0):
     """ 
     Detects outliers more than X standard deviations from mean. 
  
     Parameters 
     ----------   
-    in_list: list of floats 
-        A list of measures for which outliers need to be detected. 
+    in_list: ndarray
+        An array of measures for which outliers need to be detected. 
  
-    thresh: float 
-        Threshold number of standard deviations before a measure is considered an outlier. 
-        Default = 3.0
+    thresh: float (optional)
+        Threshold number of standard deviations before a measure is considered
+        an outlier. Default = 3.0
  
     Returns 
     ------- 
-    outlier_idx: list of boolean  
-        A list indicating if a measure is an outlier (true) or not (false). 
+    outlier_idx: ndarray of boolean  
+        An array indicating if a measure is an outlier (True) or not (False). 
     """
 
-    mean = np.nanmean(in_list)
-    std = np.nanstd(in_list)
+    mean = np.nanmean(in_arr)
+    std = np.nanstd(in_arr)
 
     # calculate cutoffs 
     uppthresh = mean + thresh * std
     lowthresh = mean - thresh * std
 
-    # initialize list of all false 
-    outlier_idx = [False] * len(in_list)
-
-    # detect outliers 
-    idx = 0
-    for i in in_list:
-        if i > uppthresh or i < lowthresh:
-           outlier_idx[idx] = True
-        idx += 1
-
-    return outlier_idx
+    return np.logical_or(in_arr < lowthresh, in_arr > uppthresh)
 
 

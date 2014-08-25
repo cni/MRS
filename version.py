@@ -62,4 +62,5 @@ PACKAGES = []
 BIN = 'bin/'            
 PACKAGE_DATA = {"MRS": ["LICENSE"]}
 
-REQUIRES = ["numpy", "matplotlib", "scipy", "nipy", "nitime", "nipype"]
+REQUIRES = ["numpy", "matplotlib", "scipy",
+            "nibabel", "nipy", "nitime", "nipype"]

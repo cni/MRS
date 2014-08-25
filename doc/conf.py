@@ -25,11 +25,17 @@ import sys, os
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
+
+# This adds the custom extensions so they can be imported:
+sys.path.append(os.path.abspath('sphinxext'))
+
 extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.doctest',
               'sphinx.ext.intersphinx',
               'sphinx.ext.pngmath',
-              ]
+              'math_dollar', # has to go before numpydoc
+              'numpydoc']
+
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -44,7 +50,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'MRS'
+project = u'Stanford CNI MRS Library (SMAL)'
 copyright = u'2014, Ariel Rokem, Grace Tang, Stanford CNI'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -100,7 +106,22 @@ html_theme = 'default'
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-#html_theme_options = {}
+
+html_theme_options = {
+    'footerbgcolor': "#8C1515",
+    'sidebarbgcolor' : "#8C1515",
+    'relbarbgcolor' : "#8C1515",
+    'relbartextcolor' : '#565347',
+    'bodyfont': "HelveticaNeue-Light",
+    'headfont': "HelveticaNeue",
+    'headtextcolor' : '#820000',
+    'textcolor' : '#3f3c30',
+    'sidebarlinkcolor' : '#c4bfa9',
+    'rightsidebar': True,
+    'linkcolor': '#820000',
+    'codebgcolor' : "#e9e6df",
+    }
+
 
 # Add any paths that contain custom themes here, relative to this directory.
 #html_theme_path = []

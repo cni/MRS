@@ -13,6 +13,7 @@ import nipype.interfaces.freesurfer as fs
 import nipype.interfaces.utility as util
 import nipype.interfaces.fsl as fsl   
 
+
 def reconall(subjfile, subjID=None, subjdir=None, runreconall=True): 
     """
     Carries out Freesurfer's reconall on T1 nifti file
@@ -101,6 +102,8 @@ def reconall(subjfile, subjID=None, subjdir=None, runreconall=True):
 GAREAS = [3,8,42,17,18,53,54,11,12,13,26,50,51,52,58,9,10,47,48,49,16,28,60]
 WAREAS = [2,7,41,46]
 CSFAREAS = [4,5,14,15,24,43,44,72]
+
+
 def MRSvoxelStats(segfile, MRSfile=None, center=None, dim=None, subjID=None,
                   gareas=GAREAS,wareas=WAREAS,csfareas=CSFAREAS):
     """
@@ -169,8 +172,9 @@ def MRSvoxelStats(segfile, MRSfile=None, center=None, dim=None, subjID=None,
         
         # This applies the concatenation of the transforms from mrs space to
         # the T1 space. [0,0,0] is the center of the MRS voxel:
-        center = np.round(np.dot(np.dot(np.linalg.pinv(aseg_aff), mrs_aff),
-                                 [0,0,0,1]))[:3].astype(int)
+        center = np.round(np.dot(np.dot(np.linalg.pinv(aseg_aff),
+                                        mrs_aff),
+                                  [0,0,0,1]))[:3].astype(int)
 
         dim=np.diagonal(mrs_aff)[:3]
     else: # no MRSfile

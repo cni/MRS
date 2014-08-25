@@ -28,10 +28,17 @@ description = "MRS analysis software"
 
 long_description = """
 
+The Stanford CNI MRS Analysis Library
+=====================================
+This library provides algorithms and methods to read and analyze data from
+Magnetic Resonance Spectroscopy (MRS) experiments. It provides an API for
+fitting models of the spectral line-widths of several different molecular
+species, and quantify their relative abundance in human brain tissue.
+
 
 Copyright (c) 2013-, Ariel Rokem, Grace Tang.
 
-Stanford University.
+The Center for Neurobiological and Cognitive Imaging, Stanford University.
 
 All rights reserved.
 

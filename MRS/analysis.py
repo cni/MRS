@@ -103,14 +103,17 @@ def coil_combine(data, w_idx=[1,2,3], coil_dim=2, sampling_rate=5000.):
 
     .. math::
         
-        signal = sum_{i}(w(i)sig(i))
+        X = \sum_{i}{w_i S_i}
 
-        w(i) = s(i)/(sqrt(sum(s(i)))
+   Where X is the resulting combined signal, $S_i$ are the individual coil
+   signals and $w_i$ are calculated as:
+
+   .. math::
+   
+        w_i = mean(S_i) / var (S_i)
         
-    where s(i) is the amplitude of the water peak in each coil.
-
-    In addition, we apply a phase-correction, so that all the phases of the
-    signals from each coil are 0
+    following [Hall2013]_. In addition, we apply a phase-correction, so that
+    all the phases of the signals from each coil are 0
 
     Parameters
     ----------
@@ -118,7 +121,7 @@ def coil_combine(data, w_idx=[1,2,3], coil_dim=2, sampling_rate=5000.):
        The data as it comes from the scanner (read using the functions in
        files.py), with shape (transients, echos, coils, time points)
     
-    w_idx : tuple
+    w_idx : list
        The indices to the non-water-suppressed transients. Per default we take
         the 2nd-4th transients. We dump the first one, because it seems to be
         quite different than the rest of them...
@@ -128,19 +131,6 @@ def coil_combine(data, w_idx=[1,2,3], coil_dim=2, sampling_rate=5000.):
 
     sampling rate : float
         The sampling rate in Hz. Default : 5000.
-
-    Notes
-    -----
-    Following [Hall2013]_, we compute weights on the different coils based on
-    the amplitudes and phases of the water peak. The signal from different
-    coils is combined as:
-
-    .. math :: 
-
-        S = \sum_{i=1}^{n}{w_i * S_i}
-
-    In addition, a phase correction is applied, so that all coils have the same
-    phase.
   
     References
     ----------
@@ -228,7 +218,7 @@ def coil_combine(data, w_idx=[1,2,3], coil_dim=2, sampling_rate=5000.):
     return weighted_w_data.squeeze(), weighted_w_supp_data.squeeze()
 
 
-def get_spectra(data, filt_method = dict(lb=0.1, filt_order=256),
+def get_spectra(data, filt_method=dict(lb=0.1, filt_order=256),
                 spect_method=dict(NFFT=1024, n_overlap=1023, BW=2),
                 phase_zero=None, line_broadening=None, zerofill=None):
     """
@@ -256,11 +246,13 @@ def get_spectra(data, filt_method = dict(lb=0.1, filt_order=256),
         
     Returns
     -------
-    f, spectrum_water, spectrum_water_suppressed :
+    f : 
+         the center frequency of the frequencies represented in the
+        spectra
 
-    f is the center frequency of the frequencies represented in the
-    spectra. The first spectrum is for the data with water not suppressed and
-    the s
+     spectrum_water, spectrum_water_suppressed: 
+        The first spectrum is for the data with water not suppressed and
+        the second spectrum is for the water-suppressed data.
 
     Notes
     -----
@@ -270,10 +262,7 @@ def get_spectra(data, filt_method = dict(lb=0.1, filt_order=256),
     2. Apodizing/windowing. Optionally, this is done with line-broadening (see
     page 92 of Keeler2005_.
     3. Spectral analysis.
-    
-    Notes
-    -----
-    
+        
     .. [Keeler2005] Keeler, J (2005). Understanding NMR spectroscopy, second
        edition. Wiley (West Sussex, UK).
 
@@ -572,7 +561,7 @@ def fit_two_lorentzian(spectra, f_ppm, lb=2.6, ub=3.6):
 
    f_ppm : array
 
-   lb, ub: floats
+   lb, ub : floats
       In ppm, the range over which optimization is bounded
    
    """
@@ -621,7 +610,7 @@ def fit_two_gaussian(spectra, f_ppm, lb=3.6, ub=3.9):
 
    f_ppm : array
 
-   lb, ub: floats
+   lb, ub : floats
       In ppm, the range over which optimization is bounded
 
    """
@@ -724,7 +713,7 @@ def fit_gaussian(spectra, f_ppm, lb=2.6, ub=3.6):
 
    f_ppm : array
 
-   lb, ub: floats
+   lb, ub : floats
       In ppm, the range over which optimization is bounded
    
    """
