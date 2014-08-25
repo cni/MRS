@@ -1,0 +1,783 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>SMAL &mdash; Stanford CNI MRS Library (SMAL) 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Stanford CNI MRS Library (SMAL) 0.1 documentation" href="../index.html" />
+    <link rel="up" title="API Reference" href="index.html" />
+    <link rel="next" title="api" href="MRS.api.html" />
+    <link rel="prev" title="MRS" href="MRS.html" />
+  <meta name="keywords" content="MRI, Stanford, Python, Neuroscience, MR
+  spectroscopy, MRS">
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="MRS.api.html" title="api"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="MRS.html" title="MRS"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Stanford CNI MRS Library (SMAL) 0.1 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">API Reference</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-MRS.analysis">
+<span id="analysis"></span><h1><tt class="xref py py-mod docutils literal"><span class="pre">analysis</span></tt><a class="headerlink" href="#module-MRS.analysis" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="mrs-analysis">
+<h2>MRS.analysis<a class="headerlink" href="#mrs-analysis" title="Permalink to this headline">¶</a></h2>
+<p>Analysis functions for analysis of MRS data. These include a variety of
+functions that can be called independently, or through the interface provided
+in <a class="reference internal" href="MRS.api.html#module-MRS.api" title="MRS.api"><tt class="xref py py-mod docutils literal"><span class="pre">MRS.api</span></tt></a>.</p>
+</div>
+<div class="section" id="bootstrap-stat">
+<h2>bootstrap_stat<a class="headerlink" href="#bootstrap-stat" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MRS.analysis.bootstrap_stat">
+<tt class="descclassname">MRS.analysis.</tt><tt class="descname">bootstrap_stat</tt><big>(</big><em>arr</em>, <em>stat=&lt;function mean at 0x104ffaed8&gt;</em>, <em>n_iters=1000</em>, <em>alpha=0.05</em><big>)</big><a class="headerlink" href="#MRS.analysis.bootstrap_stat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produce a boot-strap distribution of the mean of an array on axis 0</p>
+<dl class="docutils">
+<dt>arr <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
+<dd>The array with data to be bootstrapped</dd>
+<dt>stat <span class="classifier-delimiter">:</span> <span class="classifier">callable</span></dt>
+<dd>The statistical function to call. will be called as <cite>stat(arr, 0)</cite>, so
+needs to accept that call signature.</dd>
+<dt>n_iters <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd>The number of bootstrap iterations to sample</dd>
+<dt>alpha <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd>The confidence interval size will be 1-alpha</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="coil-combine">
+<h2>coil_combine<a class="headerlink" href="#coil-combine" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MRS.analysis.coil_combine">
+<tt class="descclassname">MRS.analysis.</tt><tt class="descname">coil_combine</tt><big>(</big><em>data, w_idx=[1, 2, 3], coil_dim=2, sampling_rate=5000.0</em><big>)</big><a class="headerlink" href="#MRS.analysis.coil_combine" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>Combine data across coils based on the amplitude of the water peak,
+according to:</p>
+<div class="math">
+<p><img src="../_images/math/f7ac10c62e9ace15d2d570f1944b51cbbe5eafb9.png" alt="X = \sum_{i}{w_i S_i}"/></p>
+</div></div></blockquote>
+<p>Where X is the resulting combined signal, <img class="math" src="../_images/math/3f1a4e430c239029fe31b52c95bb3278d0bc3d49.png" alt="S_i"/> are the individual coil
+signals and <img class="math" src="../_images/math/b4e1bc8e2dfd2c26158273aef285b08a816f960a.png" alt="w_i"/> are calculated as:</p>
+<div class="math">
+<p><img src="../_images/math/e835caa22f142dcbaee3528ff3012af6755e4058.png" alt="w_i = mean(S_i) / var (S_i)
+
+following [Hall2013]_. In addition, we apply a phase-correction, so that
+all the phases of the signals from each coil are 0"/></p>
+</div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data</strong> : float array</p>
+<blockquote class="last">
+<div><blockquote>
+<div><p>The data as it comes from the scanner (read using the functions in
+files.py), with shape (transients, echos, coils, time points)</p>
+</div></blockquote>
+<dl class="docutils">
+<dt>w_idx <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><dl class="first last docutils">
+<dt>The indices to the non-water-suppressed transients. Per default we take</dt>
+<dd><p class="first last">the 2nd-4th transients. We dump the first one, because it seems to be
+quite different than the rest of them...</p>
+</dd>
+</dl>
+</dd>
+<dt>coil_dim <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">The dimension on which the coils are represented. Default: 2</p>
+</dd>
+<dt>sampling rate <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">The sampling rate in Hz. Default : 5000.</p>
+</dd>
+</dl>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="fit-gaussian">
+<h2>fit_gaussian<a class="headerlink" href="#fit-gaussian" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MRS.analysis.fit_gaussian">
+<tt class="descclassname">MRS.analysis.</tt><tt class="descname">fit_gaussian</tt><big>(</big><em>spectra</em>, <em>f_ppm</em>, <em>lb=2.6</em>, <em>ub=3.6</em><big>)</big><a class="headerlink" href="#MRS.analysis.fit_gaussian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit a gaussian function to the difference spectra to be used for estimation
+of the GABA peak.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>spectra</strong> : array of shape (n_transients, n_points)</p>
+<blockquote>
+<div><p>Typically the difference of the on/off spectra in each transient.</p>
+</div></blockquote>
+<p><strong>f_ppm</strong> : array</p>
+<p><strong>lb, ub</strong> : floats</p>
+<blockquote class="last">
+<div><p>In ppm, the range over which optimization is bounded</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="fit-lorentzian">
+<h2>fit_lorentzian<a class="headerlink" href="#fit-lorentzian" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MRS.analysis.fit_lorentzian">
+<tt class="descclassname">MRS.analysis.</tt><tt class="descname">fit_lorentzian</tt><big>(</big><em>spectra</em>, <em>f_ppm</em>, <em>lb=2.6</em>, <em>ub=3.6</em><big>)</big><a class="headerlink" href="#MRS.analysis.fit_lorentzian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit a lorentzian function to spectra</p>
+<p>This is used in estimation of the water peak and for estimation of the NAA
+peak.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>spectra</strong> : array of shape (n_transients, n_points)</p>
+<blockquote>
+<div><p>Typically the sum of the on/off spectra in each transient.</p>
+</div></blockquote>
+<p><strong>f_ppm</strong> : array</p>
+<p><strong>lb, ub: floats</strong> :</p>
+<blockquote class="last">
+<div><p>In ppm, the range over which optimization is bounded</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="fit-two-gaussian">
+<h2>fit_two_gaussian<a class="headerlink" href="#fit-two-gaussian" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MRS.analysis.fit_two_gaussian">
+<tt class="descclassname">MRS.analysis.</tt><tt class="descname">fit_two_gaussian</tt><big>(</big><em>spectra</em>, <em>f_ppm</em>, <em>lb=3.6</em>, <em>ub=3.9</em><big>)</big><a class="headerlink" href="#MRS.analysis.fit_two_gaussian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit a gaussian function to the difference spectra</p>
+<p>This is useful for estimation of the Glx peak, which tends to have two
+peaks.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>spectra</strong> : array of shape (n_transients, n_points)</p>
+<blockquote>
+<div><p>Typically the difference of the on/off spectra in each transient.</p>
+</div></blockquote>
+<p><strong>f_ppm</strong> : array</p>
+<p><strong>lb, ub</strong> : floats</p>
+<blockquote class="last">
+<div><p>In ppm, the range over which optimization is bounded</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="fit-two-lorentzian">
+<h2>fit_two_lorentzian<a class="headerlink" href="#fit-two-lorentzian" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MRS.analysis.fit_two_lorentzian">
+<tt class="descclassname">MRS.analysis.</tt><tt class="descname">fit_two_lorentzian</tt><big>(</big><em>spectra</em>, <em>f_ppm</em>, <em>lb=2.6</em>, <em>ub=3.6</em><big>)</big><a class="headerlink" href="#MRS.analysis.fit_two_lorentzian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit a lorentzian function to the sum spectra to be used for estimation of
+the creatine and choline peaks.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>spectra</strong> : array of shape (n_transients, n_points)</p>
+<blockquote>
+<div><p>Typically the sum of the on/off spectra in each transient.</p>
+</div></blockquote>
+<p><strong>f_ppm</strong> : array</p>
+<p><strong>lb, ub</strong> : floats</p>
+<blockquote class="last">
+<div><p>In ppm, the range over which optimization is bounded</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="get-spectra">
+<h2>get_spectra<a class="headerlink" href="#get-spectra" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MRS.analysis.get_spectra">
+<tt class="descclassname">MRS.analysis.</tt><tt class="descname">get_spectra</tt><big>(</big><em>data</em>, <em>filt_method={'filt_order': 256</em>, <em>'lb': 0.1}</em>, <em>spect_method={'BW': 2</em>, <em>'NFFT': 1024</em>, <em>'n_overlap': 1023}</em>, <em>phase_zero=None</em>, <em>line_broadening=None</em>, <em>zerofill=None</em><big>)</big><a class="headerlink" href="#MRS.analysis.get_spectra" title="Permalink to this definition">¶</a></dt>
+<dd><p>Derive the spectra from MRS data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data</strong> : nitime TimeSeries class instance or array</p>
+<blockquote>
+<div><p>Time-series object with data of shape (echos, transients, time-points),
+containing the FID data. If an array is provided, we will assume that a
+sampling rate of 5000.0 Hz was used</p>
+</div></blockquote>
+<p><strong>filt_method</strong> : dict</p>
+<blockquote>
+<div><p>Details for the filtering method. A FIR zero phase-delay method is used
+with parameters set according to these parameters</p>
+</div></blockquote>
+<p><strong>spect_method</strong> : dict</p>
+<blockquote>
+<div><p>Details for the spectral analysis. Per default, we use</p>
+</div></blockquote>
+<p><strong>line_broadening</strong> : float</p>
+<blockquote>
+<div><p>Linewidth for apodization (in Hz).</p>
+</div></blockquote>
+<p><strong>zerofill</strong> : int</p>
+<blockquote>
+<div><p>Number of bins to zero fill with.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>f :</strong> :</p>
+<blockquote class="last">
+<div><blockquote>
+<div><blockquote>
+<div><p>the center frequency of the frequencies represented in the</p>
+</div></blockquote>
+<p>spectra</p>
+</div></blockquote>
+<dl class="docutils">
+<dt>spectrum_water, spectrum_water_suppressed: </dt>
+<dd><p class="first last">The first spectrum is for the data with water not suppressed and
+the second spectrum is for the water-suppressed data.</p>
+</dd>
+</dl>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>This function performs the following operations:</p>
+<ol class="arabic simple">
+<li>Filtering.</li>
+</ol>
+<p>2. Apodizing/windowing. Optionally, this is done with line-broadening (see
+page 92 of <a class="reference internal" href="#keeler2005">Keeler2005</a>.
+3. Spectral analysis.</p>
+<table class="docutils citation" frame="void" id="keeler2005" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[Keeler2005]</td><td>Keeler, J (2005). Understanding NMR spectroscopy, second
+edition. Wiley (West Sussex, UK).</td></tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="integrate">
+<h2>integrate<a class="headerlink" href="#integrate" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MRS.analysis.integrate">
+<tt class="descclassname">MRS.analysis.</tt><tt class="descname">integrate</tt><big>(</big><em>func</em>, <em>x</em>, <em>args=()</em>, <em>offset=0</em>, <em>drift=0</em><big>)</big><a class="headerlink" href="#MRS.analysis.integrate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Integrate a function over the domain x</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>func</strong> : callable</p>
+<blockquote>
+<div><p>A function from the domain x to floats. The first input to this function
+has to be x, an array with values to evaluate for, running in monotonic
+order</p>
+</div></blockquote>
+<p><strong>x</strong> : float array</p>
+<blockquote>
+<div><p>The domain over which to integrate, as sampled. This can be monotonically
+decreasing or monotonically increasing.</p>
+</div></blockquote>
+<p><strong>args</strong> : tuple</p>
+<blockquote>
+<div><p>The parameters of func after x.</p>
+</div></blockquote>
+<p class="last"><strong>offset :</strong> :</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>We apply the trapezoid rule for integration here, using
+scipy.integrate.trapz.</p>
+<p>See: <a class="reference external" href="http://en.wikipedia.org/wiki/Trapezoidal_rule">http://en.wikipedia.org/wiki/Trapezoidal_rule</a></p>
+</dd></dl>
+
+</div>
+<div class="section" id="scalemodel">
+<h2>scalemodel<a class="headerlink" href="#scalemodel" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MRS.analysis.scalemodel">
+<tt class="descclassname">MRS.analysis.</tt><tt class="descname">scalemodel</tt><big>(</big><em>model</em>, <em>scalefac</em><big>)</big><a class="headerlink" href="#MRS.analysis.scalemodel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a scale factor, multiply by model to get scaled model</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>model</strong> : array</p>
+<blockquote>
+<div><p>original model</p>
+</div></blockquote>
+<p><strong>scalefac</strong> : array of model.shape[0]</p>
+<blockquote>
+<div><p>array of scalefactors</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>scaledmodel</strong> : array</p>
+<blockquote class="last">
+<div><p>model scaled by scale factor</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="separate-signals">
+<h2>separate_signals<a class="headerlink" href="#separate-signals" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MRS.analysis.separate_signals">
+<tt class="descclassname">MRS.analysis.</tt><tt class="descname">separate_signals</tt><big>(</big><em>data, w_idx=[1, 2, 3]</em><big>)</big><a class="headerlink" href="#MRS.analysis.separate_signals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Separate the water and non-water data from each other</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data</strong> : nd array</p>
+<blockquote>
+<div><p>FID signal with shape (transients, echos, coils, time-points)</p>
+</div></blockquote>
+<p><strong>w_idx</strong> : list (optional)</p>
+<blockquote>
+<div><p>Indices into the &#8216;transients&#8217; (0th) dimension of the data for the signal
+that is not water-suppressed</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>water_data, w_supp_data</strong> : tuple</p>
+<blockquote class="last">
+<div><p>The first element is an array with the transients in the data in which
+no water suppression was applied. The second element is an array with
+the transients in which water suppression was applied</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="simple-auc">
+<h2>simple_auc<a class="headerlink" href="#simple-auc" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MRS.analysis.simple_auc">
+<tt class="descclassname">MRS.analysis.</tt><tt class="descname">simple_auc</tt><big>(</big><em>spectrum</em>, <em>f_ppm</em>, <em>center=3.0</em>, <em>bandwidth=0.3</em><big>)</big><a class="headerlink" href="#MRS.analysis.simple_auc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates area under the curve (no fitting)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>spectrum</strong> : array of shape (n_transients, n_points)</p>
+<blockquote>
+<div><p>Typically the difference of the on/off spectra in each transient.</p>
+</div></blockquote>
+<p><strong>center, bandwidth</strong> : float</p>
+<blockquote class="last">
+<div><p>Determine the limits for the part of the spectrum for which we want
+to calculate the AUC.
+e.g. if center = 3.0, bandwidth = 0.3, lower and upper bounds will be
+2.85 and 3.15 respectively (center +/- bandwidth/2).</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<dl class="docutils">
+<dt>Default center and bandwidth are 3.0 and 0.3ppm respectively</dt>
+<dd>because of Sanacora 1999 pg 1045:</dd>
+</dl>
+<p>&#8220;The GABA signal was integrated over a 0.30-ppm bandwidth at 3.00ppm&#8221;</p>
+<p>Ref: Sanacora, G., Mason, G. F., Rothman, D. L., Behar, K. L., Hyder, F.,
+Petroff, O. A., ... &amp; Krystal, J. H. (1999). Reduced cortical
+{gamma}-aminobutyric acid levels in depressed patients determined by proton
+magnetic resonance spectroscopy. Archives of general psychiatry, 56(11),
+1043.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="simps">
+<h2>simps<a class="headerlink" href="#simps" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MRS.analysis.simps">
+<tt class="descclassname">MRS.analysis.</tt><tt class="descname">simps</tt><big>(</big><em>y</em>, <em>x=None</em>, <em>dx=1</em>, <em>axis=-1</em>, <em>even='avg'</em><big>)</big><a class="headerlink" href="#MRS.analysis.simps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Integrate y(x) using samples along the given axis and the composite
+Simpson&#8217;s rule.  If x is None, spacing of dx is assumed.</p>
+<p>If there are an even number of samples, N, then there are an odd
+number of intervals (N-1), but Simpson&#8217;s rule requires an even number
+of intervals.  The parameter &#8216;even&#8217; controls how this is handled.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>y</strong> : array_like</p>
+<blockquote>
+<div><p>Array to be integrated.</p>
+</div></blockquote>
+<p><strong>x</strong> : array_like, optional</p>
+<blockquote>
+<div><p>If given, the points at which <cite>y</cite> is sampled.</p>
+</div></blockquote>
+<p><strong>dx</strong> : int, optional</p>
+<blockquote>
+<div><p>Spacing of integration points along axis of <cite>y</cite>. Only used when
+<cite>x</cite> is None. Default is 1.</p>
+</div></blockquote>
+<p><strong>axis</strong> : int, optional</p>
+<blockquote>
+<div><p>Axis along which to integrate. Default is the last axis.</p>
+</div></blockquote>
+<p><strong>even</strong> : {&#8216;avg&#8217;, &#8216;first&#8217;, &#8216;str&#8217;}, optional</p>
+<blockquote class="last">
+<div><dl class="docutils">
+<dt>&#8216;avg&#8217; <span class="classifier-delimiter">:</span> <span class="classifier">Average two results:1) use the first N-2 intervals with</span></dt>
+<dd><p class="first last">a trapezoidal rule on the last interval and 2) use the last
+N-2 intervals with a trapezoidal rule on the first interval.</p>
+</dd>
+<dt>&#8216;first&#8217; <span class="classifier-delimiter">:</span> <span class="classifier">Use Simpson&#8217;s rule for the first N-2 intervals with</span></dt>
+<dd><p class="first last">a trapezoidal rule on the last interval.</p>
+</dd>
+<dt>&#8216;last&#8217; <span class="classifier-delimiter">:</span> <span class="classifier">Use Simpson&#8217;s rule for the last N-2 intervals with a</span></dt>
+<dd><p class="first last">trapezoidal rule on the first interval.</p>
+</dd>
+</dl>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><tt class="xref py py-obj docutils literal"><span class="pre">quad</span></tt></dt>
+<dd>adaptive quadrature using QUADPACK</dd>
+<dt><tt class="xref py py-obj docutils literal"><span class="pre">romberg</span></tt></dt>
+<dd>adaptive Romberg quadrature</dd>
+<dt><tt class="xref py py-obj docutils literal"><span class="pre">quadrature</span></tt></dt>
+<dd>adaptive Gaussian quadrature</dd>
+<dt><tt class="xref py py-obj docutils literal"><span class="pre">fixed_quad</span></tt></dt>
+<dd>fixed-order Gaussian quadrature</dd>
+<dt><tt class="xref py py-obj docutils literal"><span class="pre">dblquad</span></tt></dt>
+<dd>double integrals</dd>
+<dt><tt class="xref py py-obj docutils literal"><span class="pre">tplquad</span></tt></dt>
+<dd>triple integrals</dd>
+<dt><tt class="xref py py-obj docutils literal"><span class="pre">romb</span></tt></dt>
+<dd>integrators for sampled data</dd>
+<dt><tt class="xref py py-obj docutils literal"><span class="pre">cumtrapz</span></tt></dt>
+<dd>cumulative integration for sampled data</dd>
+<dt><tt class="xref py py-obj docutils literal"><span class="pre">ode</span></tt></dt>
+<dd>ODE integrators</dd>
+<dt><tt class="xref py py-obj docutils literal"><span class="pre">odeint</span></tt></dt>
+<dd>ODE integrators</dd>
+</dl>
+</div>
+<p class="rubric">Notes</p>
+<p>For an odd number of samples that are equally spaced the result is
+exact if the function is a polynomial of order 3 or less.  If
+the samples are not equally spaced, then the result is exact only
+if the function is a polynomial of order 2 or less.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="subtract-water">
+<h2>subtract_water<a class="headerlink" href="#subtract-water" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MRS.analysis.subtract_water">
+<tt class="descclassname">MRS.analysis.</tt><tt class="descname">subtract_water</tt><big>(</big><em>w_sig</em>, <em>w_supp_sig</em><big>)</big><a class="headerlink" href="#MRS.analysis.subtract_water" title="Permalink to this definition">¶</a></dt>
+<dd><p>Subtract the residual water signal from the 
+Normalize the water-suppressed signal by the signal that is not
+water-suppressed, to get rid of the residual water peak.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>w_sig</strong> : array with shape (n_reps, n_echos, n_points)</p>
+<blockquote>
+<div><p>A signal with water unsupressed</p>
+</div></blockquote>
+<p><strong>w_supp_sig :array with shape (n_reps, n_echos, n_points)</strong> :</p>
+<blockquote>
+<div><p>A signal with water suppressed.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>The water suppressed signal with the additional subtraction of a scaled</strong> :</p>
+<p class="last"><strong>version of the signal that is presumably just due to water.</strong> :</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="trapz">
+<h2>trapz<a class="headerlink" href="#trapz" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MRS.analysis.trapz">
+<tt class="descclassname">MRS.analysis.</tt><tt class="descname">trapz</tt><big>(</big><em>y</em>, <em>x=None</em>, <em>dx=1.0</em>, <em>axis=-1</em><big>)</big><a class="headerlink" href="#MRS.analysis.trapz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Integrate along the given axis using the composite trapezoidal rule.</p>
+<p>Integrate <cite>y</cite> (<cite>x</cite>) along given axis.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>y</strong> : array_like</p>
+<blockquote>
+<div><p>Input array to integrate.</p>
+</div></blockquote>
+<p><strong>x</strong> : array_like, optional</p>
+<blockquote>
+<div><p>If <cite>x</cite> is None, then spacing between all <cite>y</cite> elements is <cite>dx</cite>.</p>
+</div></blockquote>
+<p><strong>dx</strong> : scalar, optional</p>
+<blockquote>
+<div><p>If <cite>x</cite> is None, spacing given by <cite>dx</cite> is assumed. Default is 1.</p>
+</div></blockquote>
+<p><strong>axis</strong> : int, optional</p>
+<blockquote>
+<div><p>Specify the axis.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>trapz</strong> : float</p>
+<blockquote class="last">
+<div><p>Definite integral as approximated by trapezoidal rule.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference external" href="http://docs.python.org/library/functions.html#sum" title="(in Python v2.7)"><tt class="xref py py-obj docutils literal"><span class="pre">sum</span></tt></a>, <tt class="xref py py-obj docutils literal"><span class="pre">cumsum</span></tt></p>
+</div>
+<p class="rubric">Notes</p>
+<p>Image <a class="reference internal" href="#r2" id="id1">[R2]</a> illustrates trapezoidal rule &#8211; y-axis locations of points
+will be taken from <cite>y</cite> array, by default x-axis distances between
+points will be 1.0, alternatively they can be provided with <cite>x</cite> array
+or with <cite>dx</cite> scalar.  Return value will be equal to combined area under
+the red lines.</p>
+<p class="rubric">References</p>
+<table class="docutils citation" frame="void" id="r1" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id2">[R1]</a></td><td>Wikipedia page: <a class="reference external" href="http://en.wikipedia.org/wiki/Trapezoidal_rule">http://en.wikipedia.org/wiki/Trapezoidal_rule</a></td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="r2" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[R2]</td><td><em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id3">2</a>)</em> Illustration image:
+<a class="reference external" href="http://en.wikipedia.org/wiki/File:Composite_trapezoidal_rule_illustration.png">http://en.wikipedia.org/wiki/File:Composite_trapezoidal_rule_illustration.png</a></td></tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">trapz</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+<span class="go">4.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">trapz</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">8</span><span class="p">])</span>
+<span class="go">8.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">trapz</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="n">dx</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">8.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
+<span class="go">array([[0, 1, 2],</span>
+<span class="go">       [3, 4, 5]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">trapz</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="go">array([ 1.5,  2.5,  3.5])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">trapz</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">array([ 2.,  8.])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">  
+
+<h4> Site Navigation </h4>
+  <ul class="simple">
+  <li><a href="../index.html">Home</a> </li>
+  <li><a href="../getting_started.html">Getting started</a> </li>
+  <li><a href="index.html">Module reference</a> </li>
+  </ul>
+  
+<h4> Stanford CNI </h4>
+  <ul class="simple">
+    <li><a class="reference external"
+	href="http://cni.stanford.edu/">CNI Home Page</a></li>
+    <li><a class="reference external"
+	href="https://scitran.stanford.edu/">PoST</a></li>
+    <li><a class="reference external"
+	href="https://cni.stanford.edu/nims/">NIMS</a></li>
+    <li><a class="reference external"
+	href="http://cni.stanford.edu/wiki/Main_Page">Wiki</a></li>
+  </ul>
+
+
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#"><tt class="docutils literal"><span class="pre">analysis</span></tt></a><ul>
+<li><a class="reference internal" href="#mrs-analysis">MRS.analysis</a></li>
+<li><a class="reference internal" href="#bootstrap-stat">bootstrap_stat</a></li>
+<li><a class="reference internal" href="#coil-combine">coil_combine</a></li>
+<li><a class="reference internal" href="#fit-gaussian">fit_gaussian</a></li>
+<li><a class="reference internal" href="#fit-lorentzian">fit_lorentzian</a></li>
+<li><a class="reference internal" href="#fit-two-gaussian">fit_two_gaussian</a></li>
+<li><a class="reference internal" href="#fit-two-lorentzian">fit_two_lorentzian</a></li>
+<li><a class="reference internal" href="#get-spectra">get_spectra</a></li>
+<li><a class="reference internal" href="#integrate">integrate</a></li>
+<li><a class="reference internal" href="#scalemodel">scalemodel</a></li>
+<li><a class="reference internal" href="#separate-signals">separate_signals</a></li>
+<li><a class="reference internal" href="#simple-auc">simple_auc</a></li>
+<li><a class="reference internal" href="#simps">simps</a></li>
+<li><a class="reference internal" href="#subtract-water">subtract_water</a></li>
+<li><a class="reference internal" href="#trapz">trapz</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="MRS.html"
+                        title="previous chapter"><tt class="docutils literal"><span class="pre">MRS</span></tt></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="MRS.api.html"
+                        title="next chapter"><tt class="docutils literal"><span class="pre">api</span></tt></a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/reference/MRS.analysis.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+  
+<div id="searchbox-site" style="display: none">
+  <h3>Search this site</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="13" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox-ml').show(0);</script>
+<script type="text/javascript">$('#searchbox-site').show(0);</script>
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="MRS.api.html" title="api"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="MRS.html" title="MRS"
+             >previous</a> |</li>
+        <li><a href="../index.html">Stanford CNI MRS Library (SMAL) 0.1 documentation</a> &raquo;</li>
+          <li><a href="index.html" >API Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+
+    <div class="footer">
+        &copy; Copyright 2014, Ariel Rokem, Grace Tang, Stanford CNI.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+<!-- Global footer snippet start -->
+<div id="global-footer">
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-54034205-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+  </body>
+</html>
