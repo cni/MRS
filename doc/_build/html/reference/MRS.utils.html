@@ -1,0 +1,732 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>SMAL &mdash; Stanford CNI MRS Library (SMAL) 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Stanford CNI MRS Library (SMAL) 0.1 documentation" href="../index.html" />
+  <meta name="keywords" content="MRI, Stanford, Python, Neuroscience, MR
+  spectroscopy, MRS">
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">Stanford CNI MRS Library (SMAL) 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-MRS.utils">
+<span id="utils"></span><h1><tt class="xref py py-mod docutils literal"><span class="pre">utils</span></tt><a class="headerlink" href="#module-MRS.utils" title="Permalink to this headline">¶</a></h1>
+<p>Utility functions for analysis of MRS data.</p>
+<div class="section" id="bi-square">
+<h2>bi_square<a class="headerlink" href="#bi-square" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MRS.utils.bi_square">
+<tt class="descclassname">MRS.utils.</tt><tt class="descname">bi_square</tt><big>(</big><em>xx</em>, <em>idx=None</em><big>)</big><a class="headerlink" href="#MRS.utils.bi_square" title="Permalink to this definition">¶</a></dt>
+<dd><p>The bi-square weight function calculated over values of xx</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>xx: float array</strong> :</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>This is the first equation on page 831 of [Cleveland79].</p>
+</dd></dl>
+
+</div>
+<div class="section" id="detect-outliers">
+<h2>detect_outliers<a class="headerlink" href="#detect-outliers" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MRS.utils.detect_outliers">
+<tt class="descclassname">MRS.utils.</tt><tt class="descname">detect_outliers</tt><big>(</big><em>in_arr</em>, <em>thresh=3.0</em><big>)</big><a class="headerlink" href="#MRS.utils.detect_outliers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Detects outliers more than X standard deviations from mean.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>in_list: ndarray</strong> :</p>
+<blockquote>
+<div><p>An array of measures for which outliers need to be detected.</p>
+</div></blockquote>
+<p><strong>thresh: float (optional)</strong> :</p>
+<blockquote>
+<div><p>Threshold number of standard deviations before a measure is considered
+an outlier. Default = 3.0</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>outlier_idx: ndarray of boolean</strong> :</p>
+<blockquote class="last">
+<div><p>An array indicating if a measure is an outlier (True) or not (False).</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="do-kernel">
+<h2>do_kernel<a class="headerlink" href="#do-kernel" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MRS.utils.do_kernel">
+<tt class="descclassname">MRS.utils.</tt><tt class="descname">do_kernel</tt><big>(</big><em>x0</em>, <em>x</em>, <em>l=1.0</em>, <em>kernel=&lt;function epanechnikov at 0x10d779668&gt;</em><big>)</big><a class="headerlink" href="#MRS.utils.do_kernel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate a kernel function on x in the neighborhood of x0</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x: float array</strong> :</p>
+<blockquote>
+<div><p>All values of x</p>
+</div></blockquote>
+<p><strong>x0: float</strong> :</p>
+<blockquote>
+<div><p>The value of x around which we evaluate the kernel</p>
+</div></blockquote>
+<p><strong>l: float or float array (with shape = x.shape)</strong> :</p>
+<blockquote class="last">
+<div><p>Width parameter (metric window size)</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="epanechnikov">
+<h2>epanechnikov<a class="headerlink" href="#epanechnikov" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MRS.utils.epanechnikov">
+<tt class="descclassname">MRS.utils.</tt><tt class="descname">epanechnikov</tt><big>(</big><em>xx</em>, <em>idx=None</em><big>)</big><a class="headerlink" href="#MRS.utils.epanechnikov" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Epanechnikov kernel estimated for xx values at indices idx (zero
+elsewhere)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>xx: float array</strong> :</p>
+<blockquote>
+<div><p>Values of the function on which the kernel is computed. Typically,
+these are Euclidean distances from some point x0 (see do_kernel)</p>
+</div></blockquote>
+<p><strong>idx: tuple</strong> :</p>
+<blockquote class="last">
+<div><p>An indexing tuple pointing to the coordinates in xx for which the
+kernel value is estimated. Default: None (all points are used!)</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>This is equation 6.4 in FHT chapter 6</p>
+</dd></dl>
+
+</div>
+<div class="section" id="freq-to-ppm">
+<h2>freq_to_ppm<a class="headerlink" href="#freq-to-ppm" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MRS.utils.freq_to_ppm">
+<tt class="descclassname">MRS.utils.</tt><tt class="descname">freq_to_ppm</tt><big>(</big><em>f</em>, <em>water_hz=0.0</em>, <em>water_ppm=4.7</em>, <em>hz_per_ppm=127.68</em><big>)</big><a class="headerlink" href="#MRS.utils.freq_to_ppm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a set of numbers from frequenxy in hertz to chemical shift in ppm</p>
+</dd></dl>
+
+</div>
+<div class="section" id="gaussian">
+<h2>gaussian<a class="headerlink" href="#gaussian" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MRS.utils.gaussian">
+<tt class="descclassname">MRS.utils.</tt><tt class="descname">gaussian</tt><big>(</big><em>freq</em>, <em>freq0</em>, <em>sigma</em>, <em>amp</em>, <em>offset</em>, <em>drift</em><big>)</big><a class="headerlink" href="#MRS.utils.gaussian" title="Permalink to this definition">¶</a></dt>
+<dd><p>A Gaussian function with flexible offset, drift and amplitude</p>
+</dd></dl>
+
+</div>
+<div class="section" id="l2-norm">
+<h2>l2_norm<a class="headerlink" href="#l2-norm" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MRS.utils.l2_norm">
+<tt class="descclassname">MRS.utils.</tt><tt class="descname">l2_norm</tt><big>(</big><em>arr</em><big>)</big><a class="headerlink" href="#MRS.utils.l2_norm" title="Permalink to this definition">¶</a></dt>
+<dd><p>The l2 norm of an array is is defined as: sqrt(||x||), where ||x|| is the
+dot product of the vector.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="line-broadening">
+<h2>line_broadening<a class="headerlink" href="#line-broadening" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MRS.utils.line_broadening">
+<tt class="descclassname">MRS.utils.</tt><tt class="descname">line_broadening</tt><big>(</big><em>ts</em>, <em>width</em><big>)</big><a class="headerlink" href="#MRS.utils.line_broadening" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply line-broadening to a time-series</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ts</strong> : a nitime.TimeSeries class instance</p>
+<p><strong>width</strong> : float</p>
+<blockquote>
+<div><p>The exponential decay time-constant (in seconds)</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>A nitime.TimeSeries class instance with windowed data</strong> :</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>For details, see page 92 of <a class="reference internal" href="#keeler2005">Keeler2005</a>.</p>
+<table class="docutils citation" frame="void" id="keeler2005" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[Keeler2005]</td><td>Keeler, J (2005). Understanding NMR spectroscopy, second
+edition. Wiley (West Sussex, UK).</td></tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="lorentzian">
+<h2>lorentzian<a class="headerlink" href="#lorentzian" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MRS.utils.lorentzian">
+<tt class="descclassname">MRS.utils.</tt><tt class="descname">lorentzian</tt><big>(</big><em>freq</em>, <em>freq0</em>, <em>area</em>, <em>hwhm</em>, <em>phase</em>, <em>offset</em>, <em>drift</em><big>)</big><a class="headerlink" href="#MRS.utils.lorentzian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lorentzian line-shape function</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>freq</strong> : float or float array</p>
+<blockquote>
+<div><p>The frequencies for which the function is evaluated</p>
+</div></blockquote>
+<p><strong>freq0</strong> : float</p>
+<blockquote>
+<div><p>The center frequency of the function</p>
+</div></blockquote>
+<p><strong>area</strong> : float</p>
+<p><strong>hwhm: float</strong> :</p>
+<blockquote class="last">
+<div><p>Half-width at half-max</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="lowess">
+<h2>lowess<a class="headerlink" href="#lowess" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MRS.utils.lowess">
+<tt class="descclassname">MRS.utils.</tt><tt class="descname">lowess</tt><big>(</big><em>x</em>, <em>w</em>, <em>x0</em>, <em>kernel=&lt;function epanechnikov at 0x10d779668&gt;</em>, <em>l=1</em>, <em>robust=False</em><big>)</big><a class="headerlink" href="#MRS.utils.lowess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Locally linear regression with the LOWESS algorithm.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x: float n-d array</strong> :</p>
+<blockquote>
+<div><p>Values of x for which f(x) is known (e.g. measured). The shape of this
+is (n, j), where n is the number the dimensions of the and j is the
+number of distinct coordinates sampled.</p>
+</div></blockquote>
+<p><strong>w: float array</strong> :</p>
+<blockquote>
+<div><p>The known values of f(x) at these points. This has shape (j,)</p>
+</div></blockquote>
+<p><strong>x0: float or float array.</strong> :</p>
+<blockquote>
+<div><p>Values of x for which we estimate the value of f(x). This is either a
+single scalar value (only possible for the 1d case, in which case f(x0)
+is estimated for just that one value of x), or an array of shape (n, k).</p>
+</div></blockquote>
+<p><strong>kernel: callable</strong> :</p>
+<blockquote>
+<div><p>A kernel function. {&#8216;epanechnikov&#8217;, &#8216;tri_cube&#8217;}</p>
+</div></blockquote>
+<p><strong>l: float or float array with shape = x.shape</strong> :</p>
+<blockquote>
+<div><p>The metric window size for the kernel</p>
+</div></blockquote>
+<p><strong>robust: bool</strong> :</p>
+<blockquote>
+<div><p>Whether to apply the robustification procedure from [Cleveland79], page
+831</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>The function estimated at x0.</strong> :</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>The solution to this problem is given by equation 6.8 in Friedman, Hastie
+and Tibshirani (2008). The Elements of Statistical Learning (Chapter 6).</p>
+</dd></dl>
+
+</div>
+<div class="section" id="make-idx">
+<h2>make_idx<a class="headerlink" href="#make-idx" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MRS.utils.make_idx">
+<tt class="descclassname">MRS.utils.</tt><tt class="descname">make_idx</tt><big>(</big><em>f</em>, <em>lb</em>, <em>ub</em><big>)</big><a class="headerlink" href="#MRS.utils.make_idx" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is a little utility function to replace an oft-called set of
+operations</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>f</strong> : 1d array</p>
+<blockquote>
+<div><p>A frequency axis along which we want to slice</p>
+</div></blockquote>
+<p><strong>lb</strong> : float</p>
+<blockquote>
+<div><p>Defines the upper bound of slicing</p>
+</div></blockquote>
+<p><strong>ub</strong> : float</p>
+<blockquote>
+<div><p>Defines the lower bound of slicing</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>idx</strong> : a slice object</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="ols-matrix">
+<h2>ols_matrix<a class="headerlink" href="#ols-matrix" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MRS.utils.ols_matrix">
+<tt class="descclassname">MRS.utils.</tt><tt class="descname">ols_matrix</tt><big>(</big><em>A</em>, <em>norm_func=None</em><big>)</big><a class="headerlink" href="#MRS.utils.ols_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div>Generate the matrix used to solve OLS regression.</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>A: float array</strong> :</p>
+<blockquote class="last">
+<div><blockquote>
+<div><p>The design matrix</p>
+</div></blockquote>
+<dl class="docutils">
+<dt>norm: callable, optional</dt>
+<dd><p class="first last">A normalization function to apply to the matrix, before extracting the
+OLS matrix.</p>
+</dd>
+</dl>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><tt class="xref py py-obj docutils literal"><span class="pre">http</span></tt></dt>
+<dd>//en.wikipedia.org/wiki/Ordinary_least_squares#Estimation</dd>
+</dl>
+</div>
+<p>is given by:</p>
+<blockquote>
+<div><p>..math</p>
+<div class="highlight-python"><div class="highlight"><pre>\hat{eta} = (A&#39; x A)^{-1} A&#39; y
+</pre></div>
+</div>
+</div></blockquote>
+</dd></dl>
+
+</div>
+<div class="section" id="phase-correct-first">
+<h2>phase_correct_first<a class="headerlink" href="#phase-correct-first" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MRS.utils.phase_correct_first">
+<tt class="descclassname">MRS.utils.</tt><tt class="descname">phase_correct_first</tt><big>(</big><em>spec</em>, <em>freq</em>, <em>k</em><big>)</big><a class="headerlink" href="#MRS.utils.phase_correct_first" title="Permalink to this definition">¶</a></dt>
+<dd><p>First order phase correction.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>spec</strong> : float array</p>
+<blockquote>
+<div><p>The spectrum to be corrected.</p>
+</div></blockquote>
+<p><strong>freq</strong> : float array</p>
+<blockquote>
+<div><p>The frequency axis.</p>
+</div></blockquote>
+<p><strong>k</strong> : float</p>
+<blockquote>
+<div><p>The slope of the phase correction as a function of frequency.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>The phase-corrected spectrum.</strong> :</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<dl class="docutils">
+<dt>[Keeler2005] Keeler, J (2005). Understanding NMR Spectroscopy, 2nd</dt>
+<dd>edition. Wiley. Page 88</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="phase-correct-zero">
+<h2>phase_correct_zero<a class="headerlink" href="#phase-correct-zero" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MRS.utils.phase_correct_zero">
+<tt class="descclassname">MRS.utils.</tt><tt class="descname">phase_correct_zero</tt><big>(</big><em>spec</em>, <em>phi</em><big>)</big><a class="headerlink" href="#MRS.utils.phase_correct_zero" title="Permalink to this definition">¶</a></dt>
+<dd><p>Correct the phases of a spectrum by phi radians</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>spec</strong> : float array of complex dtype</p>
+<blockquote>
+<div><p>The spectrum to be corrected.</p>
+</div></blockquote>
+<p><strong>phi</strong> : float</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>spec</strong> : float array</p>
+<blockquote class="last">
+<div><p>The phase corrected spectrum</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<dl class="docutils">
+<dt>[Keeler2005] Keeler, J (2005). Understanding NMR Spectroscopy, 2nd</dt>
+<dd>edition. Wiley. Page 88.</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="ppm-idx">
+<h2>ppm_idx<a class="headerlink" href="#ppm-idx" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MRS.utils.ppm_idx">
+<tt class="descclassname">MRS.utils.</tt><tt class="descname">ppm_idx</tt><big>(</big><em>f_ppm</em>, <em>lb</em>, <em>ub</em><big>)</big><a class="headerlink" href="#MRS.utils.ppm_idx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a slice object according to the ppm scale</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>f_ppm</strong> : float array</p>
+<blockquote>
+<div><p>The frequency bins (in the ppm scale). Assumed to be descending</p>
+</div></blockquote>
+<p><strong>lb,ub</strong> : float</p>
+<blockquote>
+<div><p>The lower/upper bounds for indexing</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>idx</strong> : slice object which can be used to index</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="ppm-to-freq">
+<h2>ppm_to_freq<a class="headerlink" href="#ppm-to-freq" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MRS.utils.ppm_to_freq">
+<tt class="descclassname">MRS.utils.</tt><tt class="descname">ppm_to_freq</tt><big>(</big><em>ppm</em>, <em>water_hz=0.0</em>, <em>water_ppm=4.7</em>, <em>hz_per_ppm=127.68</em><big>)</big><a class="headerlink" href="#MRS.utils.ppm_to_freq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert an array from chemical shift to Hz</p>
+</dd></dl>
+
+</div>
+<div class="section" id="rmse">
+<h2>rmse<a class="headerlink" href="#rmse" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MRS.utils.rmse">
+<tt class="descclassname">MRS.utils.</tt><tt class="descname">rmse</tt><big>(</big><em>arr1</em>, <em>arr2</em><big>)</big><a class="headerlink" href="#MRS.utils.rmse" title="Permalink to this definition">¶</a></dt>
+<dd><p>The root of the mean of the squared error between arr1 and arr2</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>arr1, arr2</strong> : ndarray</p>
+<blockquote>
+<div><p>The two arrays to compare</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>RMSE</strong> : float</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>The RMSE will be summarized in one number. That is, even if the two arrays
+are multi-dimensional, the error between them will be averaged over the
+entire array and then the sqrt will be derived.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="tri-cube">
+<h2>tri_cube<a class="headerlink" href="#tri-cube" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MRS.utils.tri_cube">
+<tt class="descclassname">MRS.utils.</tt><tt class="descname">tri_cube</tt><big>(</big><em>xx</em>, <em>idx</em><big>)</big><a class="headerlink" href="#MRS.utils.tri_cube" title="Permalink to this definition">¶</a></dt>
+<dd><p>The tri-cube kernel estimated for xx values at indices idx (zero
+elsewhere)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>xx: float array</strong> :</p>
+<blockquote>
+<div><p>Values of the function on which the kernel is computed. Typically,
+these are Euclidean distances from some point x0 (see do_kernel)</p>
+</div></blockquote>
+<p><strong>idx: tuple</strong> :</p>
+<blockquote class="last">
+<div><p>An indexing tuple pointing to the coordinates in xx for which the
+kernel value is estimated. Default: None (all points are used!)</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>This is equation 6.6 in FHT chapter 6</p>
+</dd></dl>
+
+</div>
+<div class="section" id="two-gaussian">
+<h2>two_gaussian<a class="headerlink" href="#two-gaussian" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MRS.utils.two_gaussian">
+<tt class="descclassname">MRS.utils.</tt><tt class="descname">two_gaussian</tt><big>(</big><em>freq</em>, <em>freq0_1</em>, <em>freq0_2</em>, <em>sigma1</em>, <em>sigma2</em>, <em>amp1</em>, <em>amp2</em>, <em>offset</em>, <em>drift</em><big>)</big><a class="headerlink" href="#MRS.utils.two_gaussian" title="Permalink to this definition">¶</a></dt>
+<dd><p>A two-Gaussian model.</p>
+<p>This is simply the sum of two gaussian functions in some part of the
+spectrum. Each individual gaussian has its own peak frequency, sigma,
+and amp, but they share common offset and drift parameters.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="two-lorentzian">
+<h2>two_lorentzian<a class="headerlink" href="#two-lorentzian" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MRS.utils.two_lorentzian">
+<tt class="descclassname">MRS.utils.</tt><tt class="descname">two_lorentzian</tt><big>(</big><em>freq</em>, <em>freq0_1</em>, <em>freq0_2</em>, <em>area1</em>, <em>area2</em>, <em>hwhm1</em>, <em>hwhm2</em>, <em>phase1</em>, <em>phase2</em>, <em>offset</em>, <em>drift</em><big>)</big><a class="headerlink" href="#MRS.utils.two_lorentzian" title="Permalink to this definition">¶</a></dt>
+<dd><p>A two-Lorentzian model.</p>
+<p>This is simply the sum of two lorentzian functions in some part of the
+spectrum. Each individual Lorentzian has its own peak frequency, area, hwhm
+and phase, but they share common offset and drift parameters.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="unit-vector">
+<h2>unit_vector<a class="headerlink" href="#unit-vector" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MRS.utils.unit_vector">
+<tt class="descclassname">MRS.utils.</tt><tt class="descname">unit_vector</tt><big>(</big><em>arr</em>, <em>norm_func=&lt;function l2_norm at 0x10d779938&gt;</em><big>)</big><a class="headerlink" href="#MRS.utils.unit_vector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normalize the array by a norm function (defaults to the l2_norm)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>arr: ndarray</strong> :</p>
+<p><strong>norm_func: callable</strong> :</p>
+<blockquote class="last">
+<div><p>A function that is used here to normalize the array.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="zero-pad">
+<h2>zero_pad<a class="headerlink" href="#zero-pad" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MRS.utils.zero_pad">
+<tt class="descclassname">MRS.utils.</tt><tt class="descname">zero_pad</tt><big>(</big><em>ts</em>, <em>n_zeros</em><big>)</big><a class="headerlink" href="#MRS.utils.zero_pad" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pad a nitime.TimeSeries class instance with n_zeros before and after the
+data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ts</strong> : a nitime.TimeSeries class instance</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">  
+
+<h4> Site Navigation </h4>
+  <ul class="simple">
+  <li><a href="../index.html">Home</a> </li>
+  <li><a href="../getting_started.html">Getting started</a> </li>
+  <li><a href="index.html">Module reference</a> </li>
+  </ul>
+  
+<h4> Stanford CNI </h4>
+  <ul class="simple">
+    <li><a class="reference external"
+	href="http://cni.stanford.edu/">CNI Home Page</a></li>
+    <li><a class="reference external"
+	href="https://scitran.stanford.edu/">PoST</a></li>
+    <li><a class="reference external"
+	href="https://cni.stanford.edu/nims/">NIMS</a></li>
+    <li><a class="reference external"
+	href="http://cni.stanford.edu/wiki/Main_Page">Wiki</a></li>
+  </ul>
+
+
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#"><tt class="docutils literal"><span class="pre">utils</span></tt></a><ul>
+<li><a class="reference internal" href="#bi-square">bi_square</a></li>
+<li><a class="reference internal" href="#detect-outliers">detect_outliers</a></li>
+<li><a class="reference internal" href="#do-kernel">do_kernel</a></li>
+<li><a class="reference internal" href="#epanechnikov">epanechnikov</a></li>
+<li><a class="reference internal" href="#freq-to-ppm">freq_to_ppm</a></li>
+<li><a class="reference internal" href="#gaussian">gaussian</a></li>
+<li><a class="reference internal" href="#l2-norm">l2_norm</a></li>
+<li><a class="reference internal" href="#line-broadening">line_broadening</a></li>
+<li><a class="reference internal" href="#lorentzian">lorentzian</a></li>
+<li><a class="reference internal" href="#lowess">lowess</a></li>
+<li><a class="reference internal" href="#make-idx">make_idx</a></li>
+<li><a class="reference internal" href="#ols-matrix">ols_matrix</a></li>
+<li><a class="reference internal" href="#phase-correct-first">phase_correct_first</a></li>
+<li><a class="reference internal" href="#phase-correct-zero">phase_correct_zero</a></li>
+<li><a class="reference internal" href="#ppm-idx">ppm_idx</a></li>
+<li><a class="reference internal" href="#ppm-to-freq">ppm_to_freq</a></li>
+<li><a class="reference internal" href="#rmse">rmse</a></li>
+<li><a class="reference internal" href="#tri-cube">tri_cube</a></li>
+<li><a class="reference internal" href="#two-gaussian">two_gaussian</a></li>
+<li><a class="reference internal" href="#two-lorentzian">two_lorentzian</a></li>
+<li><a class="reference internal" href="#unit-vector">unit_vector</a></li>
+<li><a class="reference internal" href="#zero-pad">zero_pad</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/reference/MRS.utils.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+  
+<div id="searchbox-site" style="display: none">
+  <h3>Search this site</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="13" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox-ml').show(0);</script>
+<script type="text/javascript">$('#searchbox-site').show(0);</script>
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">Stanford CNI MRS Library (SMAL) 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+
+    <div class="footer">
+        &copy; Copyright 2014, Ariel Rokem, Grace Tang, Stanford CNI.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+<!-- Global footer snippet start -->
+<div id="global-footer">
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-54034205-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+  </body>
+</html>
