@@ -112,7 +112,7 @@ def coil_combine(data, w_idx=[1,2,3], coil_dim=2, sampling_rate=5000.):
    
         w_i = mean(S_i) / var (S_i)
         
-    Following [Hall2013]_. In addition, we apply a phase-correction, so that
+    following [Hall2013]_. In addition, we apply a phase-correction, so that
     all the phases of the signals from each coil are 0
 
     Parameters

@@ -72,7 +72,7 @@ in <a class="reference internal" href="MRS.api.html#module-MRS.api" title="MRS.a
 <h2>bootstrap_stat<a class="headerlink" href="#bootstrap-stat" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MRS.analysis.bootstrap_stat">
-<tt class="descclassname">MRS.analysis.</tt><tt class="descname">bootstrap_stat</tt><big>(</big><em>arr</em>, <em>stat=&lt;function mean at 0x10520bed8&gt;</em>, <em>n_iters=1000</em>, <em>alpha=0.05</em><big>)</big><a class="headerlink" href="#MRS.analysis.bootstrap_stat" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MRS.analysis.</tt><tt class="descname">bootstrap_stat</tt><big>(</big><em>arr</em>, <em>stat=&lt;function mean at 0x104ffaed8&gt;</em>, <em>n_iters=1000</em>, <em>alpha=0.05</em><big>)</big><a class="headerlink" href="#MRS.analysis.bootstrap_stat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Produce a boot-strap distribution of the mean of an array on axis 0</p>
 <dl class="docutils">
 <dt>arr <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
@@ -93,68 +93,48 @@ needs to accept that call signature.</dd>
 <dl class="function">
 <dt id="MRS.analysis.coil_combine">
 <tt class="descclassname">MRS.analysis.</tt><tt class="descname">coil_combine</tt><big>(</big><em>data, w_idx=[1, 2, 3], coil_dim=2, sampling_rate=5000.0</em><big>)</big><a class="headerlink" href="#MRS.analysis.coil_combine" title="Permalink to this definition">¶</a></dt>
-<dd><p>Combine data across coils based on the amplitude of the water peak,
+<dd><blockquote>
+<div><p>Combine data across coils based on the amplitude of the water peak,
 according to:</p>
 <div class="math">
 <p><img src="../_images/math/f7ac10c62e9ace15d2d570f1944b51cbbe5eafb9.png" alt="X = \sum_{i}{w_i S_i}"/></p>
-</div><p>Where X is the resulting combined signal, <img class="math" src="../_images/math/3f1a4e430c239029fe31b52c95bb3278d0bc3d49.png" alt="S_i"/> are the individual coil
+</div></div></blockquote>
+<p>Where X is the resulting combined signal, <img class="math" src="../_images/math/3f1a4e430c239029fe31b52c95bb3278d0bc3d49.png" alt="S_i"/> are the individual coil
 signals and <img class="math" src="../_images/math/b4e1bc8e2dfd2c26158273aef285b08a816f960a.png" alt="w_i"/> are calculated as:</p>
 <div class="math">
-<p><img src="../_images/math/77497d0d424459bd3c3dc65bd0179c66a3dc1783.png" alt="w_i = mean(S_i) / var (S_i)"/></p>
-</div><p>Following <a class="reference internal" href="#hall2013" id="id1">[Hall2013]</a>. In addition, we apply a phase-correction, so that
-all the phases of the signals from each coil are 0</p>
-<table class="docutils field-list" frame="void" rules="none">
+<p><img src="../_images/math/e835caa22f142dcbaee3528ff3012af6755e4058.png" alt="w_i = mean(S_i) / var (S_i)
+
+following [Hall2013]_. In addition, we apply a phase-correction, so that
+all the phases of the signals from each coil are 0"/></p>
+</div><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data</strong> : float array</p>
-<blockquote>
+<blockquote class="last">
+<div><blockquote>
 <div><p>The data as it comes from the scanner (read using the functions in
 files.py), with shape (transients, echos, coils, time points)</p>
 </div></blockquote>
-<p><strong>w_idx</strong> : list</p>
-<blockquote>
-<div><dl class="docutils">
+<dl class="docutils">
+<dt>w_idx <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><dl class="first last docutils">
 <dt>The indices to the non-water-suppressed transients. Per default we take</dt>
 <dd><p class="first last">the 2nd-4th transients. We dump the first one, because it seems to be
 quite different than the rest of them...</p>
 </dd>
 </dl>
-</div></blockquote>
-<p><strong>coil_dim</strong> : int</p>
-<blockquote>
-<div><p>The dimension on which the coils are represented. Default: 2</p>
-</div></blockquote>
-<p><strong>sampling rate</strong> : float</p>
-<blockquote class="last">
-<div><p>The sampling rate in Hz. Default : 5000.</p>
+</dd>
+<dt>coil_dim <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">The dimension on which the coils are represented. Default: 2</p>
+</dd>
+<dt>sampling rate <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">The sampling rate in Hz. Default : 5000.</p>
+</dd>
+</dl>
 </div></blockquote>
 </td>
 </tr>
-</tbody>
-</table>
-<p class="rubric">References</p>
-<table class="docutils citation" frame="void" id="hall2013" rules="none">
-<colgroup><col class="label" /><col /></colgroup>
-<tbody valign="top">
-<tr><td class="label">[Hall2013]</td><td><em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id2">2</a>)</em> Emma L. Hall, Mary C. Stephenson, Darren Price, Peter
-G. Morris (2013). Methodology for improved detection of low
-concentration metabolites in MRS: Optimised combination of signals from 
-multi-element coil arrays. Neuroimage 86: 35-42.</td></tr>
-</tbody>
-</table>
-<table class="docutils citation" frame="void" id="wald1997" rules="none">
-<colgroup><col class="label" /><col /></colgroup>
-<tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id3">[Wald1997]</a></td><td>Wald, L. and Wright, S. (1997). Theory and application of
-array coils in MR spectroscopy. NMR in Biomedicine, 10: 394-410.</td></tr>
-</tbody>
-</table>
-<table class="docutils citation" frame="void" id="keeler2005" rules="none">
-<colgroup><col class="label" /><col /></colgroup>
-<tbody valign="top">
-<tr><td class="label">[Keeler2005]</td><td>Keeler, J (2005). Understanding NMR spectroscopy, second
-edition. Wiley (West Sussex, UK).</td></tr>
 </tbody>
 </table>
 </dd></dl>
@@ -330,9 +310,9 @@ the second spectrum is for the water-suppressed data.</p>
 <li>Filtering.</li>
 </ol>
 <p>2. Apodizing/windowing. Optionally, this is done with line-broadening (see
-page 92 of <a href="#id9"><span class="problematic" id="id10">Keeler2005_</span></a>.
+page 92 of <a class="reference internal" href="#keeler2005">Keeler2005</a>.
 3. Spectral analysis.</p>
-<table class="docutils citation" frame="void" id="id5" rules="none">
+<table class="docutils citation" frame="void" id="keeler2005" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
 <tr><td class="label">[Keeler2005]</td><td>Keeler, J (2005). Understanding NMR spectroscopy, second
@@ -639,7 +619,7 @@ water-suppressed, to get rid of the residual water peak.</p>
 <p class="last"><a class="reference external" href="http://docs.python.org/library/functions.html#sum" title="(in Python v2.7)"><tt class="xref py py-obj docutils literal"><span class="pre">sum</span></tt></a>, <tt class="xref py py-obj docutils literal"><span class="pre">cumsum</span></tt></p>
 </div>
 <p class="rubric">Notes</p>
-<p>Image <a class="reference internal" href="#r2" id="id6">[R2]</a> illustrates trapezoidal rule &#8211; y-axis locations of points
+<p>Image <a class="reference internal" href="#r2" id="id1">[R2]</a> illustrates trapezoidal rule &#8211; y-axis locations of points
 will be taken from <cite>y</cite> array, by default x-axis distances between
 points will be 1.0, alternatively they can be provided with <cite>x</cite> array
 or with <cite>dx</cite> scalar.  Return value will be equal to combined area under
@@ -648,13 +628,13 @@ the red lines.</p>
 <table class="docutils citation" frame="void" id="r1" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id7">[R1]</a></td><td>Wikipedia page: <a class="reference external" href="http://en.wikipedia.org/wiki/Trapezoidal_rule">http://en.wikipedia.org/wiki/Trapezoidal_rule</a></td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id2">[R1]</a></td><td>Wikipedia page: <a class="reference external" href="http://en.wikipedia.org/wiki/Trapezoidal_rule">http://en.wikipedia.org/wiki/Trapezoidal_rule</a></td></tr>
 </tbody>
 </table>
 <table class="docutils citation" frame="void" id="r2" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[R2]</td><td><em>(<a class="fn-backref" href="#id6">1</a>, <a class="fn-backref" href="#id8">2</a>)</em> Illustration image:
+<tr><td class="label">[R2]</td><td><em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id3">2</a>)</em> Illustration image:
 <a class="reference external" href="http://en.wikipedia.org/wiki/File:Composite_trapezoidal_rule_illustration.png">http://en.wikipedia.org/wiki/File:Composite_trapezoidal_rule_illustration.png</a></td></tr>
 </tbody>
 </table>
