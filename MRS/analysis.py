@@ -105,10 +105,10 @@ def coil_combine(data, w_idx=[1,2,3], coil_dim=2, sampling_rate=5000.):
         
         X = \sum_{i}{w_i S_i}
 
-   Where X is the resulting combined signal, $S_i$ are the individual coil
-   signals and $w_i$ are calculated as:
+    Where X is the resulting combined signal, $S_i$ are the individual coil
+    signals and $w_i$ are calculated as:
 
-   .. math::
+    .. math::
    
         w_i = mean(S_i) / var (S_i)
         

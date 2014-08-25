@@ -1,0 +1,18 @@
+.. AUTO-GENERATED FILE -- DO NOT EDIT!
+
+:mod:`qc`
+=========
+.. automodule:: MRS.qc
+
+.. currentmodule:: MRS.qc
+.. autosummary::
+
+   motioncheck
+
+
+.. currentmodule:: MRS.qc
+motioncheck
+~~~~~~~~~~~
+
+.. autofunction:: motioncheck
+
