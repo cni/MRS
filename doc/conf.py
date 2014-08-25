@@ -104,7 +104,7 @@ html_theme = 'default'
 html_theme_options = {
     'footerbgcolor': "#8C1515",
     'sidebarbgcolor' : "#8C1515",
-    'relbarbgcolor' : "#8C1515",
+    'relbarbgcolor' : "#820000",
     'relbartextcolor' : '#565347',
     'bodyfont': "HelveticaNeue-Light",
     'headfont': "HelveticaNeue",
