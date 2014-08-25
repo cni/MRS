@@ -1,0 +1,18 @@
+.. AUTO-GENERATED FILE -- DO NOT EDIT!
+
+:mod:`optimize`
+===============
+.. automodule:: MRS.optimize
+
+.. currentmodule:: MRS.optimize
+.. autosummary::
+
+   err_func
+
+
+.. currentmodule:: MRS.optimize
+err_func
+~~~~~~~~
+
+.. autofunction:: err_func
+
