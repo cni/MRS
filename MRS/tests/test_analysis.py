@@ -69,12 +69,10 @@ def test_mrs_analyze():
     """
     Test the command line utility
     """
-    mrs_path = MRS.__path__[0]
     out_name = tempfile.NamedTemporaryFile().name
     # Check that it runs through:
-    cmd = '%s/../bin/mrs-analyze.py %s '%(mrs_path, file_name)
+    cmd = 'mrs-analyze.py %s --out_file %s'%(file_name, out_name)
     npt.assert_equal(os.system(cmd),0)
-    # XXX We might want to analyze the output file here...
 
 def test_bootstrap_stat():
     """
