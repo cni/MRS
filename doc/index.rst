@@ -11,10 +11,3 @@ species, and quantify their relative abundance in human brain tissue.
 .. image:: _static/front-page.png
 
 
-.. toctree::
-   :maxdepth: 1
-
-   getting_started
-   reference/index
-   
-* :ref:`genindex`
