@@ -42,6 +42,9 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
+          <a href="../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
           <a href="MRS.optimize.html" title="optimize"
              accesskey="N">next</a> |</li>
         <li class="right" >
@@ -66,27 +69,48 @@
 <dt id="MRS.freesurfer.MRSvoxelStats">
 <tt class="descclassname">MRS.freesurfer.</tt><tt class="descname">MRSvoxelStats</tt><big>(</big><em>segfile, MRSfile=None, center=None, dim=None, subjID=None, gareas=[3, 8, 42, 17, 18, 53, 54, 11, 12, 13, 26, 50, 51, 52, 58, 9, 10, 47, 48, 49, 16, 28, 60], wareas=[2, 7, 41, 46], csfareas=[4, 5, 14, 15, 24, 43, 44, 72]</em><big>)</big><a class="headerlink" href="#MRS.freesurfer.MRSvoxelStats" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns grey/white/CSF content within MRS voxel</p>
-<dl class="docutils">
-<dt>segfile:  nifti file</dt>
-<dd>path to segmentation file with grey/white matter labels (freesurfer
-aseg file converted from mgz).</dd>
-<dt>MRSfile: nifti file</dt>
-<dd>path to MRSfile of MRS voxel. provide either this or center + dim</dd>
-<dt>center <span class="classifier-delimiter">:</span> <span class="classifier">integer array</span></dt>
-<dd>[x,y,z] where x, y and z are the coordinates of the point of
-interest. Provide either MRSfile or center+dim</dd>
-<dt>dim <span class="classifier-delimiter">:</span> <span class="classifier">float array</span></dt>
-<dd>dimensions of voxel in mm. Provide either MRSfile or center+dim</dd>
-<dt>subjID: string</dt>
-<dd>optional subject identifier. Defaults to nims scan number</dd>
-<dt>gareas, wareas, csfareas: arrays of integers</dt>
-<dd>arrays of freesurfer labels for gray, white, and csf areas
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>segfile:  nifti file</strong> :</p>
+<blockquote>
+<div><p>path to segmentation file with grey/white matter labels (freesurfer
+aseg file converted from mgz).</p>
+</div></blockquote>
+<p><strong>MRSfile: nifti file</strong> :</p>
+<blockquote>
+<div><p>path to MRSfile of MRS voxel. provide either this or center + dim</p>
+</div></blockquote>
+<p><strong>center</strong> : integer array</p>
+<blockquote>
+<div><p>[x,y,z] where x, y and z are the coordinates of the point of
+interest. Provide either MRSfile or center+dim</p>
+</div></blockquote>
+<p><strong>dim</strong> : float array</p>
+<blockquote>
+<div><p>dimensions of voxel in mm. Provide either MRSfile or center+dim</p>
+</div></blockquote>
+<p><strong>subjID: string</strong> :</p>
+<blockquote>
+<div><p>optional subject identifier. Defaults to nims scan number</p>
+</div></blockquote>
+<p><strong>gareas, wareas, csfareas: arrays of integers</strong> :</p>
+<blockquote>
+<div><p>arrays of freesurfer labels for gray, white, and csf areas
 respectively. Determines which areas are considered
 grey/white/csf. Some areas like brainstem were lumped with grey
-matter. Did not include hypointensities.</dd>
-</dl>
-<p>raw number of voxels and proportions of grey, white, csf and
-non-grey-or-white-matter</p>
+matter. Did not include hypointensities.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>raw number of voxels and proportions of grey, white, csf and</strong> :</p>
+<p class="last"><strong>non-grey-or-white-matter</strong> :</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
 <p>See <a class="reference external" href="http://miykael.github.io/nipype-beginner-s-guide/regionOfInterest.html">http://miykael.github.io/nipype-beginner-s-guide/regionOfInterest.html</a></p>
 </dd></dl>
 
@@ -99,21 +123,32 @@ non-grey-or-white-matter</p>
 <dd><p>Carries out Freesurfer&#8217;s reconall on T1 nifti file</p>
 <p>WARNING: Reconall takes very long to run!!</p>
 <p><a class="reference external" href="http://nipy.sourceforge.net/nipype/users/examples/smri_freesurfer.html">http://nipy.sourceforge.net/nipype/users/examples/smri_freesurfer.html</a></p>
-<dl class="docutils">
-<dt>subjfile: nifti file</dt>
-<dd>Path to subject&#8217;s T1 nifti file</dd>
-<dt>subjID: string</dt>
-<dd>optional name for subject&#8217;s output folder</dd>
-</dl>
-<p>subjdir: string</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>subjfile: nifti file</strong> :</p>
 <blockquote>
-<div>The directory to where segmentation results should be saved. Defaults
-to same directory as subjfile.</div></blockquote>
-<dl class="docutils">
-<dt>runreconall: boolean</dt>
-<dd>If set to true, runs reconall, otherwise just converts assorted mgz
-files to nii</dd>
-</dl>
+<div><p>Path to subject&#8217;s T1 nifti file</p>
+</div></blockquote>
+<p><strong>subjID: string</strong> :</p>
+<blockquote>
+<div><p>optional name for subject&#8217;s output folder</p>
+</div></blockquote>
+<p><strong>subjdir: string</strong> :</p>
+<blockquote>
+<div><p>The directory to where segmentation results should be saved. Defaults
+to same directory as subjfile.</p>
+</div></blockquote>
+<p><strong>runreconall: boolean</strong> :</p>
+<blockquote class="last">
+<div><p>If set to true, runs reconall, otherwise just converts assorted mgz
+files to nii</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -194,6 +229,9 @@ files to nii</dd>
              >index</a></li>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../np-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
           <a href="MRS.optimize.html" title="optimize"

@@ -41,6 +41,9 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
+          <a href="../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
           <a href="MRS.qc.html" title="qc"
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">Stanford CNI MRS Library (SMAL) 0.1 documentation</a> &raquo;</li>
@@ -62,7 +65,15 @@
 <dt id="MRS.utils.bi_square">
 <tt class="descclassname">MRS.utils.</tt><tt class="descname">bi_square</tt><big>(</big><em>xx</em>, <em>idx=None</em><big>)</big><a class="headerlink" href="#MRS.utils.bi_square" title="Permalink to this definition">¶</a></dt>
 <dd><p>The bi-square weight function calculated over values of xx</p>
-<p>xx: float array</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>xx: float array</strong> :</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
 <p>This is the first equation on page 831 of [Cleveland79].</p>
 </dd></dl>
 
@@ -73,17 +84,29 @@
 <dt id="MRS.utils.detect_outliers">
 <tt class="descclassname">MRS.utils.</tt><tt class="descname">detect_outliers</tt><big>(</big><em>in_arr</em>, <em>thresh=3.0</em><big>)</big><a class="headerlink" href="#MRS.utils.detect_outliers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Detects outliers more than X standard deviations from mean.</p>
-<dl class="docutils">
-<dt>in_list: ndarray</dt>
-<dd>An array of measures for which outliers need to be detected.</dd>
-<dt>thresh: float (optional)</dt>
-<dd>Threshold number of standard deviations before a measure is considered
-an outlier. Default = 3.0</dd>
-</dl>
-<dl class="docutils">
-<dt>outlier_idx: ndarray of boolean  </dt>
-<dd>An array indicating if a measure is an outlier (True) or not (False).</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>in_list: ndarray</strong> :</p>
+<blockquote>
+<div><p>An array of measures for which outliers need to be detected.</p>
+</div></blockquote>
+<p><strong>thresh: float (optional)</strong> :</p>
+<blockquote>
+<div><p>Threshold number of standard deviations before a measure is considered
+an outlier. Default = 3.0</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>outlier_idx: ndarray of boolean</strong> :</p>
+<blockquote class="last">
+<div><p>An array indicating if a measure is an outlier (True) or not (False).</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -91,16 +114,28 @@ an outlier. Default = 3.0</dd>
 <h2>do_kernel<a class="headerlink" href="#do-kernel" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MRS.utils.do_kernel">
-<tt class="descclassname">MRS.utils.</tt><tt class="descname">do_kernel</tt><big>(</big><em>x0</em>, <em>x</em>, <em>l=1.0</em>, <em>kernel=&lt;function epanechnikov at 0x10d5ba8c0&gt;</em><big>)</big><a class="headerlink" href="#MRS.utils.do_kernel" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MRS.utils.</tt><tt class="descname">do_kernel</tt><big>(</big><em>x0</em>, <em>x</em>, <em>l=1.0</em>, <em>kernel=&lt;function epanechnikov at 0x10d6f1668&gt;</em><big>)</big><a class="headerlink" href="#MRS.utils.do_kernel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate a kernel function on x in the neighborhood of x0</p>
-<dl class="docutils">
-<dt>x: float array</dt>
-<dd>All values of x</dd>
-<dt>x0: float</dt>
-<dd>The value of x around which we evaluate the kernel</dd>
-<dt>l: float or float array (with shape = x.shape)</dt>
-<dd>Width parameter (metric window size)</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x: float array</strong> :</p>
+<blockquote>
+<div><p>All values of x</p>
+</div></blockquote>
+<p><strong>x0: float</strong> :</p>
+<blockquote>
+<div><p>The value of x around which we evaluate the kernel</p>
+</div></blockquote>
+<p><strong>l: float or float array (with shape = x.shape)</strong> :</p>
+<blockquote class="last">
+<div><p>Width parameter (metric window size)</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -111,14 +146,25 @@ an outlier. Default = 3.0</dd>
 <tt class="descclassname">MRS.utils.</tt><tt class="descname">epanechnikov</tt><big>(</big><em>xx</em>, <em>idx=None</em><big>)</big><a class="headerlink" href="#MRS.utils.epanechnikov" title="Permalink to this definition">¶</a></dt>
 <dd><p>The Epanechnikov kernel estimated for xx values at indices idx (zero
 elsewhere)</p>
-<dl class="docutils">
-<dt>xx: float array</dt>
-<dd>Values of the function on which the kernel is computed. Typically,
-these are Euclidean distances from some point x0 (see do_kernel)</dd>
-<dt>idx: tuple</dt>
-<dd>An indexing tuple pointing to the coordinates in xx for which the
-kernel value is estimated. Default: None (all points are used!)</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>xx: float array</strong> :</p>
+<blockquote>
+<div><p>Values of the function on which the kernel is computed. Typically,
+these are Euclidean distances from some point x0 (see do_kernel)</p>
+</div></blockquote>
+<p><strong>idx: tuple</strong> :</p>
+<blockquote class="last">
+<div><p>An indexing tuple pointing to the coordinates in xx for which the
+kernel value is estimated. Default: None (all points are used!)</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
 <p>This is equation 6.4 in FHT chapter 6</p>
 </dd></dl>
 
@@ -157,12 +203,23 @@ dot product of the vector.</p>
 <dt id="MRS.utils.line_broadening">
 <tt class="descclassname">MRS.utils.</tt><tt class="descname">line_broadening</tt><big>(</big><em>ts</em>, <em>width</em><big>)</big><a class="headerlink" href="#MRS.utils.line_broadening" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply line-broadening to a time-series</p>
-<p>ts : a nitime.TimeSeries class instance</p>
-<dl class="docutils">
-<dt>width <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd>The exponential decay time-constant (in seconds)</dd>
-</dl>
-<p>A nitime.TimeSeries class instance with windowed data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ts</strong> : a nitime.TimeSeries class instance</p>
+<p><strong>width</strong> : float</p>
+<blockquote>
+<div><p>The exponential decay time-constant (in seconds)</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>A nitime.TimeSeries class instance with windowed data</strong> :</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
 <p>For details, see page 92 of <a class="reference internal" href="#keeler2005">Keeler2005</a>.</p>
 <table class="docutils citation" frame="void" id="keeler2005" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
@@ -180,17 +237,27 @@ edition. Wiley (West Sussex, UK).</td></tr>
 <dt id="MRS.utils.lorentzian">
 <tt class="descclassname">MRS.utils.</tt><tt class="descname">lorentzian</tt><big>(</big><em>freq</em>, <em>freq0</em>, <em>area</em>, <em>hwhm</em>, <em>phase</em>, <em>offset</em>, <em>drift</em><big>)</big><a class="headerlink" href="#MRS.utils.lorentzian" title="Permalink to this definition">¶</a></dt>
 <dd><p>Lorentzian line-shape function</p>
-<dl class="docutils">
-<dt>freq <span class="classifier-delimiter">:</span> <span class="classifier">float or float array</span></dt>
-<dd>The frequencies for which the function is evaluated</dd>
-<dt>freq0 <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd>The center frequency of the function</dd>
-</dl>
-<p>area : float</p>
-<dl class="docutils">
-<dt>hwhm: float</dt>
-<dd>Half-width at half-max</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>freq</strong> : float or float array</p>
+<blockquote>
+<div><p>The frequencies for which the function is evaluated</p>
+</div></blockquote>
+<p><strong>freq0</strong> : float</p>
+<blockquote>
+<div><p>The center frequency of the function</p>
+</div></blockquote>
+<p><strong>area</strong> : float</p>
+<p><strong>hwhm: float</strong> :</p>
+<blockquote class="last">
+<div><p>Half-width at half-max</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -198,55 +265,51 @@ edition. Wiley (West Sussex, UK).</td></tr>
 <h2>lowess<a class="headerlink" href="#lowess" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MRS.utils.lowess">
-<tt class="descclassname">MRS.utils.</tt><tt class="descname">lowess</tt><big>(</big><em>x</em>, <em>w</em>, <em>x0</em>, <em>kernel=&lt;function epanechnikov at 0x10d5ba8c0&gt;</em>, <em>l=1</em>, <em>robust=False</em><big>)</big><a class="headerlink" href="#MRS.utils.lowess" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MRS.utils.</tt><tt class="descname">lowess</tt><big>(</big><em>x</em>, <em>w</em>, <em>x0</em>, <em>kernel=&lt;function epanechnikov at 0x10d6f1668&gt;</em>, <em>l=1</em>, <em>robust=False</em><big>)</big><a class="headerlink" href="#MRS.utils.lowess" title="Permalink to this definition">¶</a></dt>
 <dd><p>Locally linear regression with the LOWESS algorithm.</p>
-<dl class="docutils">
-<dt>x: float n-d array  </dt>
-<dd>Values of x for which f(x) is known (e.g. measured). The shape of this
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x: float n-d array</strong> :</p>
+<blockquote>
+<div><p>Values of x for which f(x) is known (e.g. measured). The shape of this
 is (n, j), where n is the number the dimensions of the and j is the
-number of distinct coordinates sampled.</dd>
-<dt>w: float array</dt>
-<dd>The known values of f(x) at these points. This has shape (j,)</dd>
-<dt>x0: float or float array.</dt>
-<dd>Values of x for which we estimate the value of f(x). This is either a
+number of distinct coordinates sampled.</p>
+</div></blockquote>
+<p><strong>w: float array</strong> :</p>
+<blockquote>
+<div><p>The known values of f(x) at these points. This has shape (j,)</p>
+</div></blockquote>
+<p><strong>x0: float or float array.</strong> :</p>
+<blockquote>
+<div><p>Values of x for which we estimate the value of f(x). This is either a
 single scalar value (only possible for the 1d case, in which case f(x0)
-is estimated for just that one value of x), or an array of shape (n, k).</dd>
-<dt>kernel: callable</dt>
-<dd>A kernel function. {&#8216;epanechnikov&#8217;, &#8216;tri_cube&#8217;}</dd>
-<dt>l: float or float array with shape = x.shape</dt>
-<dd>The metric window size for the kernel</dd>
-<dt>robust: bool</dt>
-<dd>Whether to apply the robustification procedure from [Cleveland79], page
-831</dd>
-</dl>
-<p>The function estimated at x0.</p>
+is estimated for just that one value of x), or an array of shape (n, k).</p>
+</div></blockquote>
+<p><strong>kernel: callable</strong> :</p>
+<blockquote>
+<div><p>A kernel function. {&#8216;epanechnikov&#8217;, &#8216;tri_cube&#8217;}</p>
+</div></blockquote>
+<p><strong>l: float or float array with shape = x.shape</strong> :</p>
+<blockquote>
+<div><p>The metric window size for the kernel</p>
+</div></blockquote>
+<p><strong>robust: bool</strong> :</p>
+<blockquote>
+<div><p>Whether to apply the robustification procedure from [Cleveland79], page
+831</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>The function estimated at x0.</strong> :</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
 <p>The solution to this problem is given by equation 6.8 in Friedman, Hastie
 and Tibshirani (2008). The Elements of Statistical Learning (Chapter 6).</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">lowess</span> <span class="kn">as</span> <span class="nn">lo</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-</pre></div>
-</div>
-<p># For the 1D case:
-&gt;&gt;&gt; x = np.random.randn(100)
-&gt;&gt;&gt; f = np.cos(x) + 0.2 * np.random.randn(100)
-&gt;&gt;&gt; x0 = np.linspace(-1,1,10)
-&gt;&gt;&gt; f_hat = lo.lowess(x, f, x0)
-&gt;&gt;&gt; import matplotlib.pyplot as plt
-&gt;&gt;&gt; fig,ax = plt.subplots(1)
-&gt;&gt;&gt; ax.scatter(x,f)
-&gt;&gt;&gt; ax.plot(x0,f_hat,&#8217;ro&#8217;)
-&gt;&gt;&gt; plt.show()</p>
-<p># 2D case (and more...)
-&gt;&gt;&gt; x = np.random.randn(2, 100)
-&gt;&gt;&gt; f = -1 * np.sin(x[0]) + 0.5 * np.cos(x[1]) + 0.2*np.random.randn(100)
-&gt;&gt;&gt; x0 = np.mgrid[-1:1:.1, -1:1:.1]
-&gt;&gt;&gt; x0 = np.vstack([x0[0].ravel(), x0[1].ravel()])
-&gt;&gt;&gt; f_hat = lo.lowess(x, f, x0, kernel=lo.tri_cube)
-&gt;&gt;&gt; from mpl_toolkits.mplot3d import Axes3D
-&gt;&gt;&gt; fig = plt.figure()
-&gt;&gt;&gt; ax = fig.add_subplot(111, projection=&#8216;3d&#8217;)
-&gt;&gt;&gt; ax.scatter(x[0], x[1], f)
-&gt;&gt;&gt; ax.scatter(x0[0], x0[1], f_hat, color=&#8217;r&#8217;)</p>
 </dd></dl>
 
 </div>
@@ -257,15 +320,29 @@ and Tibshirani (2008). The Elements of Statistical Learning (Chapter 6).</p>
 <tt class="descclassname">MRS.utils.</tt><tt class="descname">make_idx</tt><big>(</big><em>f</em>, <em>lb</em>, <em>ub</em><big>)</big><a class="headerlink" href="#MRS.utils.make_idx" title="Permalink to this definition">¶</a></dt>
 <dd><p>This is a little utility function to replace an oft-called set of
 operations</p>
-<dl class="docutils">
-<dt>f <span class="classifier-delimiter">:</span> <span class="classifier">1d array</span></dt>
-<dd>A frequency axis along which we want to slice</dd>
-<dt>lb <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd>Defines the upper bound of slicing</dd>
-<dt>ub <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd>Defines the lower bound of slicing</dd>
-</dl>
-<p>idx : a slice object</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>f</strong> : 1d array</p>
+<blockquote>
+<div><p>A frequency axis along which we want to slice</p>
+</div></blockquote>
+<p><strong>lb</strong> : float</p>
+<blockquote>
+<div><p>Defines the upper bound of slicing</p>
+</div></blockquote>
+<p><strong>ub</strong> : float</p>
+<blockquote>
+<div><p>Defines the lower bound of slicing</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>idx</strong> : a slice object</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -275,27 +352,40 @@ operations</p>
 <dt id="MRS.utils.ols_matrix">
 <tt class="descclassname">MRS.utils.</tt><tt class="descname">ols_matrix</tt><big>(</big><em>A</em>, <em>norm_func=None</em><big>)</big><a class="headerlink" href="#MRS.utils.ols_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><blockquote>
-<div><p>Generate the matrix used to solve OLS regression.</p>
-<dl class="docutils">
-<dt>A: float array</dt>
-<dd>The design matrix</dd>
-<dt>norm: callable, optional</dt>
-<dd>A normalization function to apply to the matrix, before extracting the
-OLS matrix.</dd>
-</dl>
-<p>The matrix needed for OLS regression for the equation:</p>
-<p>..math</p>
-<div class="highlight-python"><div class="highlight"><pre>y = A eta
-</pre></div>
-</div>
+<div>Generate the matrix used to solve OLS regression.</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>A: float array</strong> :</p>
+<blockquote class="last">
+<div><blockquote>
+<div><p>The design matrix</p>
 </div></blockquote>
+<dl class="docutils">
+<dt>norm: callable, optional</dt>
+<dd><p class="first last">A normalization function to apply to the matrix, before extracting the
+OLS matrix.</p>
+</dd>
+</dl>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><tt class="xref py py-obj docutils literal"><span class="pre">http</span></tt></dt>
+<dd>//en.wikipedia.org/wiki/Ordinary_least_squares#Estimation</dd>
+</dl>
+</div>
 <p>is given by:</p>
 <blockquote>
 <div><p>..math</p>
 <div class="highlight-python"><div class="highlight"><pre>\hat{eta} = (A&#39; x A)^{-1} A&#39; y
 </pre></div>
 </div>
-<p><a class="reference external" href="http://en.wikipedia.org/wiki/Ordinary_least_squares#Estimation">http://en.wikipedia.org/wiki/Ordinary_least_squares#Estimation</a></p>
 </div></blockquote>
 </dd></dl>
 
@@ -306,15 +396,30 @@ OLS matrix.</dd>
 <dt id="MRS.utils.phase_correct_first">
 <tt class="descclassname">MRS.utils.</tt><tt class="descname">phase_correct_first</tt><big>(</big><em>spec</em>, <em>freq</em>, <em>k</em><big>)</big><a class="headerlink" href="#MRS.utils.phase_correct_first" title="Permalink to this definition">¶</a></dt>
 <dd><p>First order phase correction.</p>
-<dl class="docutils">
-<dt>spec <span class="classifier-delimiter">:</span> <span class="classifier">float array</span></dt>
-<dd>The spectrum to be corrected.</dd>
-<dt>freq <span class="classifier-delimiter">:</span> <span class="classifier">float array</span></dt>
-<dd>The frequency axis.</dd>
-<dt>k <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd>The slope of the phase correction as a function of frequency.</dd>
-</dl>
-<p>The phase-corrected spectrum.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>spec</strong> : float array</p>
+<blockquote>
+<div><p>The spectrum to be corrected.</p>
+</div></blockquote>
+<p><strong>freq</strong> : float array</p>
+<blockquote>
+<div><p>The frequency axis.</p>
+</div></blockquote>
+<p><strong>k</strong> : float</p>
+<blockquote>
+<div><p>The slope of the phase correction as a function of frequency.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>The phase-corrected spectrum.</strong> :</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
 <dl class="docutils">
 <dt>[Keeler2005] Keeler, J (2005). Understanding NMR Spectroscopy, 2nd</dt>
 <dd>edition. Wiley. Page 88</dd>
@@ -328,15 +433,26 @@ OLS matrix.</dd>
 <dt id="MRS.utils.phase_correct_zero">
 <tt class="descclassname">MRS.utils.</tt><tt class="descname">phase_correct_zero</tt><big>(</big><em>spec</em>, <em>phi</em><big>)</big><a class="headerlink" href="#MRS.utils.phase_correct_zero" title="Permalink to this definition">¶</a></dt>
 <dd><p>Correct the phases of a spectrum by phi radians</p>
-<dl class="docutils">
-<dt>spec <span class="classifier-delimiter">:</span> <span class="classifier">float array of complex dtype</span></dt>
-<dd>The spectrum to be corrected.</dd>
-</dl>
-<p>phi : float</p>
-<dl class="docutils">
-<dt>spec <span class="classifier-delimiter">:</span> <span class="classifier">float array</span></dt>
-<dd>The phase corrected spectrum</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>spec</strong> : float array of complex dtype</p>
+<blockquote>
+<div><p>The spectrum to be corrected.</p>
+</div></blockquote>
+<p><strong>phi</strong> : float</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>spec</strong> : float array</p>
+<blockquote class="last">
+<div><p>The phase corrected spectrum</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
 <dl class="docutils">
 <dt>[Keeler2005] Keeler, J (2005). Understanding NMR Spectroscopy, 2nd</dt>
 <dd>edition. Wiley. Page 88.</dd>
@@ -350,13 +466,25 @@ OLS matrix.</dd>
 <dt id="MRS.utils.ppm_idx">
 <tt class="descclassname">MRS.utils.</tt><tt class="descname">ppm_idx</tt><big>(</big><em>f_ppm</em>, <em>lb</em>, <em>ub</em><big>)</big><a class="headerlink" href="#MRS.utils.ppm_idx" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a slice object according to the ppm scale</p>
-<dl class="docutils">
-<dt>f_ppm <span class="classifier-delimiter">:</span> <span class="classifier">float array</span></dt>
-<dd>The frequency bins (in the ppm scale). Assumed to be descending</dd>
-<dt>lb,ub <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd>The lower/upper bounds for indexing</dd>
-</dl>
-<p>idx : slice object which can be used to index</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>f_ppm</strong> : float array</p>
+<blockquote>
+<div><p>The frequency bins (in the ppm scale). Assumed to be descending</p>
+</div></blockquote>
+<p><strong>lb,ub</strong> : float</p>
+<blockquote>
+<div><p>The lower/upper bounds for indexing</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>idx</strong> : slice object which can be used to index</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -375,11 +503,22 @@ OLS matrix.</dd>
 <dt id="MRS.utils.rmse">
 <tt class="descclassname">MRS.utils.</tt><tt class="descname">rmse</tt><big>(</big><em>arr1</em>, <em>arr2</em><big>)</big><a class="headerlink" href="#MRS.utils.rmse" title="Permalink to this definition">¶</a></dt>
 <dd><p>The root of the mean of the squared error between arr1 and arr2</p>
-<dl class="docutils">
-<dt>arr1, arr2 <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
-<dd>The two arrays to compare</dd>
-</dl>
-<p>RMSE : float</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>arr1, arr2</strong> : ndarray</p>
+<blockquote>
+<div><p>The two arrays to compare</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>RMSE</strong> : float</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
 <p>The RMSE will be summarized in one number. That is, even if the two arrays
 are multi-dimensional, the error between them will be averaged over the
 entire array and then the sqrt will be derived.</p>
@@ -393,14 +532,25 @@ entire array and then the sqrt will be derived.</p>
 <tt class="descclassname">MRS.utils.</tt><tt class="descname">tri_cube</tt><big>(</big><em>xx</em>, <em>idx</em><big>)</big><a class="headerlink" href="#MRS.utils.tri_cube" title="Permalink to this definition">¶</a></dt>
 <dd><p>The tri-cube kernel estimated for xx values at indices idx (zero
 elsewhere)</p>
-<dl class="docutils">
-<dt>xx: float array</dt>
-<dd>Values of the function on which the kernel is computed. Typically,
-these are Euclidean distances from some point x0 (see do_kernel)</dd>
-<dt>idx: tuple</dt>
-<dd>An indexing tuple pointing to the coordinates in xx for which the
-kernel value is estimated. Default: None (all points are used!)</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>xx: float array</strong> :</p>
+<blockquote>
+<div><p>Values of the function on which the kernel is computed. Typically,
+these are Euclidean distances from some point x0 (see do_kernel)</p>
+</div></blockquote>
+<p><strong>idx: tuple</strong> :</p>
+<blockquote class="last">
+<div><p>An indexing tuple pointing to the coordinates in xx for which the
+kernel value is estimated. Default: None (all points are used!)</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
 <p>This is equation 6.6 in FHT chapter 6</p>
 </dd></dl>
 
@@ -433,15 +583,21 @@ and phase, but they share common offset and drift parameters.</p>
 <h2>unit_vector<a class="headerlink" href="#unit-vector" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MRS.utils.unit_vector">
-<tt class="descclassname">MRS.utils.</tt><tt class="descname">unit_vector</tt><big>(</big><em>arr</em>, <em>norm_func=&lt;function l2_norm at 0x10d5bab90&gt;</em><big>)</big><a class="headerlink" href="#MRS.utils.unit_vector" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MRS.utils.</tt><tt class="descname">unit_vector</tt><big>(</big><em>arr</em>, <em>norm_func=&lt;function l2_norm at 0x10d6f1938&gt;</em><big>)</big><a class="headerlink" href="#MRS.utils.unit_vector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Normalize the array by a norm function (defaults to the l2_norm)</p>
-<p>arr: ndarray</p>
-<dl class="docutils">
-<dt>norm_func: callable</dt>
-<dd>A function that is used here to normalize the array.</dd>
-</dl>
-<p>The norm_func is the thing that defines what a unit vector is for the
-particular application.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>arr: ndarray</strong> :</p>
+<p><strong>norm_func: callable</strong> :</p>
+<blockquote class="last">
+<div><p>A function that is used here to normalize the array.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -452,7 +608,14 @@ particular application.</p>
 <tt class="descclassname">MRS.utils.</tt><tt class="descname">zero_pad</tt><big>(</big><em>ts</em>, <em>n_zeros</em><big>)</big><a class="headerlink" href="#MRS.utils.zero_pad" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pad a nitime.TimeSeries class instance with n_zeros before and after the
 data</p>
-<p>ts : a nitime.TimeSeries class instance</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ts</strong> : a nitime.TimeSeries class instance</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -550,6 +713,9 @@ data</p>
              >index</a></li>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../np-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
           <a href="MRS.qc.html" title="qc"

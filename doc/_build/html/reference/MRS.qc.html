@@ -42,6 +42,9 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
+          <a href="../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
           <a href="MRS.utils.html" title="utils"
              accesskey="N">next</a> |</li>
         <li class="right" >
@@ -67,20 +70,36 @@
 <tt class="descclassname">MRS.qc.</tt><tt class="descname">motioncheck</tt><big>(</big><em>ref_file</em>, <em>end_file</em>, <em>out_path=None</em>, <em>thres=5.0</em><big>)</big><a class="headerlink" href="#MRS.qc.motioncheck" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks motion between structural scans of the same modality. 
 Ideally obtained at the beginning and end of a scanning session.</p>
-<dl class="docutils">
-<dt>ref_file: nifti file </dt>
-<dd>Nifti file of first localizer acquired at the beginning of the session</dd>
-<dt>end_file: nifti</dt>
-<dd>nifti file of the localizer acquired at the end of the session</dd>
-<dt>thres: float</dt>
-<dd>threshold in mm of maximum allowed motion. Default 5mm</dd>
-</dl>
-<dl class="docutils">
-<dt>rms <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd>root mean square of xyz translation</dd>
-<dt>passed: boolean</dt>
-<dd>indicates if motion passed threshold: 1 if passed, 0 if failed.</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ref_file: nifti file</strong> :</p>
+<blockquote>
+<div><p>Nifti file of first localizer acquired at the beginning of the session</p>
+</div></blockquote>
+<p><strong>end_file: nifti</strong> :</p>
+<blockquote>
+<div><p>nifti file of the localizer acquired at the end of the session</p>
+</div></blockquote>
+<p><strong>thres: float</strong> :</p>
+<blockquote>
+<div><p>threshold in mm of maximum allowed motion. Default 5mm</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>rms</strong> : float</p>
+<blockquote>
+<div><p>root mean square of xyz translation</p>
+</div></blockquote>
+<p><strong>passed: boolean</strong> :</p>
+<blockquote class="last">
+<div><p>indicates if motion passed threshold: 1 if passed, 0 if failed.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -160,6 +179,9 @@ Ideally obtained at the beginning and end of a scanning session.</p>
              >index</a></li>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../np-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
           <a href="MRS.utils.html" title="utils"

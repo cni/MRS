@@ -42,6 +42,9 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
+          <a href="../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
           <a href="MRS.freesurfer.html" title="freesurfer"
              accesskey="N">next</a> |</li>
         <li class="right" >
@@ -81,12 +84,6 @@
 <tt class="descclassname">MRS.data.</tt><tt class="descname">check_md5</tt><big>(</big><em>filename</em>, <em>stored_md5</em><big>)</big><a class="headerlink" href="#MRS.data.check_md5" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the md5 of filename and check if it matches with the supplied
 string md5</p>
-<dl class="docutils">
-<dt>filename <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
-<dd>Path to a file.</dd>
-<dt>md5 <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
-<dd>Known md5 of filename to check against.</dd>
-</dl>
 </dd></dl>
 
 </div>
@@ -105,20 +102,32 @@ string md5</p>
 <dt id="MRS.data.fetch_data">
 <tt class="descclassname">MRS.data.</tt><tt class="descname">fetch_data</tt><big>(</big><em>files</em>, <em>folder</em><big>)</big><a class="headerlink" href="#MRS.data.fetch_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Downloads files to folder and checks their md5 checksums</p>
-<dl class="docutils">
-<dt>files <span class="classifier-delimiter">:</span> <span class="classifier">dictionary</span></dt>
-<dd>For each file in <cite>files</cite> the value should be (url, md5). The file will
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>files</strong> : dictionary</p>
+<blockquote>
+<div><p>For each file in <cite>files</cite> the value should be (url, md5). The file will
 be downloaded from url if the file does not already exist or if the
-file exists but the md5 checksum does not match.</dd>
-<dt>folder <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd>The directory where to save the file, the directory will be created if
-it does not already exist.</dd>
-</dl>
-<dl class="docutils">
-<dt>FetcherError</dt>
-<dd>Raises if the md5 checksum of the file does not match the expected
-value. The downloaded file is not deleted when this error is raised.</dd>
-</dl>
+file exists but the md5 checksum does not match.</p>
+</div></blockquote>
+<p><strong>folder</strong> : str</p>
+<blockquote>
+<div><p>The directory where to save the file, the directory will be created if
+it does not already exist.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first"><strong>FetcherError</strong> :</p>
+<blockquote class="last">
+<div><p>Raises if the md5 checksum of the file does not match the expected
+value. The downloaded file is not deleted when this error is raised.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -128,16 +137,24 @@ value. The downloaded file is not deleted when this error is raised.</dd>
 <dt id="MRS.data.fetch_from_sdr">
 <tt class="descclassname">MRS.data.</tt><tt class="descname">fetch_from_sdr</tt><big>(</big><em>folder='/Users/arokem/.mrs_data'</em>, <em>data='test'</em><big>)</big><a class="headerlink" href="#MRS.data.fetch_from_sdr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Download MRS data from SDR</p>
-<dl class="docutils">
-<dt>folder <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd>Full path to a location in which to place the data. Per default this</dd>
-</dl>
-<p>will be a directory under the user&#8217;s home <cite>.mrs_data</cite>.</p>
-<dl class="docutils">
-<dt>data <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd>Which data to download. Either &#8216;test&#8217;, which is data required for
-testing, or &#8216;example&#8217;, which is data needed for the example notebooks.</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>folder</strong> : str</p>
+<blockquote>
+<div><p>Full path to a location in which to place the data. Per default this</p>
+</div></blockquote>
+<p><strong>will be a directory under the user&#8217;s home `.mrs_data`.</strong> :</p>
+<p><strong>data</strong> : str</p>
+<blockquote class="last">
+<div><p>Which data to download. Either &#8216;test&#8217;, which is data required for
+testing, or &#8216;example&#8217;, which is data needed for the example notebooks.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -253,6 +270,9 @@ ends with a separator.</p>
              >index</a></li>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../np-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
           <a href="MRS.freesurfer.html" title="freesurfer"

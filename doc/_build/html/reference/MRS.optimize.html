@@ -42,6 +42,9 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
+          <a href="../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
           <a href="MRS.qc.html" title="qc"
              accesskey="N">next</a> |</li>
         <li class="right" >
@@ -66,24 +69,43 @@
 <dt id="MRS.optimize.err_func">
 <tt class="descclassname">MRS.optimize.</tt><tt class="descname">err_func</tt><big>(</big><em>params</em>, <em>x</em>, <em>y</em>, <em>func</em>, <em>w=None</em>, <em>func_list=None</em><big>)</big><a class="headerlink" href="#MRS.optimize.err_func" title="Permalink to this definition">¶</a></dt>
 <dd><p>Error function for fitting a function</p>
-<p>params : tuple</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>params</strong> : tuple</p>
 <blockquote>
-<div>A tuple with the parameters of <cite>func</cite> according to their order of
-input</div></blockquote>
-<dl class="docutils">
-<dt>x <span class="classifier-delimiter">:</span> <span class="classifier">float array </span></dt>
-<dd>An independent variable.</dd>
-<dt>y <span class="classifier-delimiter">:</span> <span class="classifier">float array</span></dt>
-<dd>The dependent variable.</dd>
-<dt>func <span class="classifier-delimiter">:</span> <span class="classifier">function</span></dt>
-<dd>A function with inputs: <cite>(x, *params)</cite></dd>
-<dt>w <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
-<dd>A weighting function. Allows emphasizing certain parts of the
-original function. Should have the same length as x/y.</dd>
-<dt>func_list <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
-<dd>dict of callables, each with it&#8217;s own set of indices into the params</dd>
-</dl>
-<p>The marginals of the fit to x/y given the params.</p>
+<div><p>A tuple with the parameters of <cite>func</cite> according to their order of
+input</p>
+</div></blockquote>
+<p><strong>x</strong> : float array</p>
+<blockquote>
+<div><p>An independent variable.</p>
+</div></blockquote>
+<p><strong>y</strong> : float array</p>
+<blockquote>
+<div><p>The dependent variable.</p>
+</div></blockquote>
+<p><strong>func</strong> : function</p>
+<blockquote>
+<div><p>A function with inputs: <cite>(x, *params)</cite></p>
+</div></blockquote>
+<p><strong>w</strong> : ndarray</p>
+<blockquote>
+<div><p>A weighting function. Allows emphasizing certain parts of the
+original function. Should have the same length as x/y.</p>
+</div></blockquote>
+<p><strong>func_list</strong> : dict</p>
+<blockquote>
+<div><p>dict of callables, each with it&#8217;s own set of indices into the params</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>The marginals of the fit to x/y given the params.</strong> :</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -163,6 +185,9 @@ original function. Should have the same length as x/y.</dd>
              >index</a></li>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../np-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
           <a href="MRS.qc.html" title="qc"
