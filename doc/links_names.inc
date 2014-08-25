@@ -15,10 +15,11 @@
 .. _sdr: http://sdr.stanford.edu
 .. _sdr-purl: http://purl.stanford.edu/fn662rv4961
 
-
 .. nbviewer
 
 .. _nbviewer: http://nbviewer.ipython.org/github/arokem/MRS/blob/refactor-for-release/ipynb/index.ipynb
+
+.. _terminal: https://terminal.com/tiny/W2DpoIgOnQ 
 
 .. MRS-github
 .. _mrs-github: http://github.com/cni/MRS
