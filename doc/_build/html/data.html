@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>SMAL &mdash; Stanford CNI MRS Library (SMAL) 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Stanford CNI MRS Library (SMAL) 0.1 documentation" href="index.html" />
+  <meta name="keywords" content="MRI, Stanford, Python, Neuroscience, MR
+  spectroscopy, MRS">
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">Stanford CNI MRS Library (SMAL) 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="organizing-your-data">
+<span id="data"></span><h1>Organizing your data<a class="headerlink" href="#organizing-your-data" title="Permalink to this headline">¶</a></h1>
+<p>For its analysis, <cite>SMAL</cite> uses the raw MRS data, acquired with a phased array
+coil. To achieve proper coil combination, we assume that the raw data from each
+coil is provided as as a separate channel in the data. There are defaults set
+for the number of non-water-suppressed transients, and sampling rate, but these
+can be set as optional inputs to the user interface.</p>
+<p>The main <a class="reference internal" href="reference/MRS.api.html#module-MRS.api" title="MRS.api"><tt class="xref py py-mod docutils literal"><span class="pre">MRS.api</span></tt></a> user interface assumes that the data is organized as an
+array with shape: <cite>(transients, echos, channels, timepoints)</cite>. For example,
+typical data might have the shape: <cite>(68, 2, 32, 4096)</cite>, where 68 transients are
+acquired, each with two echos (GABA-edited and not GABA-edited), with a
+32-channel phased array coil, acquiring 4096 samples in each FID curve at 5 kHz.</p>
+<p>Alternatively, we can accept a full path to the data saved as a nifti
+file. Following the nifti convention, the data array in the file needs to be
+saved with the shape:  <cite>(transients, 1, 1, echos, channels, timepoints)</cite>. That
+is, for this data, the data array in the nifti file will have the shape:
+<cite>(4096, 1, 1, 68, 2, 32)</cite>. Data acquired at the <a class="reference external" href="http://cni.stanford.edu">Stanford CNI</a>, will be saved
+as a nifti file in this convention (see also the example data provided at the
+<a class="reference external" href="http://purl.stanford.edu/fn662rv4961">Stanford Data Repository</a>).</p>
+<p>See also</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">  
+
+<h4> Site Navigation </h4>
+  <ul class="simple">
+  <li><a href="index.html">Home</a> </li>
+  <li><a href="getting_started.html">Getting started</a> </li>
+  <li><a href="reference/index.html">Module reference</a> </li>
+  </ul>
+  
+<h4> Stanford CNI </h4>
+  <ul class="simple">
+    <li><a class="reference external"
+	href="http://cni.stanford.edu/">CNI Home Page</a></li>
+    <li><a class="reference external"
+	href="https://scitran.stanford.edu/">PoST</a></li>
+    <li><a class="reference external"
+	href="https://cni.stanford.edu/nims/">NIMS</a></li>
+    <li><a class="reference external"
+	href="http://cni.stanford.edu/wiki/Main_Page">Wiki</a></li>
+  </ul>
+
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/data.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+  
+<div id="searchbox-site" style="display: none">
+  <h3>Search this site</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="13" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox-ml').show(0);</script>
+<script type="text/javascript">$('#searchbox-site').show(0);</script>
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">Stanford CNI MRS Library (SMAL) 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+
+    <div class="footer">
+        &copy; Copyright 2014, Ariel Rokem, Grace Tang, Stanford CNI.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+<!-- Global footer snippet start -->
+<div id="global-footer">
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-54034205-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+  </body>
+</html>
