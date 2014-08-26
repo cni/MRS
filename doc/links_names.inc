@@ -17,7 +17,7 @@
 
 .. nbviewer
 
-.. _nbviewer: http://nbviewer.ipython.org/github/arokem/MRS/blob/refactor-for-release/ipynb/index.ipynb
+.. _nbviewer: http://nbviewer.ipython.org/github/cni/MRS/blob/master/ipynb/index.ipynb
 
 .. _terminal: https://terminal.com/tiny/W2DpoIgOnQ 
 
