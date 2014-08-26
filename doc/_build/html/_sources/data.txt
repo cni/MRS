@@ -24,8 +24,6 @@ is, for this data, the data array in the nifti file will have the shape:
 as a nifti file in this convention (see also the example data provided at the
 `Stanford Data Repository`__).
 
-See also 
-
 __ cni_
 __ sdr-purl_
 
