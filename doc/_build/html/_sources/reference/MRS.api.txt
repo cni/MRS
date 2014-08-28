@@ -1,0 +1,38 @@
+.. AUTO-GENERATED FILE -- DO NOT EDIT!
+
+:mod:`api`
+==========
+.. automodule:: MRS.api
+
+.. currentmodule:: MRS.api
+.. autosummary::
+
+   GABA
+   SingleVoxel
+
+
+.. currentmodule:: MRS.api
+
+:class:`GABA`
+~~~~~~~~~~~~~
+
+
+.. autoclass:: GABA
+  :members:
+  :undoc-members:
+  :show-inheritance:
+
+  .. automethod:: __init__
+
+
+:class:`SingleVoxel`
+~~~~~~~~~~~~~~~~~~~~
+
+
+.. autoclass:: SingleVoxel
+  :members:
+  :undoc-members:
+  :show-inheritance:
+
+  .. automethod:: __init__
+

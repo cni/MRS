@@ -1,0 +1,24 @@
+.. AUTO-GENERATED FILE -- DO NOT EDIT!
+
+:mod:`freesurfer`
+=================
+.. automodule:: MRS.freesurfer
+
+.. currentmodule:: MRS.freesurfer
+.. autosummary::
+
+   MRSvoxelStats
+   reconall
+
+
+.. currentmodule:: MRS.freesurfer
+MRSvoxelStats
+~~~~~~~~~~~~~
+
+.. autofunction:: MRSvoxelStats
+
+reconall
+~~~~~~~~
+
+.. autofunction:: reconall
+

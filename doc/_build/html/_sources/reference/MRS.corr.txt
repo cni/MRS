@@ -1,0 +1,24 @@
+.. AUTO-GENERATED FILE -- DO NOT EDIT!
+
+:mod:`corr`
+===========
+.. automodule:: MRS.corr
+
+.. currentmodule:: MRS.corr
+.. autosummary::
+
+   baseline_correct
+   naa_correct
+
+
+.. currentmodule:: MRS.corr
+baseline_correct
+~~~~~~~~~~~~~~~~
+
+.. autofunction:: baseline_correct
+
+naa_correct
+~~~~~~~~~~~
+
+.. autofunction:: naa_correct
+
