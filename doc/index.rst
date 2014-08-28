@@ -12,5 +12,14 @@ species, and quantify their relative abundance in human brain tissue.
 
 Try it out `here <https://terminal.com/tiny/AFurZaCCuL>`_
 
-
 Having issues? Report them `here <https://github.com/cni/MRS/issues>`_
+
+.. toctree::
+   :hidden:
+   
+   getting_started
+   installing
+   data
+   analysis
+   development
+   reference/index
