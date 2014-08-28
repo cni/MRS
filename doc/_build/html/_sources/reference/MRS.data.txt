@@ -1,0 +1,67 @@
+.. AUTO-GENERATED FILE -- DO NOT EDIT!
+
+:mod:`data`
+===========
+.. automodule:: MRS.data
+
+.. currentmodule:: MRS.data
+.. autosummary::
+
+   FetcherError
+   check_md5
+   copyfileobj
+   fetch_data
+   fetch_from_sdr
+   md5
+   pjoin
+   urlopen
+
+
+.. currentmodule:: MRS.data
+
+:class:`FetcherError`
+~~~~~~~~~~~~~~~~~~~~~
+
+
+.. autoclass:: FetcherError
+  :members:
+  :undoc-members:
+  :show-inheritance:
+
+  .. automethod:: __init__
+
+check_md5
+~~~~~~~~~
+
+.. autofunction:: check_md5
+
+copyfileobj
+~~~~~~~~~~~
+
+.. autofunction:: copyfileobj
+
+fetch_data
+~~~~~~~~~~
+
+.. autofunction:: fetch_data
+
+fetch_from_sdr
+~~~~~~~~~~~~~~
+
+.. autofunction:: fetch_from_sdr
+
+md5
+~~~
+
+.. autofunction:: md5
+
+pjoin
+~~~~~
+
+.. autofunction:: pjoin
+
+urlopen
+~~~~~~~
+
+.. autofunction:: urlopen
+
