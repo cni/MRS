@@ -23,7 +23,7 @@
 
 .. MRS-github
 .. _mrs-github: http://github.com/cni/MRS
-.. _download-zip: https://github.com/vistalab/life/zipball/master
+.. _download-zip: https://github.com/cni/MRS/zipball/master
 .. _download-tar: https://github.com/cni/MRS/tarball/master
 .. _github-releases: https://github.com/cni/MRS/releases
 

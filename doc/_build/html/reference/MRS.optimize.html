@@ -39,12 +39,6 @@
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="../np-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
           <a href="MRS.qc.html" title="qc"
              accesskey="N">next</a> |</li>
         <li class="right" >
@@ -60,54 +54,10 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="module-MRS.optimize">
-<span id="optimize"></span><h1><tt class="xref py py-mod docutils literal"><span class="pre">optimize</span></tt><a class="headerlink" href="#module-MRS.optimize" title="Permalink to this headline">¶</a></h1>
-<p>Functions for optimization and fitting</p>
+  <div class="section" id="optimize">
+<h1><tt class="xref py py-mod docutils literal"><span class="pre">optimize</span></tt><a class="headerlink" href="#optimize" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="err-func">
 <h2>err_func<a class="headerlink" href="#err-func" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="MRS.optimize.err_func">
-<tt class="descclassname">MRS.optimize.</tt><tt class="descname">err_func</tt><big>(</big><em>params</em>, <em>x</em>, <em>y</em>, <em>func</em>, <em>w=None</em>, <em>func_list=None</em><big>)</big><a class="headerlink" href="#MRS.optimize.err_func" title="Permalink to this definition">¶</a></dt>
-<dd><p>Error function for fitting a function</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>params</strong> : tuple</p>
-<blockquote>
-<div><p>A tuple with the parameters of <cite>func</cite> according to their order of
-input</p>
-</div></blockquote>
-<p><strong>x</strong> : float array</p>
-<blockquote>
-<div><p>An independent variable.</p>
-</div></blockquote>
-<p><strong>y</strong> : float array</p>
-<blockquote>
-<div><p>The dependent variable.</p>
-</div></blockquote>
-<p><strong>func</strong> : function</p>
-<blockquote>
-<div><p>A function with inputs: <cite>(x, *params)</cite></p>
-</div></blockquote>
-<p><strong>w</strong> : ndarray</p>
-<blockquote>
-<div><p>A weighting function. Allows emphasizing certain parts of the
-original function. Should have the same length as x/y.</p>
-</div></blockquote>
-<p><strong>func_list</strong> : dict</p>
-<blockquote>
-<div><p>dict of callables, each with it&#8217;s own set of indices into the params</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>The marginals of the fit to x/y given the params.</strong> :</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 </div>
 </div>
 
@@ -184,12 +134,6 @@ original function. Should have the same length as x/y.</p>
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="General Index"
              >index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="../np-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
         <li class="right" >
           <a href="MRS.qc.html" title="qc"
              >next</a> |</li>
