@@ -1,0 +1,232 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>SMAL &mdash; Stanford CNI MRS Library (SMAL) 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Stanford CNI MRS Library (SMAL) 0.1 documentation" href="../index.html" />
+    <link rel="next" title="MRS" href="MRS.html" />
+    <link rel="prev" title="Developing SMAL" href="../development.html" />
+  <meta name="keywords" content="MRI, Stanford, Python, Neuroscience, MR
+  spectroscopy, MRS">
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="MRS.html" title="MRS"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../development.html" title="Developing SMAL"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Stanford CNI MRS Library (SMAL) 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="api-reference">
+<h1>API Reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="MRS.html"><tt class="docutils literal"><span class="pre">MRS</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="MRS.analysis.html"><tt class="docutils literal"><span class="pre">analysis</span></tt></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="MRS.analysis.html#bootstrap-stat">bootstrap_stat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MRS.analysis.html#coil-combine">coil_combine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MRS.analysis.html#fit-gaussian">fit_gaussian</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MRS.analysis.html#fit-lorentzian">fit_lorentzian</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MRS.analysis.html#fit-two-gaussian">fit_two_gaussian</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MRS.analysis.html#fit-two-lorentzian">fit_two_lorentzian</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MRS.analysis.html#get-spectra">get_spectra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MRS.analysis.html#integrate">integrate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MRS.analysis.html#scalemodel">scalemodel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MRS.analysis.html#separate-signals">separate_signals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MRS.analysis.html#simple-auc">simple_auc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MRS.analysis.html#simps">simps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MRS.analysis.html#subtract-water">subtract_water</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MRS.analysis.html#trapz">trapz</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="MRS.api.html"><tt class="docutils literal"><span class="pre">api</span></tt></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="MRS.api.html#gaba"><tt class="docutils literal"><span class="pre">GABA</span></tt></a></li>
+<li class="toctree-l2"><a class="reference internal" href="MRS.api.html#singlevoxel"><tt class="docutils literal"><span class="pre">SingleVoxel</span></tt></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="MRS.corr.html"><tt class="docutils literal"><span class="pre">corr</span></tt></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="MRS.corr.html#baseline-correct">baseline_correct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MRS.corr.html#naa-correct">naa_correct</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="MRS.data.html"><tt class="docutils literal"><span class="pre">data</span></tt></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="MRS.data.html#fetchererror"><tt class="docutils literal"><span class="pre">FetcherError</span></tt></a></li>
+<li class="toctree-l2"><a class="reference internal" href="MRS.data.html#check-md5">check_md5</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MRS.data.html#copyfileobj">copyfileobj</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MRS.data.html#fetch-data">fetch_data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MRS.data.html#fetch-from-sdr">fetch_from_sdr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MRS.data.html#md5">md5</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MRS.data.html#pjoin">pjoin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MRS.data.html#urlopen">urlopen</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="MRS.freesurfer.html"><tt class="docutils literal"><span class="pre">freesurfer</span></tt></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="MRS.freesurfer.html#mrsvoxelstats">MRSvoxelStats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MRS.freesurfer.html#reconall">reconall</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="MRS.optimize.html"><tt class="docutils literal"><span class="pre">optimize</span></tt></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="MRS.optimize.html#err-func">err_func</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="MRS.qc.html"><tt class="docutils literal"><span class="pre">qc</span></tt></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="MRS.qc.html#motioncheck">motioncheck</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="MRS.utils.html"><tt class="docutils literal"><span class="pre">utils</span></tt></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="MRS.utils.html#bi-square">bi_square</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MRS.utils.html#detect-outliers">detect_outliers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MRS.utils.html#do-kernel">do_kernel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MRS.utils.html#epanechnikov">epanechnikov</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MRS.utils.html#freq-to-ppm">freq_to_ppm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MRS.utils.html#gaussian">gaussian</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MRS.utils.html#l2-norm">l2_norm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MRS.utils.html#line-broadening">line_broadening</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MRS.utils.html#lorentzian">lorentzian</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MRS.utils.html#lowess">lowess</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MRS.utils.html#make-idx">make_idx</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MRS.utils.html#ols-matrix">ols_matrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MRS.utils.html#phase-correct-first">phase_correct_first</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MRS.utils.html#phase-correct-zero">phase_correct_zero</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MRS.utils.html#ppm-idx">ppm_idx</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MRS.utils.html#ppm-to-freq">ppm_to_freq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MRS.utils.html#rmse">rmse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MRS.utils.html#tri-cube">tri_cube</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MRS.utils.html#two-gaussian">two_gaussian</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MRS.utils.html#two-lorentzian">two_lorentzian</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MRS.utils.html#unit-vector">unit_vector</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MRS.utils.html#zero-pad">zero_pad</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">  
+
+<h4> Site Navigation </h4>
+  <ul class="simple">
+  <li><a href="../index.html">Home</a> </li>
+  <li><a href="../getting_started.html">Getting started</a> </li>
+  <li><a href="#">Module reference</a> </li>
+  <li><a href="../development.html">Development</a> </li>
+  </ul>
+  
+<h4> Stanford CNI </h4>
+  <ul class="simple">
+    <li><a class="reference external"
+	href="http://cni.stanford.edu/">CNI Home Page</a></li>
+    <li><a class="reference external"
+	href="https://scitran.stanford.edu/">PoST</a></li>
+    <li><a class="reference external"
+	href="https://cni.stanford.edu/nims/">NIMS</a></li>
+    <li><a class="reference external"
+	href="http://cni.stanford.edu/wiki/Main_Page">Wiki</a></li>
+  </ul>
+
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../development.html"
+                        title="previous chapter">Developing SMAL</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="MRS.html"
+                        title="next chapter"><tt class="docutils literal"><span class="pre">MRS</span></tt></a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/reference/index.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+  
+<div id="searchbox-site" style="display: none">
+  <h3>Search this site</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="13" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox-ml').show(0);</script>
+<script type="text/javascript">$('#searchbox-site').show(0);</script>
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="MRS.html" title="MRS"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../development.html" title="Developing SMAL"
+             >previous</a> |</li>
+        <li><a href="../index.html">Stanford CNI MRS Library (SMAL) 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+
+    <div class="footer">
+        &copy; Copyright 2014, Ariel Rokem, Grace Tang, Stanford CNI.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+<!-- Global footer snippet start -->
+<div id="global-footer">
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-54034205-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+  </body>
+</html>

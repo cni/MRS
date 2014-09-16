@@ -1,0 +1,239 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>SMAL &mdash; Stanford CNI MRS Library (SMAL) 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Stanford CNI MRS Library (SMAL) 0.1 documentation" href="../index.html" />
+    <link rel="up" title="API Reference" href="index.html" />
+    <link rel="prev" title="qc" href="MRS.qc.html" />
+  <meta name="keywords" content="MRI, Stanford, Python, Neuroscience, MR
+  spectroscopy, MRS">
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="MRS.qc.html" title="qc"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Stanford CNI MRS Library (SMAL) 0.1 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">API Reference</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="utils">
+<h1><tt class="xref py py-mod docutils literal"><span class="pre">utils</span></tt><a class="headerlink" href="#utils" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="bi-square">
+<h2>bi_square<a class="headerlink" href="#bi-square" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="detect-outliers">
+<h2>detect_outliers<a class="headerlink" href="#detect-outliers" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="do-kernel">
+<h2>do_kernel<a class="headerlink" href="#do-kernel" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="epanechnikov">
+<h2>epanechnikov<a class="headerlink" href="#epanechnikov" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="freq-to-ppm">
+<h2>freq_to_ppm<a class="headerlink" href="#freq-to-ppm" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="gaussian">
+<h2>gaussian<a class="headerlink" href="#gaussian" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="l2-norm">
+<h2>l2_norm<a class="headerlink" href="#l2-norm" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="line-broadening">
+<h2>line_broadening<a class="headerlink" href="#line-broadening" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="lorentzian">
+<h2>lorentzian<a class="headerlink" href="#lorentzian" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="lowess">
+<h2>lowess<a class="headerlink" href="#lowess" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="make-idx">
+<h2>make_idx<a class="headerlink" href="#make-idx" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="ols-matrix">
+<h2>ols_matrix<a class="headerlink" href="#ols-matrix" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="phase-correct-first">
+<h2>phase_correct_first<a class="headerlink" href="#phase-correct-first" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="phase-correct-zero">
+<h2>phase_correct_zero<a class="headerlink" href="#phase-correct-zero" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="ppm-idx">
+<h2>ppm_idx<a class="headerlink" href="#ppm-idx" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="ppm-to-freq">
+<h2>ppm_to_freq<a class="headerlink" href="#ppm-to-freq" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="rmse">
+<h2>rmse<a class="headerlink" href="#rmse" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="tri-cube">
+<h2>tri_cube<a class="headerlink" href="#tri-cube" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="two-gaussian">
+<h2>two_gaussian<a class="headerlink" href="#two-gaussian" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="two-lorentzian">
+<h2>two_lorentzian<a class="headerlink" href="#two-lorentzian" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="unit-vector">
+<h2>unit_vector<a class="headerlink" href="#unit-vector" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="zero-pad">
+<h2>zero_pad<a class="headerlink" href="#zero-pad" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">  
+
+<h4> Site Navigation </h4>
+  <ul class="simple">
+  <li><a href="../index.html">Home</a> </li>
+  <li><a href="../getting_started.html">Getting started</a> </li>
+  <li><a href="index.html">Module reference</a> </li>
+  <li><a href="../development.html">Development</a> </li>
+  </ul>
+  
+<h4> Stanford CNI </h4>
+  <ul class="simple">
+    <li><a class="reference external"
+	href="http://cni.stanford.edu/">CNI Home Page</a></li>
+    <li><a class="reference external"
+	href="https://scitran.stanford.edu/">PoST</a></li>
+    <li><a class="reference external"
+	href="https://cni.stanford.edu/nims/">NIMS</a></li>
+    <li><a class="reference external"
+	href="http://cni.stanford.edu/wiki/Main_Page">Wiki</a></li>
+  </ul>
+
+
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#"><tt class="docutils literal"><span class="pre">utils</span></tt></a><ul>
+<li><a class="reference internal" href="#bi-square">bi_square</a></li>
+<li><a class="reference internal" href="#detect-outliers">detect_outliers</a></li>
+<li><a class="reference internal" href="#do-kernel">do_kernel</a></li>
+<li><a class="reference internal" href="#epanechnikov">epanechnikov</a></li>
+<li><a class="reference internal" href="#freq-to-ppm">freq_to_ppm</a></li>
+<li><a class="reference internal" href="#gaussian">gaussian</a></li>
+<li><a class="reference internal" href="#l2-norm">l2_norm</a></li>
+<li><a class="reference internal" href="#line-broadening">line_broadening</a></li>
+<li><a class="reference internal" href="#lorentzian">lorentzian</a></li>
+<li><a class="reference internal" href="#lowess">lowess</a></li>
+<li><a class="reference internal" href="#make-idx">make_idx</a></li>
+<li><a class="reference internal" href="#ols-matrix">ols_matrix</a></li>
+<li><a class="reference internal" href="#phase-correct-first">phase_correct_first</a></li>
+<li><a class="reference internal" href="#phase-correct-zero">phase_correct_zero</a></li>
+<li><a class="reference internal" href="#ppm-idx">ppm_idx</a></li>
+<li><a class="reference internal" href="#ppm-to-freq">ppm_to_freq</a></li>
+<li><a class="reference internal" href="#rmse">rmse</a></li>
+<li><a class="reference internal" href="#tri-cube">tri_cube</a></li>
+<li><a class="reference internal" href="#two-gaussian">two_gaussian</a></li>
+<li><a class="reference internal" href="#two-lorentzian">two_lorentzian</a></li>
+<li><a class="reference internal" href="#unit-vector">unit_vector</a></li>
+<li><a class="reference internal" href="#zero-pad">zero_pad</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="MRS.qc.html"
+                        title="previous chapter"><tt class="docutils literal"><span class="pre">qc</span></tt></a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/reference/MRS.utils.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+  
+<div id="searchbox-site" style="display: none">
+  <h3>Search this site</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="13" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox-ml').show(0);</script>
+<script type="text/javascript">$('#searchbox-site').show(0);</script>
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="MRS.qc.html" title="qc"
+             >previous</a> |</li>
+        <li><a href="../index.html">Stanford CNI MRS Library (SMAL) 0.1 documentation</a> &raquo;</li>
+          <li><a href="index.html" >API Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+
+    <div class="footer">
+        &copy; Copyright 2014, Ariel Rokem, Grace Tang, Stanford CNI.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+<!-- Global footer snippet start -->
+<div id="global-footer">
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-54034205-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+  </body>
+</html>
