@@ -16,7 +16,7 @@ Usage
 
 mrs-analysis.py: This is a little command-line utility that takes nifti files as
 input and produces a `csv` file as output, with the ppm scale and the spectra
-from the two measurement echos. See `mrs-analysis.py --help` for help. 
+from the two measurement echos. See `mrs-analyze.py --help` for help. 
 
 
 (C) Ariel Rokem, Grace Tang, Center for Cognitive and Neurobiological Imaging,
