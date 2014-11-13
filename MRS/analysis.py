@@ -118,8 +118,8 @@ def coil_combine(data, w_idx=[1,2,3], coil_dim=2, sampling_rate=5000.):
     Parameters
     ----------
     data : float array
-       The data as it comes from the scanner (read using the functions in
-       files.py), with shape (transients, echos, coils, time points)
+       The data as it comes from the scanner, with shape (transients, echos,
+    coils, time points) 
     
     w_idx : list
        The indices to the non-water-suppressed transients. Per default we take
