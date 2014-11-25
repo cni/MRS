@@ -1,0 +1,7 @@
+[run]
+branch = True
+source = MRS
+include = MRS
+omit = */setup.py
+[report]
+include = MRS
