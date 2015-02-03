@@ -52,11 +52,11 @@ def reconall(subjfile, subjID=None, subjdir=None, runreconall=True):
         subjdir=T1dir
     fs.FSCommand.set_default_subjects_dir(subjdir)
     segdir=subjdir+'/'+subjID+'/'
-    print 'saving to ' + subjdir
+    print('saving to ' + subjdir)
 
     # check if file exists
     if os.path.isfile(subjfile):
-        print 'running recon-all on ' + filename
+        print('running recon-all on ' + filename)
     else:
         raise ValueError("File: %s does not exist!"%filename)
 
