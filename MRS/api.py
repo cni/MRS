@@ -13,8 +13,11 @@ import warnings
 
 import MRS.analysis as ana
 import MRS.utils as ut
-import MRS.freesurfer as fs
-
+try:
+    import MRS.freesurfer as fs
+except ImportError:
+    warnings.warn("Nipype is not installed. Some functions might not work")
+    
 
 class GABA(object):
     """
@@ -687,21 +690,14 @@ class GABA(object):
         """
         Helper function to reject outliers based on mean amplitude
         """
-#        # mean amplitudes per transient
-#        meanamps = np.mean(model,1)
-        # max amplitudes
         maxamps = np.nanmax(np.abs(model),0)
-        # zscore
-#        z_score = (meanamps - np.nanmean(meanamps,0))/np.nanstd(meanamps,0)
         z_score = (maxamps - np.nanmean(maxamps,0))/np.nanstd(maxamps,0)
-        print z_score
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             outlier_idx = np.where(np.abs(z_score)>2.0)[0]
             nan_idx = np.where(np.isnan(params))[0]
             outlier_idx = np.unique(np.hstack([nan_idx, outlier_idx]))
             ii[outlier_idx] = 0
-            print sum(ii)
             model[outlier_idx] = np.nan
             signal[outlier_idx] = np.nan
             params[outlier_idx] = np.nan
