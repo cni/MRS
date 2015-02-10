@@ -1,0 +1,30 @@
+.. AUTO-GENERATED FILE -- DO NOT EDIT!
+
+:mod:`rda`
+==========
+.. automodule:: MRS.rda
+
+.. currentmodule:: MRS.rda
+.. autosummary::
+
+   analyze_rda
+   float_from_str
+   read_rda
+
+
+.. currentmodule:: MRS.rda
+analyze_rda
+~~~~~~~~~~~
+
+.. autofunction:: analyze_rda
+
+float_from_str
+~~~~~~~~~~~~~~
+
+.. autofunction:: float_from_str
+
+read_rda
+~~~~~~~~
+
+.. autofunction:: read_rda
+

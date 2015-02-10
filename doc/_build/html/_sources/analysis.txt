@@ -29,7 +29,7 @@ data stored in a nifti files following the specification in ':ref:`data`'.
 
 To run this interface run the following line in a shell session::
 
-    mrs-analyze.py ~/.mrs_data/12_1_PROBE_MEGA_L_Occ.nii.gz --plot True --out_file ~/tmp/mrs.csv 
+    mrs-analyze ~/.mrs_data/12_1_PROBE_MEGA_L_Occ.nii.gz --plot True --out_file ~/tmp/mrs.csv 
 
 
 Where you can replace the full-path to the input file with the file you are
@@ -45,7 +45,7 @@ analysis (e.g. using other modeling techniques).
 To explore all the options in the CLI run the following line
 in a shell session::
 
-    mrs-analyze.py
+    mrs-analyze
     
 This will print a list of the input options to the CLI.
 

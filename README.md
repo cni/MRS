@@ -14,10 +14,13 @@ To install run:
 Usage
 -----
 
-mrs-analysis.py: This is a little command-line utility that takes nifti files as
+mrs-analysis: This is a little command-line utility that takes nifti files as
 input and produces a `csv` file as output, with the ppm scale and the spectra
-from the two measurement echos. See `mrs-analysis.py --help` for help. 
+from the two measurement echos. See `mrs-analyze --help` for help. 
 
+License
+------
+See `LICENSE` for details. 
 
 (C) Ariel Rokem, Grace Tang, Center for Cognitive and Neurobiological Imaging,
 Stanford University 2013

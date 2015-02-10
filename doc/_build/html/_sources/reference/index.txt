@@ -13,4 +13,5 @@ API Reference
    MRS.freesurfer.rst
    MRS.optimize.rst
    MRS.qc.rst
+   MRS.rda.rst
    MRS.utils.rst

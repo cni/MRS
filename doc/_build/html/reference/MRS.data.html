@@ -39,6 +39,12 @@
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
           <a href="MRS.freesurfer.html" title="freesurfer"
              accesskey="N">next</a> |</li>
         <li class="right" >
@@ -54,31 +60,132 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="data">
-<h1><tt class="xref py py-mod docutils literal"><span class="pre">data</span></tt><a class="headerlink" href="#data" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-MRS.data">
+<span id="data"></span><h1><tt class="xref py py-mod docutils literal"><span class="pre">data</span></tt><a class="headerlink" href="#module-MRS.data" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="fetchererror">
-<h2><tt class="xref py py-class docutils literal"><span class="pre">FetcherError</span></tt><a class="headerlink" href="#fetchererror" title="Permalink to this headline">¶</a></h2>
+<h2><a class="reference internal" href="#MRS.data.FetcherError" title="MRS.data.FetcherError"><tt class="xref py py-class docutils literal"><span class="pre">FetcherError</span></tt></a><a class="headerlink" href="#fetchererror" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="MRS.data.FetcherError">
+<em class="property">class </em><tt class="descclassname">MRS.data.</tt><tt class="descname">FetcherError</tt><a class="headerlink" href="#MRS.data.FetcherError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/exceptions.html#exceptions.Exception" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></a></p>
+<dl class="method">
+<dt id="MRS.data.FetcherError.__init__">
+<tt class="descname">__init__</tt><big>(</big><big>)</big><a class="headerlink" href="#MRS.data.FetcherError.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__init__(...) initializes x; see help(type(x)) for signature</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 <div class="section" id="check-md5">
 <h2>check_md5<a class="headerlink" href="#check-md5" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MRS.data.check_md5">
+<tt class="descclassname">MRS.data.</tt><tt class="descname">check_md5</tt><big>(</big><em>filename</em>, <em>stored_md5</em><big>)</big><a class="headerlink" href="#MRS.data.check_md5" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the md5 of filename and check if it matches with the supplied
+string md5</p>
+</dd></dl>
+
 </div>
 <div class="section" id="copyfileobj">
 <h2>copyfileobj<a class="headerlink" href="#copyfileobj" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MRS.data.copyfileobj">
+<tt class="descclassname">MRS.data.</tt><tt class="descname">copyfileobj</tt><big>(</big><em>fsrc</em>, <em>fdst</em>, <em>length=16384</em><big>)</big><a class="headerlink" href="#MRS.data.copyfileobj" title="Permalink to this definition">¶</a></dt>
+<dd><p>copy data from file-like object fsrc to file-like object fdst</p>
+</dd></dl>
+
 </div>
 <div class="section" id="fetch-data">
 <h2>fetch_data<a class="headerlink" href="#fetch-data" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MRS.data.fetch_data">
+<tt class="descclassname">MRS.data.</tt><tt class="descname">fetch_data</tt><big>(</big><em>files</em>, <em>folder</em><big>)</big><a class="headerlink" href="#MRS.data.fetch_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Downloads files to folder and checks their md5 checksums</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>files</strong> : dictionary</p>
+<blockquote>
+<div><p>For each file in <cite>files</cite> the value should be (url, md5). The file will
+be downloaded from url if the file does not already exist or if the
+file exists but the md5 checksum does not match.</p>
+</div></blockquote>
+<p><strong>folder</strong> : str</p>
+<blockquote>
+<div><p>The directory where to save the file, the directory will be created if
+it does not already exist.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first"><strong>FetcherError</strong> :</p>
+<blockquote class="last">
+<div><p>Raises if the md5 checksum of the file does not match the expected
+value. The downloaded file is not deleted when this error is raised.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 <div class="section" id="fetch-from-sdr">
 <h2>fetch_from_sdr<a class="headerlink" href="#fetch-from-sdr" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MRS.data.fetch_from_sdr">
+<tt class="descclassname">MRS.data.</tt><tt class="descname">fetch_from_sdr</tt><big>(</big><em>folder='/Users/arokem/.mrs_data'</em>, <em>data='test'</em><big>)</big><a class="headerlink" href="#MRS.data.fetch_from_sdr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download MRS data from SDR</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>folder</strong> : str</p>
+<blockquote>
+<div><p>Full path to a location in which to place the data. Per default this</p>
+</div></blockquote>
+<p><strong>will be a directory under the user&#8217;s home `.mrs_data`.</strong> :</p>
+<p><strong>data</strong> : str</p>
+<blockquote class="last">
+<div><p>Which data to download. Either &#8216;test&#8217;, which is data required for
+testing, or &#8216;example&#8217;, which is data needed for the example notebooks.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 <div class="section" id="md5">
 <h2>md5<a class="headerlink" href="#md5" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MRS.data.md5">
+<tt class="descclassname">MRS.data.</tt><tt class="descname">md5</tt><big>(</big><big>)</big><a class="headerlink" href="#MRS.data.md5" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a md5 hash object; optionally initialized with a string</p>
+</dd></dl>
+
 </div>
 <div class="section" id="pjoin">
 <h2>pjoin<a class="headerlink" href="#pjoin" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MRS.data.pjoin">
+<tt class="descclassname">MRS.data.</tt><tt class="descname">pjoin</tt><big>(</big><em>a</em>, <em>*p</em><big>)</big><a class="headerlink" href="#MRS.data.pjoin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Join two or more pathname components, inserting &#8216;/&#8217; as needed.
+If any component is an absolute path, all previous path components
+will be discarded.  An empty last part will result in a path that
+ends with a separator.</p>
+</dd></dl>
+
 </div>
 <div class="section" id="urlopen">
 <h2>urlopen<a class="headerlink" href="#urlopen" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MRS.data.urlopen">
+<tt class="descclassname">MRS.data.</tt><tt class="descname">urlopen</tt><big>(</big><em>url</em>, <em>data=None</em>, <em>timeout=&lt;object object at 0x1002c3150&gt;</em>, <em>cafile=None</em>, <em>capath=None</em>, <em>cadefault=False</em>, <em>context=None</em><big>)</big><a class="headerlink" href="#MRS.data.urlopen" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
 </div>
 
@@ -163,6 +270,12 @@
           <a href="../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
           <a href="MRS.freesurfer.html" title="freesurfer"
              >next</a> |</li>
         <li class="right" >
@@ -175,7 +288,7 @@
 
     <div class="footer">
         &copy; Copyright 2014, Ariel Rokem, Grace Tang, Stanford CNI.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
 <!-- Global footer snippet start -->
 <div id="global-footer">

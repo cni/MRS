@@ -31,8 +31,8 @@ long_description = """
 The STANFORD CNI MRS ANALYSIS LIBRARY (SMAL)
 --------------------------------------------
 
-This library contains implementations 
-
+This library contains implementations of analysis of data acquired in
+magnetic resonance spectroscopy experiments (MRS). 
 
 
 Copyright (c) 2013-, Ariel Rokem, Grace Tang.

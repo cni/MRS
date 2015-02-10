@@ -25,8 +25,8 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="Stanford CNI MRS Library (SMAL) 0.1 documentation" href="../index.html" />
     <link rel="up" title="API Reference" href="index.html" />
-    <link rel="next" title="analysis" href="MRS.analysis.html" />
-    <link rel="prev" title="API Reference" href="index.html" />
+    <link rel="next" title="utils" href="MRS.utils.html" />
+    <link rel="prev" title="qc" href="MRS.qc.html" />
   <meta name="keywords" content="MRI, Stanford, Python, Neuroscience, MR
   spectroscopy, MRS">
 
@@ -45,10 +45,10 @@
           <a href="../np-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="MRS.analysis.html" title="analysis"
+          <a href="MRS.utils.html" title="utils"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="index.html" title="API Reference"
+          <a href="MRS.qc.html" title="qc"
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">Stanford CNI MRS Library (SMAL) 0.1 documentation</a> &raquo;</li>
           <li><a href="index.html" accesskey="U">API Reference</a> &raquo;</li> 
@@ -60,17 +60,46 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="module-MRS">
-<span id="mrs"></span><h1><a class="reference internal" href="#module-MRS" title="MRS"><tt class="xref py py-mod docutils literal"><span class="pre">MRS</span></tt></a><a class="headerlink" href="#module-MRS" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="the-stanford-cni-mrs-analysis-library">
-<h2>The Stanford CNI MRS Analysis Library<a class="headerlink" href="#the-stanford-cni-mrs-analysis-library" title="Permalink to this headline">¶</a></h2>
-<p>This library provides algorithms and methods to read and analyze data from
-Magnetic Resonance Spectroscopy (MRS) experiments. It provides an API for
-fitting models of the spectral line-widths of several different molecular
-species, and quantify their relative abundance in human brain tissue.</p>
-<p>Copyright (c) 2013-, Ariel Rokem, Grace Tang.</p>
-<p>The Center for Neurobiological and Cognitive Imaging, Stanford University.</p>
-<p>All rights reserved.</p>
+  <div class="section" id="module-MRS.rda">
+<span id="rda"></span><h1><tt class="xref py py-mod docutils literal"><span class="pre">rda</span></tt><a class="headerlink" href="#module-MRS.rda" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="analyze-rda">
+<h2>analyze_rda<a class="headerlink" href="#analyze-rda" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MRS.rda.analyze_rda">
+<tt class="descclassname">MRS.rda.</tt><tt class="descname">analyze_rda</tt><big>(</big><em>fname1</em>, <em>fname2</em><big>)</big><a class="headerlink" href="#MRS.rda.analyze_rda" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="float-from-str">
+<h2>float_from_str<a class="headerlink" href="#float-from-str" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MRS.rda.float_from_str">
+<tt class="descclassname">MRS.rda.</tt><tt class="descname">float_from_str</tt><big>(</big><em>my_str</em><big>)</big><a class="headerlink" href="#MRS.rda.float_from_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cast a string into a list of floats robustly, stripping white-spaces</p>
+</dd></dl>
+
+</div>
+<div class="section" id="read-rda">
+<h2>read_rda<a class="headerlink" href="#read-rda" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MRS.rda.read_rda">
+<tt class="descclassname">MRS.rda.</tt><tt class="descname">read_rda</tt><big>(</big><em>fname</em><big>)</big><a class="headerlink" href="#MRS.rda.read_rda" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read Siemens RDA data from file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>fname :</strong> :</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>hdr_dict</strong> : a dict with the fields of the RDA file-header</p>
+<p class="last"><strong>data</strong> : ndarray of complex dtype</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 </div>
 
@@ -104,21 +133,23 @@ species, and quantify their relative abundance in human brain tissue.</p>
 
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#"><tt class="docutils literal"><span class="pre">MRS</span></tt></a><ul>
-<li><a class="reference internal" href="#the-stanford-cni-mrs-analysis-library">The Stanford CNI MRS Analysis Library</a></li>
+<li><a class="reference internal" href="#"><tt class="docutils literal"><span class="pre">rda</span></tt></a><ul>
+<li><a class="reference internal" href="#analyze-rda">analyze_rda</a></li>
+<li><a class="reference internal" href="#float-from-str">float_from_str</a></li>
+<li><a class="reference internal" href="#read-rda">read_rda</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="index.html"
-                        title="previous chapter">API Reference</a></p>
+  <p class="topless"><a href="MRS.qc.html"
+                        title="previous chapter"><tt class="docutils literal"><span class="pre">qc</span></tt></a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="MRS.analysis.html"
-                        title="next chapter"><tt class="docutils literal"><span class="pre">analysis</span></tt></a></p>
+  <p class="topless"><a href="MRS.utils.html"
+                        title="next chapter"><tt class="docutils literal"><span class="pre">utils</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
-    <li><a href="../_sources/reference/MRS.txt"
+    <li><a href="../_sources/reference/MRS.rda.txt"
            rel="nofollow">Show Source</a></li>
   </ul>
   
@@ -154,10 +185,10 @@ species, and quantify their relative abundance in human brain tissue.</p>
           <a href="../np-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="MRS.analysis.html" title="analysis"
+          <a href="MRS.utils.html" title="utils"
              >next</a> |</li>
         <li class="right" >
-          <a href="index.html" title="API Reference"
+          <a href="MRS.qc.html" title="qc"
              >previous</a> |</li>
         <li><a href="../index.html">Stanford CNI MRS Library (SMAL) 0.1 documentation</a> &raquo;</li>
           <li><a href="index.html" >API Reference</a> &raquo;</li> 

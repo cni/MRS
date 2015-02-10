@@ -44,7 +44,7 @@ def motioncheck(ref_file, end_file, out_path=None, thres=5.0):
     end_aff=end.get_affine()
 
     if np.array_equal(ref_aff, end_aff):
-        print 'affines match'
+        print('affines match')
     else:
         raise ValueError("Affines of start and end images do not match")
 
