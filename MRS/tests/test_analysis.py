@@ -1,5 +1,4 @@
 import os
-import tempfile
 
 import numpy as np
 import numpy.testing as npt
@@ -65,15 +64,6 @@ def test_get_spectra():
                                        line_broadening=5,
                                        zerofill=1000)
     
-def test_mrs_analyze():
-    """
-    Test the command line utility
-    """
-    out_name = tempfile.NamedTemporaryFile().name
-    # Check that it runs through:
-    cmd = 'mrs-analyze.py %s --out_file %s'%(file_name, out_name)
-    npt.assert_equal(os.system(cmd),0)
-
 def test_bootstrap_stat():
     """
     Test simple bootstrapping statistics
