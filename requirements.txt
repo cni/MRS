@@ -1,4 +1,2 @@
 nibabel
-nipype
 nitime
-nipy
