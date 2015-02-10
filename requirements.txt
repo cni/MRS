@@ -1,5 +1,2 @@
-numpy
-matplotlib
-scipy
 nibabel
 nitime
