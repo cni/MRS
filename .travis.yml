@@ -1,0 +1,13 @@
+language: python
+sudo: false
+deploy:
+  provider: pypi
+  user: arokem
+  password:
+    secure: U59DX6B+bGQ2uoXypxqKRmVlpOECip0WrHF1+cORY3mgMQCCrOh5IAExD4fmypJ15wrRdxwVENwz6Bc3rgBAxDItm3GUWTEb9wJj2mrh0KvJjO3CqtKHJxJsjjis4hazea/rW67pB1B5g7zMvq32AwVifXJcjHC6Onnk1YezPKo=
+  on:
+    tags: true
+    repo: cni/MRS
+    all_branches: true
+script:
+- true
