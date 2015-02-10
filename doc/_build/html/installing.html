@@ -1,0 +1,216 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>SMAL &mdash; Stanford CNI MRS Library (SMAL) 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Stanford CNI MRS Library (SMAL) 0.1 documentation" href="index.html" />
+    <link rel="next" title="Organizing your data" href="data.html" />
+    <link rel="prev" title="Data analysis in SMAL" href="analysis.html" />
+  <meta name="keywords" content="MRI, Stanford, Python, Neuroscience, MR
+  spectroscopy, MRS">
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="data.html" title="Organizing your data"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="analysis.html" title="Data analysis in SMAL"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Stanford CNI MRS Library (SMAL) 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="installing-smal">
+<h1>Installing SMAL<a class="headerlink" href="#installing-smal" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="dependencies">
+<h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
+<p>To install <cite>SMAL</cite> and start using it, you will first need to make sure that you have the
+dependencies installed.</p>
+<p><cite>SMAL</cite> was developed using Python 2.7. In addition, it relies on code from several
+other libraries:</p>
+<ul>
+<li><p class="first">Scientific Python libraries:</p>
+<blockquote>
+<div><ul class="simple">
+<li><a class="reference external" href="http://www.scipy.org">Scipy</a></li>
+<li><a class="reference external" href="http://numpy.scipy.org">Numpy</a></li>
+<li><a class="reference external" href="http://matplotlib.sourceforge.net">Matplotlib</a></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<blockquote>
+<div>The easiest way to get all of these installed is using the <a class="reference external" href="http://continuum.io/downloads">Anaconda</a> or
+<a class="reference external" href="https://www.enthought.com/products/canopy">Canopy</a> installers</div></blockquote>
+<ul>
+<li><p class="first">Neuroimaging libraries:</p>
+<blockquote>
+<div><ul class="simple">
+<li><a class="reference external" href="http://nipy.org/nibabel">Nibabel</a></li>
+<li><a class="reference external" href="http://nipy.org">Nipy</a></li>
+<li><a class="reference external" href="http://nipy.org/nipype">Nipype</a></li>
+<li><a class="reference external" href="http://nipy.org/nitime">Nitime</a></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<p>Follow the instructions on the respective websites for installation instructions.</p>
+</div>
+<div class="section" id="installing-smal-from-a-released-version">
+<h2>Installing <cite>SMAL</cite> from a released version<a class="headerlink" href="#installing-smal-from-a-released-version" title="Permalink to this headline">¶</a></h2>
+<p>Once all the dependencies are installed, <cite>SMAL</cite> can be installed using the
+<cite>pip</cite> package manager:</p>
+<div class="highlight-python"><div class="highlight"><pre>pip install MRS
+</pre></div>
+</div>
+</div>
+<div class="section" id="installing-smal-from-source">
+<h2>Installing <cite>SMAL</cite> from source<a class="headerlink" href="#installing-smal-from-source" title="Permalink to this headline">¶</a></h2>
+<p>If you prefer to install yourself from the source, once you have downloaded and
+installed these dependencies, you can go ahead and download the source code
+from our <a class="reference external" href="http://github.com/cni/MRS">github</a>  repository. The most recent cutting edge version of the
+code can be downloaded in <a class="reference external" href="https://github.com/cni/MRS/zipball/master">zip</a> or <a class="reference external" href="https://github.com/cni/MRS/tarball/master">tar</a> formats. A stable release version is availabe to download <a class="reference external" href="github-releases">here</a></p>
+<p>Once the code is downloaded, it can be installed issuing the following command
+on the shell command-line in the top level directory of the source-code
+download:</p>
+<div class="highlight-python"><div class="highlight"><pre>python setup.py install
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">  
+
+<h4> Site Navigation </h4>
+  <ul class="simple">
+  <li><a href="index.html">Home</a> </li>
+  <li><a href="getting_started.html">Getting started</a> </li>
+  <li><a href="reference/index.html">Module reference</a> </li>
+  <li><a href="development.html">Development</a> </li>
+  </ul>
+  
+<h4> Stanford CNI </h4>
+  <ul class="simple">
+    <li><a class="reference external"
+	href="http://cni.stanford.edu/">CNI Home Page</a></li>
+    <li><a class="reference external"
+	href="https://scitran.stanford.edu/">PoST</a></li>
+    <li><a class="reference external"
+	href="https://cni.stanford.edu/nims/">NIMS</a></li>
+    <li><a class="reference external"
+	href="http://cni.stanford.edu/wiki/Main_Page">Wiki</a></li>
+  </ul>
+
+
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Installing SMAL</a><ul>
+<li><a class="reference internal" href="#dependencies">Dependencies</a></li>
+<li><a class="reference internal" href="#installing-smal-from-a-released-version">Installing <cite>SMAL</cite> from a released version</a></li>
+<li><a class="reference internal" href="#installing-smal-from-source">Installing <cite>SMAL</cite> from source</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="analysis.html"
+                        title="previous chapter">Data analysis in SMAL</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="data.html"
+                        title="next chapter">Organizing your data</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/installing.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+  
+<div id="searchbox-site" style="display: none">
+  <h3>Search this site</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="13" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox-ml').show(0);</script>
+<script type="text/javascript">$('#searchbox-site').show(0);</script>
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="data.html" title="Organizing your data"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="analysis.html" title="Data analysis in SMAL"
+             >previous</a> |</li>
+        <li><a href="index.html">Stanford CNI MRS Library (SMAL) 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+
+    <div class="footer">
+        &copy; Copyright 2014, Ariel Rokem, Grace Tang, Stanford CNI.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+<!-- Global footer snippet start -->
+<div id="global-footer">
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-54034205-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+  </body>
+</html>
