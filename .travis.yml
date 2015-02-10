@@ -4,7 +4,7 @@ deploy:
   provider: pypi
   user: arokem
   password:
-    secure: VbYSkQEsViURCpHo2+uLszaWF0O0xN30DCLvnPxYdEFruOu87KIK7gzha3yCtq21OqamqnDwa+TB7cMJcnKnuHJR1/mTGynN8SyPo7QmwktfV/C7kq8F0QkL3sfuOJBHEtV0yXHU6kJ9DRTq9X7gqCm/r0NVnsnMqnYInnsadRM=
+    secure: ahYc94HST/hW/AgMOS0r3dQWxy8KwT8pci44VYem51UryTp0JnOn2+CO+8SSzWtWmBzvdF9aAbjtlkfT1BkvW++svBoE7QvjlXFqJdUEQiLisGj+paO0DVE6K1Z/atdu6dPl6XCSsRvt3zpyrQ9WpZUuzSgUGjOI0RTl5VEnzmE=
   on:
     tags: true
     repo: cni/MRS
