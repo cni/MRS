@@ -12,7 +12,7 @@ if os.path.exists('MANIFEST'):
 from distutils.core import setup
 
 # Get version and release info, which is all stored in nitime/version.py
-ver_file = os.path.join('version.py')
+ver_file = os.path.join('MRS','version.py')
 execfile(ver_file)
 
 opts = dict(name=NAME,
