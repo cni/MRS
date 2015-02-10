@@ -3,6 +3,7 @@ MRS
 
 Analysis of data from MR spectroscopy experiments.
 
+For usage, please refer to the [online documentation](http://cni.github.io/MRS). 
 
 Installation
 ---------
