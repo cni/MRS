@@ -29,13 +29,23 @@ other libraries:
 
 Follow the instructions on the respective websites for installation instructions.
 
-Getting the `SMAL` code
+
+Installing `SMAL` from a released version
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Once all the dependencies are installed, `SMAL` can be installed using the
+`pip` package manager::
+
+    pip install MRS
+
+
+Installing `SMAL` from source 
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Once you have downloaded and installed these dependencies, you can go ahead and
-install `SMAL`. The source code can be downloaded from our `github`__
-repository. The most recent cutting edge version of the code can be downloaded
-in `zip`__ or `tar`__ formats. A stable release version is availabe to download `here`__  
+If you prefer to install yourself from the source, once you have downloaded and
+installed these dependencies, you can go ahead and download the source code
+from our `github`__  repository. The most recent cutting edge version of the
+code can be downloaded in `zip`__ or `tar`__ formats. A stable release version is availabe to download `here`__ 
 
 __ mrs-github_
 __ download-zip_
@@ -43,12 +53,9 @@ __ download-tar_
 __ github-releases_
 
 
-Installing
-~~~~~~~~~~~~~~~~~~~~~
-
-Either way, once the code is downloaded, it can be installed issuing the
-following command on the shell command-line in the top level directory of the
-source-code download::
+Once the code is downloaded, it can be installed issuing the following command
+on the shell command-line in the top level directory of the source-code
+download::
 
     python setup.py install
 
