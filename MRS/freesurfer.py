@@ -165,17 +165,12 @@ def MRSvoxelStats(segfile, MRSfile=None, center=None, dim=None, subjID=None,
 
         mrs = nib.load(MRSfile)
         mrs_data = mrs.get_data().squeeze()
-        mrs_aff = mrs.get_affine()
-        #tmp=mrs_aff.copy()
-        #mrs_aff[0,3]=tmp[1,3]
-        #mrs_aff[1,3]=-1.0*tmp[0,3]
-        
+        mrs_aff = mrs.get_affine()        
         # This applies the concatenation of the transforms from mrs space to
         # the T1 space. [0,0,0] is the center of the MRS voxel:
-        center = np.round(np.dot(np.dot(np.linalg.pinv(aseg_aff),
-                                        mrs_aff),
-                                  [0,0,0,1]))[:3].astype(int)
-
+        center = np.round(np.dot(np.dot(np.linalg.pinv(aseg_aff), mrs_aff),
+                                 [0,0,0,1]))[:3].astype(int)
+        
         dim=np.diagonal(mrs_aff)[:3]
     else: # no MRSfile
         if center==None or dim==None:
@@ -224,7 +219,7 @@ def MRSvoxelStats(segfile, MRSfile=None, center=None, dim=None, subjID=None,
 
     for data, areas in zip([gdata, wdata, csfdata], [gareas, wareas, csfareas]):
         for area in areas:
-            data[np.where(aseg_data==area)] =1
+            data[np.where(aseg_data==area)] = 1
 
     # multiply voxel ROI with seg data
     gmasked= mdata * gdata
@@ -233,19 +228,15 @@ def MRSvoxelStats(segfile, MRSfile=None, center=None, dim=None, subjID=None,
     
     # extract stats from a given segmentation
     total = np.sum(mdata)
-    #white = np.size(np.nonzero(masked==42)) + np.size(np.nonzero(masked==3))
-    #grey = np.size(np.nonzero(masked==41)) + np.size(np.nonzero(masked==2))
-    #other = total - white - grey
-    
     white = np.sum(wmasked)
     grey = np.sum(gmasked)
     csf = np.sum(csfmasked)
-    nongmwm = total-grey-white
+    nongmwm = total - grey - white
 
     # proportions
-    pWhite = float(white)/total
-    pGrey = float(grey)/total
-    pCSF = float(csf)/total 
-    pNongmwm = float(nongmwm)/total
+    pWhite = float(white) / total
+    pGrey = float(grey) / total
+    pCSF = float(csf) / total 
+    pNongmwm = float(nongmwm) / total
 
     return (total, grey, white, csf,nongmwm, pGrey, pWhite,pCSF, pNongmwm)
