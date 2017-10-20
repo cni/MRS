@@ -24,7 +24,7 @@ class FetcherError(Exception):
 
 import MRS
 
-data_folder = os.path.join(pjoin(os.path.expanduser('~'), '.mrs_data'))
+data_folder = os.path.join(pjoin(os.path.expanduser('~'), 'MRS_data'))
 
 def _log(msg):
     print(msg)
@@ -87,7 +87,7 @@ def _get_file_md5(filename):
 def check_md5(filename, stored_md5):
     """
     Computes the md5 of filename and check if it matches with the supplied
-    string md5 
+    string md5
 
     Input
     -----
@@ -123,7 +123,7 @@ def fetch_from_sdr(folder=data_folder, data='test'):
     data : str
        Which data to download. Either 'test', which is data required for
        testing, or 'example', which is data needed for the example notebooks.
-       
+
     """
     url = "https://stacks.stanford.edu/file/druid:fn662rv4961/"
 
@@ -138,11 +138,11 @@ def fetch_from_sdr(folder=data_folder, data='test'):
                     'a0571606c1caa16a9d9b00847771bc94',
                      '5062_2_1.nii.gz':
                     '6f77fb5134bc2841bdfc954390f0f4a4'}
-        
+
     if not os.path.exists(folder):
         print('Creating new directory %s' % folder)
         os.makedirs(folder)
-        
+
     for k, v in md5_dict.items():
         fname = pjoin(folder, k)
         if not os.path.exists(fname):
@@ -154,7 +154,3 @@ def fetch_from_sdr(folder=data_folder, data='test'):
 
     print('Done.')
     print('Files copied in folder %s' % folder)
-        
-
-
-
