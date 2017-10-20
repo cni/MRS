@@ -346,12 +346,12 @@ def fit_lorentzian(spectra, f_ppm, lb=2.6, ub=3.6):
     n_points = np.abs(idx.stop - idx.start)
     n_params = 6
     # Set the bounds for the optimization
-    bounds = [(lb,ub), #peak
-              (0,None), #area
-              (0,None), #hwhm
-              (-np.pi/2, np.pi/2), #phase
-              (None,None), #offset
-              (None, None)] #drift
+    bounds = [(lb, ub),  # peak
+              (0, None),  # area
+              (0, None),  # hwhm
+              (-np.pi/2, np.pi/2),  # phase
+              (None, None),  # offset
+              (None, None)]  # drift
 
     model = np.empty((spectra.shape[0], n_points))
     signal = np.empty((spectra.shape[0], n_points))
@@ -363,477 +363,454 @@ def fit_lorentzian(spectra, f_ppm, lb=2.6, ub=3.6):
                                         bounds=bounds)
         model[ii] = ut.lorentzian(f_ppm[idx], *params[ii])
 
-   return model, signal, params
+    return model, signal, params
 
 
 def _do_lorentzian_fit(freqs, signal, bounds=None):
-   """
+    """
 
-   Helper function, so that Lorentzian fit can be generalized to different
-   frequency scales (Hz and ppm).
+    Helper function, so that Lorentzian fit can be generalized to different
+    frequency scales (Hz and ppm).
 
-   """
-   # Use the signal for a rough estimate of the parameters for initialization:
-   max_idx = np.argmax(np.real(signal))
-   max_sig = np.max(np.real(signal))
-   initial_f0 = freqs[max_idx]
-   half_max_idx = np.argmin(np.abs(np.real(signal) - max_sig/2))
-   initial_hwhm = np.abs(initial_f0 - freqs[half_max_idx])
-   # Everything should be treated as real, except for the phase!
-   initial_ph = np.angle(signal[signal.shape[-1] // 2])
+    """
+    # Use the signal for a rough estimate of the parameters for initialization:
+    max_idx = np.argmax(np.real(signal))
+    max_sig = np.max(np.real(signal))
+    initial_f0 = freqs[max_idx]
+    half_max_idx = np.argmin(np.abs(np.real(signal) - max_sig/2))
+    initial_hwhm = np.abs(initial_f0 - freqs[half_max_idx])
+    # Everything should be treated as real, except for the phase!
+    initial_ph = np.angle(signal[signal.shape[-1] // 2])
 
-   initial_off = np.min(np.real(signal))
-   initial_drift = 0
-   initial_a = (np.sum(np.real(signal)[max_idx:max_idx +
-                              np.abs(half_max_idx)*2]) ) * 2
+    initial_off = np.min(np.real(signal))
+    initial_drift = 0
+    initial_a = (np.sum(np.real(signal)[max_idx:max_idx +
+                                        np.abs(half_max_idx)*2])) * 2
 
-   initial = (initial_f0,
-              initial_a,
-              initial_hwhm,
-              initial_ph,
-              initial_off,
-              initial_drift)
+    initial = (initial_f0,
+               initial_a,
+               initial_hwhm,
+               initial_ph,
+               initial_off,
+               initial_drift)
 
-   params, _ = lsq.leastsqbound(mopt.err_func, initial,
-                                args=(freqs, np.real(signal), ut.lorentzian),
-                                bounds=bounds)
-   return params
+    params, _ = lsq.leastsqbound(mopt.err_func, initial,
+                                 args=(freqs, np.real(signal), ut.lorentzian),
+                                 bounds=bounds)
+    return params
 
 
 def _two_func_initializer(freqs, signal):
-   """
-   This is a helper function for heuristic estimation of the initial parameters
-   used in fitting dual peak functions
+    """
+    This is a helper function for heuristic estimation of the initial parameters
+    used in fitting dual peak functions
 
-   _do_two_lorentzian_fit
-   _do_two_gaussian_fit
-   """
-   # Use the signal for a rough estimate of the parameters for initialization:
-   r_signal = np.real(signal)
-   # The local maxima have a zero-crossing in their derivative, so we start by
-   # calculating the derivative:
-   diff_sig = np.diff(r_signal)
-   # We look for indices that have zero-crossings (in the right direction - we
-   # are looking for local maxima, not minima!)
-   local_max_idx = []
-   for ii in range(len(diff_sig)-1):
-      if diff_sig[ii]>0 and diff_sig[ii+1]<0:
-        local_max_idx.append(ii)
+    _do_two_lorentzian_fit
+    _do_two_gaussian_fit
+    """
+    # Use the signal for a rough estimate of the parameters for initialization:
+    r_signal = np.real(signal)
+    # The local maxima have a zero-crossing in their derivative, so we start by
+    # calculating the derivative:
+    diff_sig = np.diff(r_signal)
+    # We look for indices that have zero-crossings (in the right direction - we
+    # are looking for local maxima, not minima!)
+    local_max_idx = []
+    for ii in range(len(diff_sig)-1):
+       if diff_sig[ii]>0 and diff_sig[ii+1]<0:
+         local_max_idx.append(ii)
 
-   # Array-ify it before moving on:
-   local_max_idx = np.array(local_max_idx)
-   # Our guesses for the location of the interesting local maxima is the two
-   # with the largest signals in them:
-   max_idx = local_max_idx[np.argsort(r_signal[local_max_idx])[::-1][:2]]
-   # We sort again, so that we can try to get the first one to be the left peak:
-   max_idx = np.sort(max_idx)
-   if len(max_idx)==1:
+    # Array-ify it before moving on:
+    local_max_idx = np.array(local_max_idx)
+    # Our guesses for the location of the interesting local maxima is the two
+    # with the largest signals in them:
+    max_idx = local_max_idx[np.argsort(r_signal[local_max_idx])[::-1][:2]]
+    # We sort again, so that we can try to get the first one to be the
+    # left  peak:
+    max_idx = np.sort(max_idx)
+    if len(max_idx)==1:
       max_idx = [max_idx[0], max_idx[0]]
-   # And thusly:
-   max_idx_1 = max_idx[0]
-   max_idx_2 = max_idx[1]
-   # A few of the rest just follow:
-   max_sig_1 = r_signal[max_idx_1]
-   max_sig_2 = r_signal[max_idx_2]
-   initial_amp_1 = max_sig_1
-   initial_amp_2 = max_sig_2
-   initial_f0_1 = freqs[max_idx_1]
-   initial_f0_2 = freqs[max_idx_2]
-   half_max_idx_1 = np.argmin(np.abs(np.real(signal) - max_sig_1/2))
-   initial_hwhm_1 = np.abs(initial_f0_1 - freqs[half_max_idx_1])
-   half_max_idx_2 = np.argmin(np.abs(np.real(signal) - max_sig_2/2))
-   initial_hwhm_2 = np.abs(initial_f0_2 - freqs[half_max_idx_2])
-   # Everything should be treated as real, except for the phase!
-   initial_ph_1 = np.angle(signal[max_idx_1])
-   initial_ph_2 = np.angle(signal[max_idx_2])
-   # We only fit one offset and one drift, for both functions together!
-   initial_off = np.min(np.real(signal))
-   initial_drift = 0
+    # And thusly:
+    max_idx_1 = max_idx[0]
+    max_idx_2 = max_idx[1]
+    # A few of the rest just follow:
+    max_sig_1 = r_signal[max_idx_1]
+    max_sig_2 = r_signal[max_idx_2]
+    initial_amp_1 = max_sig_1
+    initial_amp_2 = max_sig_2
+    initial_f0_1 = freqs[max_idx_1]
+    initial_f0_2 = freqs[max_idx_2]
+    half_max_idx_1 = np.argmin(np.abs(np.real(signal) - max_sig_1/2))
+    initial_hwhm_1 = np.abs(initial_f0_1 - freqs[half_max_idx_1])
+    half_max_idx_2 = np.argmin(np.abs(np.real(signal) - max_sig_2/2))
+    initial_hwhm_2 = np.abs(initial_f0_2 - freqs[half_max_idx_2])
+    # Everything should be treated as real, except for the phase!
+    initial_ph_1 = np.angle(signal[max_idx_1])
+    initial_ph_2 = np.angle(signal[max_idx_2])
+    # We only fit one offset and one drift, for both functions together!
+    initial_off = np.min(np.real(signal))
+    initial_drift = 0
 
-   initial_a_1 = (np.sum(np.real(signal)[max_idx_1:max_idx_1 +
-                                         np.abs(half_max_idx_1)*2]) ) * 2
+    initial_a_1 = (np.sum(np.real(signal)[max_idx_1:max_idx_1 +
+                                          np.abs(half_max_idx_1) * 2])) * 2
 
-   initial_a_2 = (np.sum(np.real(signal)[max_idx_2:max_idx_2 +
-                                         np.abs(half_max_idx_2)*2]) ) * 2
+    initial_a_2 = (np.sum(np.real(signal)[max_idx_2:max_idx_2 +
+                                          np.abs(half_max_idx_2) * 2])) * 2
 
-   return (initial_f0_1,
-           initial_f0_2,
-           initial_amp_1,
-           initial_amp_2,
-           initial_a_1,
-           initial_a_2,
-           initial_hwhm_1,
-           initial_hwhm_2,
-           initial_ph_1,
-           initial_ph_2,
-           initial_off,
-           initial_drift)
+    return (initial_f0_1,
+            initial_f0_2,
+            initial_amp_1,
+            initial_amp_2,
+            initial_a_1,
+            initial_a_2,
+            initial_hwhm_1,
+            initial_hwhm_2,
+            initial_ph_1,
+            initial_ph_2,
+            initial_off,
+            initial_drift)
 
 
 def _do_two_lorentzian_fit(freqs, signal, bounds=None):
-   """
+    """
 
-   Helper function for the Two-Lorentzian fit
+    Helper function for the Two-Lorentzian fit
 
-   """
+    """
 
 
-   initial = _two_func_initializer(freqs, signal)
-   # Edit out the ones we want:
-   initial = (initial[0], initial[1],
-              initial[4], initial[5],
-              initial[6], initial[7],
-              initial[8], initial[9],
-              initial[10], initial[11])
+    initial = _two_func_initializer(freqs, signal)
+    # Edit out the ones we want:
+    initial = (initial[0], initial[1],
+               initial[4], initial[5],
+               initial[6], initial[7],
+               initial[8], initial[9],
+               initial[10], initial[11])
 
-   # We want to preferntially weight the error on estimating the height of the
-   # individual peaks, so we formulate an error-weighting function based on
-   # these peaks, which is simply a two-gaussian bumpety-bump:
-   w = (ut.gaussian(freqs, initial[0], 0.075, 1, 0, 0) +
-        ut.gaussian(freqs, initial[1], 0.075, 1, 0, 0))
+    # We want to preferntially weight the error on estimating the height of the
+    # individual peaks, so we formulate an error-weighting function based on
+    # these peaks, which is simply a two-gaussian bumpety-bump:
+    w = (ut.gaussian(freqs, initial[0], 0.075, 1, 0, 0) +
+         ut.gaussian(freqs, initial[1], 0.075, 1, 0, 0))
 
-   # Further, we want to also optimize on the individual lorentzians error, to
-   # restrict the fit space a bit more. For this purpose, we will pass a list
-   # of lorentzians with indices into the parameter list, so that we can do
-   # that (see mopt.err_func for the mechanics).
-   func_list = [[ut.lorentzian, [0,2,4,6,8,9],
-                 ut.gaussian(freqs, initial[0], 0.075, 1, 0, 0)],
-                [ut.lorentzian, [1,3,5,7,8,9],
-                 ut.gaussian(freqs, initial[1], 0.075, 1, 0, 0)]]
+    # Further, we want to also optimize on the individual lorentzians error, to
+    # restrict the fit space a bit more. For this purpose, we will pass a list
+    # of lorentzians with indices into the parameter list, so that we can do
+    # that (see mopt.err_func for the mechanics).
+    func_list = [[ut.lorentzian, [0, 2, 4, 6, 8, 9],
+                  ut.gaussian(freqs, initial[0], 0.075, 1, 0, 0)],
+                 [ut.lorentzian, [1, 3, 5, 7, 8, 9],
+                  ut.gaussian(freqs, initial[1], 0.075, 1, 0, 0)]]
 
-   params, _ = lsq.leastsqbound(mopt.err_func, initial,
-                                args=(freqs, np.real(signal),
-                                ut.two_lorentzian, w, func_list),
-                                bounds=bounds)
-   return params
+    params, _ = lsq.leastsqbound(mopt.err_func, initial,
+                                 args=(freqs, np.real(signal),
+                                       ut.two_lorentzian, w, func_list),
+                                 bounds=bounds)
+    return params
 
 
 def _do_two_gaussian_fit(freqs, signal, bounds=None):
-   """
-   Helper function for the two gaussian fit
-   """
-   initial = _two_func_initializer(freqs, signal)
-   # Edit out the ones we want in the order we want them:
-   initial = (initial[0], initial[1],
-              initial[6], initial[7],
-              initial[2], initial[3],
-              initial[10], initial[11])
+    """
+    Helper function for the two gaussian fit
+    """
+    initial = _two_func_initializer(freqs, signal)
+    # Edit out the ones we want in the order we want them:
+    initial = (initial[0], initial[1],
+               initial[6], initial[7],
+               initial[2], initial[3],
+               initial[10], initial[11])
 
-   # We want to preferntially weight the error on estimating the height of the
-   # individual peaks, so we formulate an error-weighting function based on
-   # these peaks, which is simply a two-gaussian bumpety-bump:
-   w = (ut.gaussian(freqs, initial[0], 0.075, 1, 0, 0) +
-        ut.gaussian(freqs, initial[1], 0.075, 1, 0, 0))
+    # We want to preferntially weight the error on estimating the height of the
+    # individual peaks, so we formulate an error-weighting function based on
+    # these peaks, which is simply a two-gaussian bumpety-bump:
+    w = (ut.gaussian(freqs, initial[0], 0.075, 1, 0, 0) +
+         ut.gaussian(freqs, initial[1], 0.075, 1, 0, 0))
 
-   # Further, we want to also optimize on the individual gaussians error, to
-   # restrict the fit space a bit more. For this purpose, we will pass a list
-   # of gaussians with indices into the parameter list, so that we can do
-   # that (see mopt.err_func for the mechanics).
-   func_list = [[ut.gaussian, [0,2,4,6,7],
-                 ut.gaussian(freqs, initial[0], 0.075, 1, 0, 0)],
-                [ut.gaussian, [1,3,5,6,7],
-                 ut.gaussian(freqs, initial[1], 0.075, 1, 0, 0)]]
+    # Further, we want to also optimize on the individual gaussians error, to
+    # restrict the fit space a bit more. For this purpose, we will pass a list
+    # of gaussians with indices into the parameter list, so that we can do
+    # that (see mopt.err_func for the mechanics).
+    func_list = [[ut.gaussian, [0,2,4,6,7],
+                  ut.gaussian(freqs, initial[0], 0.075, 1, 0, 0)],
+                 [ut.gaussian, [1,3,5,6,7],
+                  ut.gaussian(freqs, initial[1], 0.075, 1, 0, 0)]]
 
-   params, _ = lsq.leastsqbound(mopt.err_func, initial,
-                                args=(freqs, np.real(signal),
-                                ut.two_gaussian, w, func_list),
-                                bounds=bounds)
+    params, _ = lsq.leastsqbound(mopt.err_func, initial,
+                                 args=(freqs, np.real(signal),
+                                 ut.two_gaussian, w, func_list),
+                                 bounds=bounds)
 
-   return params
-
+    return params
 
 
 def fit_two_lorentzian(spectra, f_ppm, lb=2.6, ub=3.6):
-   """
-   Fit a lorentzian function to the sum spectra to be used for estimation of
-   the creatine and choline peaks.
+    """
+    Fit a lorentzian function to the sum spectra to be used for estimation of
+    the creatine and choline peaks.
 
-   Parameters
-   ----------
-   spectra : array of shape (n_transients, n_points)
-      Typically the sum of the on/off spectra in each transient.
+    Parameters
+    ----------
+    spectra : array of shape (n_transients, n_points)
+       Typically the sum of the on/off spectra in each transient.
 
-   f_ppm : array
+    f_ppm : array
 
-   lb, ub : floats
-      In ppm, the range over which optimization is bounded
+    lb, ub : floats
+       In ppm, the range over which optimization is bounded
 
-   """
-   # We are only going to look at the interval between lb and ub
-   idx = ut.make_idx(f_ppm, lb, ub)
-   n_points = np.abs(idx.stop - idx.start)
-   n_params = 10 # Lotsa params!
-   # Set the bounds for the optimization
-   bounds = [(lb,ub), #peak1
-             (lb,ub), #peak2
-             (0,None), #area1
-             (0,None), #area2
-             (0,ub-lb), #hwhm1
-             (0,ub-lb), #hwhm2
-             (-np.pi/2, np.pi/2), #phase
-             (-np.pi/2, np.pi/2), #phase
-             (None,None), #offset
-             (None, None)] #drift
+    """
+    # We are only going to look at the interval between lb and ub
+    idx = ut.make_idx(f_ppm, lb, ub)
+    n_points = np.abs(idx.stop - idx.start)
+    n_params = 10  # Lotsa params!
+    # Set the bounds for the optimization
+    bounds = [(lb, ub),  # peak1
+              (lb, ub),  # peak2
+              (0, None),  # area1
+              (0, None),  # area2
+              (0, ub-lb),  # hwhm1
+              (0, ub-lb),  # hwhm2
+              (-np.pi/2, np.pi/2),  # phase
+              (-np.pi/2, np.pi/2),  # phase
+              (None, None),  # offset
+              (None, None)]  # drift
 
-   model = np.empty((spectra.shape[0], n_points))
-   signal = np.empty((spectra.shape[0], n_points))
-   params = np.empty((spectra.shape[0], n_params))
-   for ii, xx in enumerate(spectra):
-      # We fit to the real spectrum:
-      signal[ii] = np.real(xx[idx])
-      params[ii] = _do_two_lorentzian_fit(f_ppm[idx], np.real(signal[ii]),
-                                      bounds=bounds)
+    model = np.empty((spectra.shape[0], n_points))
+    signal = np.empty((spectra.shape[0], n_points))
+    params = np.empty((spectra.shape[0], n_params))
+    for ii, xx in enumerate(spectra):
+        # We fit to the real spectrum:
+        signal[ii] = np.real(xx[idx])
+        params[ii] = _do_two_lorentzian_fit(f_ppm[idx], np.real(signal[ii]),
+                                            bounds=bounds)
 
-      model[ii] = ut.two_lorentzian(f_ppm[idx], *params[ii])
+        model[ii] = ut.two_lorentzian(f_ppm[idx], *params[ii])
 
-   return model, signal, params
+    return model, signal, params
 
 
 def fit_two_gaussian(spectra, f_ppm, lb=3.6, ub=3.9):
-   """
-   Fit a gaussian function to the difference spectra
+    """
+    Fit a gaussian function to the difference spectra
 
-   This is useful for estimation of the Glx peak, which tends to have two
-   peaks.
+    This is useful for estimation of the Glx peak, which tends to have two
+    peaks.
 
 
-   Parameters
-   ----------
-   spectra : array of shape (n_transients, n_points)
-      Typically the difference of the on/off spectra in each transient.
+    Parameters
+    ----------
+    spectra : array of shape (n_transients, n_points)
+       Typically the difference of the on/off spectra in each transient.
 
-   f_ppm : array
+    f_ppm : array
 
-   lb, ub : floats
-      In ppm, the range over which optimization is bounded
+    lb, ub : floats
+       In ppm, the range over which optimization is bounded
 
-   """
-   idx = ut.make_idx(f_ppm, lb, ub)
-   # We are only going to look at the interval between lb and ub
-   n_points = idx.stop - idx.start
-   n_params = 8
-   fit_func = ut.two_gaussian
-   # Set the bounds for the optimization
-   bounds = [(lb,ub), # peak 1 location
-             (lb,ub), # peak 2 location
-             (0,None), # sigma 1
-             (0,None), # sigma 2
-             (0,None), # amp 1
-             (0,None), # amp 2
-             (None, None), # offset
-             (None, None),  # drift
-             ]
+    """
+    idx = ut.make_idx(f_ppm, lb, ub)
+    # We are only going to look at the interval between lb and ub
+    n_points = idx.stop - idx.start
+    n_params = 8
+    fit_func = ut.two_gaussian
+    # Set the bounds for the optimization
+    bounds = [(lb, ub),  # peak 1 location
+              (lb, ub),  # peak 2 location
+              (0, None),  # sigma 1
+              (0, None),  # sigma 2
+              (0, None),  # amp 1
+              (0, None),  # amp 2
+              (None, None),  # offset
+              (None, None),   # drift
+              ]
 
-   model = np.empty((spectra.shape[0], n_points))
-   signal = np.empty((spectra.shape[0], n_points))
-   params = np.empty((spectra.shape[0], n_params))
-   for ii, xx in enumerate(spectra):
-      # We fit to the real spectrum:
-      signal[ii] = np.real(xx[idx])
-      params[ii] = _do_two_gaussian_fit(f_ppm[idx], np.real(signal[ii]),
-                                      bounds=bounds)
+    model = np.empty((spectra.shape[0], n_points))
+    signal = np.empty((spectra.shape[0], n_points))
+    params = np.empty((spectra.shape[0], n_params))
+    for ii, xx in enumerate(spectra):
+        # We fit to the real spectrum:
+        signal[ii] = np.real(xx[idx])
+        params[ii] = _do_two_gaussian_fit(f_ppm[idx], np.real(signal[ii]),
+                                          bounds=bounds)
 
-      model[ii] = fit_func(f_ppm[idx], *params[ii])
+        model[ii] = fit_func(f_ppm[idx], *params[ii])
 
-   return model, signal, params
+    return model, signal, params
 
 
 def _do_scale_fit(freqs, signal, model, w=None):
-   """
-   Perform a round of fitting to deal with over or under-estimation.
-   Scales curve on y-axis but preserves shape.
+    """
+    Perform a round of fitting to deal with over or under-estimation.
+    Scales curve on y-axis but preserves shape.
 
-   Parameters
-   ----------
-   freqs : array
-   signal : array
-      The signal that the model is being fit to
-   model : array
-      The model being scaled
-   w : array
-      weighting function
+    Parameters
+    ----------
+    freqs : array
+    signal : array
+       The signal that the model is being fit to
+    model : array
+       The model being scaled
+    w : array
+       weighting function
 
-   Returns
-   -------
-   scalefac : array of len(signal)
-      the scaling factor for each transient
-   scalemodel : array of model.shape
-      the scaled model
-   """
-   scalefac = np.empty(model.shape[0])
-   scalemodel = np.empty((model.shape[0], np.real(model).shape[1]))
-   scalesignal = np.empty((signal.shape[0], np.real(signal).shape[1]))
-   for ii, xx in enumerate(signal): # per transient
-      scalesignal[ii] = np.real(xx)
-#      ratio = np.empty(scalesignal[ii].shape[0])
-#      for ppm, trans in enumerate(scalesignal[ii]):
-#          ratio[ppm] = trans/model[ii][ppm]
-#      scalefac[ii] = np.mean(ratio,0)
-      scalefac[ii] = np.nanmean(scalesignal[ii],0)/np.nanmean(model[ii],0)
-      scalemodel[ii] = scalefac[ii] * model[ii]
-   return scalefac, scalemodel
-
-
-def scalemodel(model, scalefac):
-   """
-   Given a scale factor, multiply by model to get scaled model
-
-   Parameters
-   ----------
-   model : array
-      original model
-   scalefac : array of model.shape[0]
-      array of scalefactors
-
-   Returns
-   -------
-   scaledmodel : array
-      model scaled by scale factor
-   """
-   for ii, mm in enumerate(model):
-      scaledmodel[ii] = mm * scalefac[ii]
-   return scaledmodel
+    Returns
+    -------
+    scalefac : array of len(signal)
+       the scaling factor for each transient
+    scalemodel : array of model.shape
+       the scaled model
+    """
+    scalefac = np.empty(model.shape[0])
+    scalemodel = np.empty((model.shape[0], np.real(model).shape[1]))
+    scalesignal = np.empty((signal.shape[0], np.real(signal).shape[1]))
+    for ii, xx in enumerate(signal):  # per transient
+        scalesignal[ii] = np.real(xx)
+        scalefac[ii] = (np.nanmean(scalesignal[ii], 0) /
+                        np.nanmean(model[ii], 0))
+        scalemodel[ii] = scalefac[ii] * model[ii]
+    return scalefac, scalemodel
 
 
 def fit_gaussian(spectra, f_ppm, lb=2.6, ub=3.6):
-   """
-   Fit a gaussian function to the difference spectra to be used for estimation
-   of the GABA peak.
+    """
+    Fit a gaussian function to the difference spectra to be used for estimation
+    of the GABA peak.
 
-   Parameters
-   ----------
-   spectra : array of shape (n_transients, n_points)
+    Parameters
+    ----------
+    spectra : array of shape (n_transients, n_points)
       Typically the difference of the on/off spectra in each transient.
 
-   f_ppm : array
+    f_ppm : array
 
-   lb, ub : floats
+    lb, ub : floats
       In ppm, the range over which optimization is bounded
 
-   """
-   idx = ut.make_idx(f_ppm, lb, ub)
-   # We are only going to look at the interval between lb and ub
-   n_points = idx.stop - idx.start
-   n_params = 5
-   fit_func = ut.gaussian
-   # Set the bounds for the optimization
-   bounds = [(lb,ub), # peak location
-             (0,None), # sigma
-             (0,None), # amp
-             (None, None), # offset
-             (None, None)  # drift
-             ]
+    """
+    idx = ut.make_idx(f_ppm, lb, ub)
+    # We are only going to look at the interval between lb and ub
+    n_points = idx.stop - idx.start
+    n_params = 5
+    fit_func = ut.gaussian
+    # Set the bounds for the optimization
+    bounds = [(lb, ub),  # peak location
+              (0, None),  # sigma
+              (0, None),  # amp
+              (None, None),  # offset
+              (None, None)   # drift
+              ]
 
-   model = np.empty((spectra.shape[0], n_points))
-   signal = np.empty((spectra.shape[0], n_points))
-   params = np.empty((spectra.shape[0], n_params))
-   for ii, xx in enumerate(spectra):
-      # We fit to the real spectrum:
-      signal[ii] = np.real(xx[idx])
-      # Use the signal for a rough estimate of the parameters for
-      # initialization :
-      max_idx = np.argmax(signal[ii])
-      max_sig = np.max(signal[ii])
-      initial_f0 = f_ppm[idx][max_idx]
-      half_max_idx = np.argmin(np.abs(signal[ii] - max_sig/2))
-      # We estimate sigma as the hwhm:
-      initial_sigma = np.abs(initial_f0 - f_ppm[idx][half_max_idx])
-      initial_off = np.min(signal[ii])
-      initial_drift = 0
-      initial_amp = max_sig
+    model = np.empty((spectra.shape[0], n_points))
+    signal = np.empty((spectra.shape[0], n_points))
+    params = np.empty((spectra.shape[0], n_params))
+    for ii, xx in enumerate(spectra):
+        # We fit to the real spectrum:
+        signal[ii] = np.real(xx[idx])
+        # Use the signal for a rough estimate of the parameters for
+        # initialization :
+        max_idx = np.argmax(signal[ii])
+        max_sig = np.max(signal[ii])
+        initial_f0 = f_ppm[idx][max_idx]
+        half_max_idx = np.argmin(np.abs(signal[ii] - max_sig/2))
+        # We estimate sigma as the hwhm:
+        initial_sigma = np.abs(initial_f0 - f_ppm[idx][half_max_idx])
+        initial_off = np.min(signal[ii])
+        initial_drift = 0
+        initial_amp = max_sig
 
-      initial = (initial_f0,
-                 initial_sigma,
-                 initial_amp,
-                 initial_off,
-                 initial_drift)
+        initial = (initial_f0,
+                   initial_sigma,
+                   initial_amp,
+                   initial_off,
+                   initial_drift)
 
-      params[ii], _ = lsq.leastsqbound(mopt.err_func,
-                                       initial,
-                                       args=(f_ppm[idx],
-                                             np.real(signal[ii]),
-                                             fit_func), bounds=bounds)
+        params[ii], _ = lsq.leastsqbound(mopt.err_func,
+                                         initial,
+                                         args=(f_ppm[idx],
+                                               np.real(signal[ii]),
+                                               fit_func),
+                                         bounds=bounds)
 
-      model[ii] = fit_func(f_ppm[idx], *params[ii])
+        model[ii] = fit_func(f_ppm[idx], *params[ii])
 
-   return model, signal, params
+    return model, signal, params
 
 
 def integrate(func, x, args=(), offset=0, drift=0):
-   """
-   Integrate a function over the domain x
+    """
+    Integrate a function over the domain x
 
-   Parameters
-   ----------
-   func : callable
-       A function from the domain x to floats. The first input to this function
-       has to be x, an array with values to evaluate for, running in monotonic
-       order
+    Parameters
+    ----------
+    func : callable
+        A function from the domain x to floats. The first input to this function
+        has to be x, an array with values to evaluate for, running in monotonic
+        order
 
-   x : float array
-      The domain over which to integrate, as sampled. This can be monotonically
-      decreasing or monotonically increasing.
+    x : float array
+       The domain over which to integrate, as sampled. This can be monotonically
+       decreasing or monotonically increasing.
 
-   args : tuple
-       The parameters of func after x.
+    args : tuple
+        The parameters of func after x.
 
-   offset :
+    offset :
 
-   Notes
-   -----
-   We apply the trapezoid rule for integration here, using
-   scipy.integrate.trapz.
+    Notes
+    -----
+    We apply the trapezoid rule for integration here, using
+    scipy.integrate.trapz.
 
-   See: http://en.wikipedia.org/wiki/Trapezoidal_rule
+    See: http://en.wikipedia.org/wiki/Trapezoidal_rule
 
-   """
-   # If it's monotonically decreasing (as is often the case here), we invert
-   # it, so that our results are strictly positive
-   if x[1]<x[0]:
-      x = x[::-1]
-   y = func(x, *args)
-   # Correct for offset and drift, if those are present and specified
-   # (otherwise default to 0 on both):
-   y = y - offset
-   y = y - drift * (x-x[0])
-   # Use trapezoidal integration on the corrected function:
-   return spi.trapz(y, x)
+    """
+    # If it's monotonically decreasing (as is often the case here), we invert
+    # it, so that our results are strictly positive
+    if x[1]<x[0]:
+        x = x[::-1]
+    y = func(x, *args)
+    # Correct for offset and drift, if those are present and specified
+    # (otherwise default to 0 on both):
+    y = y - offset
+    y = y - drift * (x-x[0])
+    # Use trapezoidal integration on the corrected function:
+    return spi.trapz(y, x)
 
 
 def simple_auc(spectrum, f_ppm, center=3.00, bandwidth=0.30):
-   """
-   Calculates area under the curve (no fitting)
+    """
+    Calculates area under the curve (no fitting)
 
-   Parameters
-   ----------
-   spectrum : array of shape (n_transients, n_points)
+    Parameters
+    ----------
+    spectrum : array of shape (n_transients, n_points)
       Typically the difference of the on/off spectra in each transient.
 
-   center, bandwidth : float
+    center, bandwidth : float
       Determine the limits for the part of the spectrum for which we want
       to calculate the AUC.
       e.g. if center = 3.0, bandwidth = 0.3, lower and upper bounds will be
       2.85 and 3.15 respectively (center +/- bandwidth/2).
 
-   Notes
-   -----
-   Default center and bandwidth are 3.0 and 0.3ppm respectively
+    Notes
+    -----
+    Default center and bandwidth are 3.0 and 0.3ppm respectively
     because of Sanacora 1999 pg 1045:
-   "The GABA signal was integrated over a 0.30-ppm bandwidth at 3.00ppm"
+    "The GABA signal was integrated over a 0.30-ppm bandwidth at 3.00ppm"
 
-   Ref: Sanacora, G., Mason, G. F., Rothman, D. L., Behar, K. L., Hyder, F.,
-   Petroff, O. A., ... & Krystal, J. H. (1999). Reduced cortical
-   {gamma}-aminobutyric acid levels in depressed patients determined by proton
-   magnetic resonance spectroscopy. Archives of general psychiatry, 56(11),
-   1043.
+    Ref: Sanacora, G., Mason, G. F., Rothman, D. L., Behar, K. L., Hyder, F.,
+    Petroff, O. A., ... & Krystal, J. H. (1999). Reduced cortical
+    {gamma}-aminobutyric acid levels in depressed patients determined by proton
+    magnetic resonance spectroscopy. Archives of general psychiatry, 56(11),
+    1043.
 
-   """
-   range = np.max(f_ppm)-np.min(f_ppm)
-   dx=float(range)/float(len(f_ppm))
+    """
+    range = np.max(f_ppm) - np.min(f_ppm)
+    dx = float(range) / float(len(f_ppm))
 
-   lb = np.floor((np.max(f_ppm)-float(center)+float(bandwidth)/2)/dx)
-   ub = np.ceil((np.max(f_ppm)-float(center)-float(bandwidth)/2)/dx)
+    lb = np.floor((np.max(f_ppm)-float(center)+float(bandwidth)/2)/dx)
+    ub = np.ceil((np.max(f_ppm)-float(center)-float(bandwidth)/2)/dx)
 
-   auc = trapz(spectrum[ub:lb].real, dx=dx)
+    auc = trapz(spectrum[ub:lb].real, dx=dx)
 
-   return auc, ub, lb
+    return auc, ub, lb
