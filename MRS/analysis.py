@@ -743,13 +743,13 @@ def integrate(func, x, args=(), offset=0, drift=0):
     Parameters
     ----------
     func : callable
-        A function from the domain x to floats. The first input to this function
-        has to be x, an array with values to evaluate for, running in monotonic
-        order
+        A function from the domain x to floats. The first input to this
+        function has to be x, an array with values to evaluate for, running in
+        monotonic order
 
     x : float array
-       The domain over which to integrate, as sampled. This can be monotonically
-       decreasing or monotonically increasing.
+       The domain over which to integrate, as sampled. This can be
+       monotonically decreasing or monotonically increasing.
 
     args : tuple
         The parameters of func after x.

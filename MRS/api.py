@@ -17,7 +17,7 @@ try:
     import MRS.freesurfer as fs
 except ImportError:
     warnings.warn("Nipype is not installed. Some functions might not work")
-    
+
 
 class GABA(object):
     """
@@ -26,7 +26,7 @@ class GABA(object):
 
     def __init__(self,
                  in_data,
-                 w_idx=[1,2,3],
+                 w_idx=[1, 2, 3],
                  line_broadening=5,
                  zerofill=100,
                  filt_method=None,
@@ -44,11 +44,11 @@ class GABA(object):
         w_idx : list (optional)
             The indices to the non-water-suppressed transients. Per default we
             take the 2nd-4th transients. We dump the first one, because it
-            seems to be quite different than the rest of them. 
+            seems to be quite different than the rest of them.
 
         line_broadening : float (optional)
            How much to broaden the spectral line-widths (Hz). Default: 5
-           
+
         zerofill : int (optional)
            How many zeros to add to the spectrum for additional spectral
            resolution. Default: 100
@@ -60,30 +60,30 @@ class GABA(object):
             How to derive spectra. Per default, a simple Fourier transform will
             be derived from apodized time-series, but other methods can also be
             used (see `nitime` documentation for details)
-            
+
         min_ppm, max_ppm : float
            The limits of the spectra that are represented
 
         sampling_rate : float
            The sampling rate in Hz.
-        
+
         """
         if isinstance(in_data, str):
             # The nifti files follow the strange nifti convention, but we want
             # to use our own logic, which is transients on dim 0 and time on
             # dim -1:
             self.raw_data = np.transpose(nib.load(in_data).get_data(),
-                                         [1,2,3,4,5,0]).squeeze()
+                                         [1, 2, 3, 4, 5, 0]).squeeze()
         elif isinstance(in_data, np.ndarray):
             self.raw_data = in_data
 
         w_data, w_supp_data = ana.coil_combine(self.raw_data, w_idx=w_idx,
                                                sampling_rate=sampling_rate)
         f_hz, w_supp_spectra = ana.get_spectra(w_supp_data,
-                                           line_broadening=line_broadening,
-                                           zerofill=zerofill,
-                                           filt_method=filt_method,
-                                           spect_method=spect_method)
+                                               line_broadening=line_broadening,
+                                               zerofill=zerofill,
+                                               filt_method=filt_method,
+                                               spect_method=spect_method)
 
         self.w_supp_spectra = w_supp_spectra
 
@@ -95,17 +95,17 @@ class GABA(object):
         self.w_supp_lorentz = np.zeros(w_supp_spectra.shape[:-1] + (6,))
         for ii in range(self.w_supp_lorentz.shape[0]):
             for jj in range(self.w_supp_lorentz.shape[1]):
-                self.w_supp_lorentz[ii,jj]=\
-                    ana._do_lorentzian_fit(f_hz, w_supp_spectra[ii,jj])
+                self.w_supp_lorentz[ii, jj] = \
+                    ana._do_lorentzian_fit(f_hz, w_supp_spectra[ii, jj])
 
         # We store the frequency offset for each transient/echo:
         self.freq_offset = self.w_supp_lorentz[..., 0]
 
         # But for now, we average over all the transients/echos for the
-        # correction: 
+        # correction:
         mean_freq_offset = np.mean(self.w_supp_lorentz[..., 0])
         f_hz = f_hz - mean_freq_offset
-    
+
         self.water_fid = w_data
         self.w_supp_fid = w_supp_data
         # This is the time-domain signal of interest, combined over coils:
@@ -123,7 +123,7 @@ class GABA(object):
         idx1 = np.argmin(np.abs(f_ppm - max_ppm))
         self.idx = slice(idx1, idx0)
         self.f_ppm = f_ppm
-    
+
         self.echo_off = spectra[:, 1]
         self.echo_on = spectra[:, 0]
 
@@ -131,7 +131,6 @@ class GABA(object):
         self.diff_spectra = self.echo_on - self.echo_off
         self.sum_spectra = self.echo_off + self.echo_on
 
-        
     def reset_fits(self):
         """
         This is used to restore the original state of the fits.
@@ -139,15 +138,14 @@ class GABA(object):
         for attr in ['creatine_params', 'creatine_model', 'creatine_signal',
                      'cr_idx', 'creatine_auc', 'gaba_params', 'gaba_model',
                      'gaba_signal', 'gaba_idx', 'gaba_auc', 'glx_params',
-                     'glx_model', 'glx_signal', 'glx_idx', 'glx_auc' ]:
+                     'glx_model', 'glx_signal', 'glx_idx', 'glx_auc']:
             if hasattr(self, attr):
                 self.__delattr__(attr)
 
-
     def fit_water(self, line_broadening=5, zerofill=100,
-                 filt_method=None, min_ppm=-5.0, max_ppm=5.0):
+                  filt_method=None, min_ppm=-5.0, max_ppm=5.0):
         """
-
+        Fit the water signal
         """
         # Get the water spectrum as well:
         f_hz, w_spectra = ana.get_spectra(self.water_fid,
@@ -155,7 +153,6 @@ class GABA(object):
                                           zerofill=zerofill,
                                           filt_method=filt_method)
 
-        f_ppm = ut.freq_to_ppm(f_hz)
         # Averaging across echos:
         self.water_spectra = np.mean(w_spectra, 1)
         model, signal, params = ana.fit_lorentzian(self.water_spectra,
@@ -168,9 +165,7 @@ class GABA(object):
         self.water_signal = signal
         self.water_params = params
         self.water_idx = ut.make_idx(self.f_ppm, min_ppm, max_ppm)
-        mean_params = stats.nanmean(params, 0)
         self.water_auc = self._calc_auc(ut.lorentzian, params, self.water_idx)
-
 
     def _calc_auc(self, model, params, idx):
         """
@@ -204,25 +199,22 @@ class GABA(object):
         for t in range(auc.shape[0]):
             model1 = model(self.f_ppm[idx], *p[t])
             # This controls the amplitude in both the Gaussian and the
-            # Lorentzian: 
+            # Lorentzian:
             p[t, 1] = 0
             model0 = model(self.f_ppm[idx], *p[t])
             auc[t] = np.sum((model1 - model0) * delta_f)
         return auc
 
-    def _outlier_rejection(self, params, model, signal, ii):
+    def _outlier_rejection(self, params, model, signal, ii, zthresh=3.0):
         """
         Helper function to reject outliers
-
-        DRY!
-        
         """
         # Z score across repetitions:
         z_score = (params - np.mean(params, 0))/np.std(params, 0)
-        # Silence warnings: 
+        # Silence warnings:
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            outlier_idx = np.where(np.abs(z_score)>3.0)[0]
+            outlier_idx = np.where(np.abs(z_score) > zthresh)[0]
             nan_idx = np.where(np.isnan(params))[0]
             outlier_idx = np.unique(np.hstack([nan_idx, outlier_idx]))
             ii[outlier_idx] = 0
@@ -272,29 +264,32 @@ class GABA(object):
                                                                 model,
                                                                 signal,
                                                                 ii)
-            
+
         # We'll keep around a private attribute to tell us which transients
         # were good (this is for both creatine and choline):
         self._cr_transients = np.where(ii)
-        
+
         # Now we separate choline and creatine params from each other (remember
         # that they both share offset and drift!):
-        self.choline_params = params[:, (0,2,4,6,8,9)]
-        self.creatine_params = params[:, (1,3,5,7,8,9)]
-        
+        self.choline_params = params[:, (0, 2, 4, 6, 8, 9)]
+        self.creatine_params = params[:, (1, 3, 5, 7, 8, 9)]
+
         self.cr_idx = ut.make_idx(self.f_ppm, fit_lb, fit_ub)
 
         # We'll need to generate the model predictions from these parameters,
         # because what we're holding in 'model' is for both together:
         self.choline_model = np.zeros((self.creatine_params.shape[0],
-                                    np.abs(self.cr_idx.stop-self.cr_idx.start)))
+                                       np.abs(self.cr_idx.stop -
+                                              self.cr_idx.start)))
 
         self.creatine_model = np.zeros((self.choline_params.shape[0],
-                                    np.abs(self.cr_idx.stop-self.cr_idx.start)))
-        
+                                        np.abs(self.cr_idx.stop -
+                                               self.cr_idx.start)))
+
         for idx in range(self.creatine_params.shape[0]):
             self.creatine_model[idx] = ut.lorentzian(self.f_ppm[self.cr_idx],
-                                                     *self.creatine_params[idx])
+                                                     *self.creatine_params[idx]
+                                                     )
             self.choline_model[idx] = ut.lorentzian(self.f_ppm[self.cr_idx],
                                                     *self.choline_params[idx])
         self.creatine_signal = signal
@@ -305,12 +300,11 @@ class GABA(object):
                                           self.choline_params,
                                           self.cr_idx)
 
-
     def _fit_helper(self, fit_spectra, reject_outliers, fit_lb, fit_ub,
                     fit_func):
         """
-        This is a helper function for fitting different segments of the spectrum
-        with Gaussian functions (GLX and GABA).
+        This is a helper function for fitting different segments of the
+        spectrum with Gaussian functions (GLX and GABA).
 
         Parameters
         ----------
@@ -370,18 +364,19 @@ class GABA(object):
         this_idx = ut.make_idx(self.f_ppm, fit_lb, fit_ub)
         return choose_transients, model, signal, params, this_idx
 
-
     def _xval_choose_funcs(self, fit_spectra, reject_outliers, fit_lb, fit_ub,
-                           fitters=[ana.fit_gaussian,ana.fit_two_gaussian],
-                           funcs = [ut.gaussian, ut.two_gaussian]):
-        """ Helper function used to do split-half xvalidation to select among
-            alternative models"""
+                           fitters=[ana.fit_gaussian, ana.fit_two_gaussian],
+                           funcs=[ut.gaussian, ut.two_gaussian]):
+        """
+        Helper function used to do split-half xvalidation to select among
+        alternative models
+        """
 
         set1 = fit_spectra[::2]
         set2 = fit_spectra[1::2]
 
         errs = []
-        signal_select = [] 
+        signal_select = []
         # We can loop over functions and try each one out, checking the
         # error in each:
         for fitter in fitters:
@@ -390,13 +385,13 @@ class GABA(object):
             for this_set in [set1, set2]:
                 choose_transients, model, signal, params, this_idx =\
                     self._fit_helper(this_set, reject_outliers,
-                                    fit_lb, fit_ub, fitter)
+                                     fit_lb, fit_ub, fitter)
                 models.append(np.nanmean(model[choose_transients], 0))
                 signals.append(np.nanmean(signal[choose_transients], 0))
 
                 signal_select.append(signal[choose_transients])
-                
-            #Cross-validate!
+
+            # Cross-validate!
             errs.append(np.mean([ut.rmse(models[0], signals[1]),
                                  ut.rmse(models[1], signals[0])]))
         # We really only need to look at the first two:
@@ -405,9 +400,9 @@ class GABA(object):
         # Based on the errors, choose a function. Also report errors:
         return (fitters[np.argmin(errs)], funcs[np.argmin(errs)], np.min(errs),
                 signal_err)
-            
+
     def _xval_model_error(self, fit_spectra, reject_outliers, fit_lb, fit_ub,
-                           fitter, func):
+                          fitter, func):
         """
         Helper function for calculation of split-half cross-validation model
         error and signal reliability.
@@ -415,8 +410,7 @@ class GABA(object):
         """
         set1 = fit_spectra[::2]
         set2 = fit_spectra[1::2]
-        errs = []
-        signal_select = [] 
+        signal_select = []
         models = []
         signals = []
         for this_set in [set1, set2]:
@@ -427,17 +421,16 @@ class GABA(object):
             signals.append(np.nanmean(signal[choose_transients], 0))
 
             signal_select.append(signal[choose_transients])
-                
-        #Cross-validation error estimation:
+
+        # Cross-validation error estimation:
         model_err = np.mean([ut.rmse(models[0], signals[1]),
-                              ut.rmse(models[1], signals[0])])
+                             ut.rmse(models[1], signals[0])])
         # Also for the signal:
         signal_err = ut.rmse(np.nanmean(signal_select[0], 0),
                              np.nanmean(signal_select[1], 0))
         # Based on the errors, choose a function. Also report errors:
         return model_err, signal_err
 
-            
     def fit_gaba(self, reject_outliers=3.0, fit_lb=2.8, fit_ub=3.4,
                  phase_correct=True, fit_func=None):
         """
@@ -465,7 +458,6 @@ class GABA(object):
             callable function will be fit. Needs to conform to the conventions
             of `fit_gaussian`/`fit_two_gaussian` and
             `ut.gaussian`/`ut.two_gaussian`.
-
         """
         # We need to fit the creatine, so that we know which transients to
         # exclude in fitting this peak:
@@ -484,15 +476,21 @@ class GABA(object):
                 # Silence warnings:
                 with warnings.catch_warnings():
                     warnings.simplefilter("ignore")
-                    fit_spectra[ii] = ut.phase_correct_zero(this_spec,
-                            self.creatine_params[self._cr_transients][ii, 3])
+                    fit_spectra[ii] = ut.phase_correct_zero(
+                                        this_spec,
+                                        self.creatine_params[
+                                            self._cr_transients][ii, 3])
 
         if fit_func is None:
             # Cross-validate!
-            fitter, self.gaba_func, self.gaba_model_err, self.gaba_signal_err=\
+            fitter, gaba_func, gaba_model_err, gaba_signal_err = \
                 self._xval_choose_funcs(fit_spectra,
                                         reject_outliers,
                                         fit_lb, fit_ub)
+            self.gaba_func = gaba_func
+            self.gaba_model_err = gaba_model_err
+            self.gaba_signal_err = gaba_signal_err
+
         # Otherwise, you had better supply a couple of callables that can be
         # used to fit these spectra!
         else:
@@ -501,7 +499,7 @@ class GABA(object):
             self.gaba_model_err, self.gaba_signal_err = \
                 self._xval_model_error(fit_spectra, reject_outliers,
                                        fit_lb, fit_ub, fitter, self.gaba_func)
-        # Either way, we end up fitting to everything in the end: 
+        # Either way, we end up fitting to everything in the end:
         choose_transients, model, signal, params, this_idx = self._fit_helper(
                                          fit_spectra, reject_outliers,
                                          fit_lb, fit_ub, fitter)
@@ -511,10 +509,7 @@ class GABA(object):
         self.gaba_signal = signal
         self.gaba_params = params
         self.gaba_idx = this_idx
-        mean_params = stats.nanmean(params, 0)
-
-        self.gaba_auc =  self._calc_auc(self.gaba_func, params, self.gaba_idx)
-
+        self.gaba_auc = self._calc_auc(self.gaba_func, params, self.gaba_idx)
 
     def fit_glx(self, reject_outliers=3.0, fit_lb=3.6, fit_ub=3.9,
                 fit_func=None):
@@ -550,10 +545,13 @@ class GABA(object):
 
         if fit_func is None:
             # Cross-validate!
-            fitter, self.glx_func, self.glx_model_err, self.glx_signal_err=\
+            fitter, glx_func, glx_model_err, glx_signal_err = \
                 self._xval_choose_funcs(fit_spectra,
                                         reject_outliers,
                                         fit_lb, fit_ub)
+            self.glx_func = glx_func
+            self.glx_model_err = glx_model_err
+            self.glx_signal_err = glx_signal_err
         # Otherwise, you had better supply a couple of callables that can be
         # used to fit these spectra!
         else:
@@ -573,9 +571,7 @@ class GABA(object):
         self.glx_signal = signal
         self.glx_params = params
         self.glx_idx = this_idx
-        mean_params = stats.nanmean(params, 0)
-
-        self.glx_auc =  self._calc_auc(self.glx_func, params, self.glx_idx)
+        self.glx_auc = self._calc_auc(self.glx_func, params, self.glx_idx)
 
 
     def fit_naa(self, reject_outliers=3.0, fit_lb=1.8, fit_ub=2.4,
@@ -596,7 +592,6 @@ class GABA(object):
         self.naa_signal = signal
         self.naa_params = params
         self.naa_idx = ut.make_idx(self.f_ppm, fit_lb, fit_ub)
-        mean_params = stats.nanmean(params, 0)
         self.naa_auc = self._calc_auc(ut.lorentzian, params, self.naa_idx)
 
 
@@ -655,30 +650,33 @@ class GABA(object):
         # We'll need to generate the model predictions from these parameters,
         # because what we're holding in 'model' is for both together:
         self.glxp1_model = np.zeros((self.glxp1_params.shape[0],
-                                np.abs(self.glx2_idx.stop-self.glx2_idx.start)))
+                                     np.abs(self.glx2_idx.stop -
+                                            self.glx2_idx.start)))
 
         self.glxp2_model = np.zeros((self.glxp2_params.shape[0],
-                                np.abs(self.glx2_idx.stop-self.glx2_idx.start)))
+                                     np.abs(self.glx2_idx.stop -
+                                            self.glx2_idx.start)))
 
         for idx in range(self.glxp2_params.shape[0]):
             self.glxp2_model[idx] = ut.gaussian(self.f_ppm[self.glx2_idx],
                                                 *self.glxp2_params[idx])
-            self.glxp1_model[idx] = ut.gaussian(self.f_ppm[self.glx2_idx],
-                                                    *self.glxp1_params[idx])
+            self.glxp1_model[idx] = ut.gaussian(
+                                        self.f_ppm[self.glx2_idx],
+                                        *self.glxp1_params[idx])
 
         if scalefit:
             combinedmodel = self.glxp2_model + self.glxp1_model
             scalefac, scalemodel = ana._do_scale_fit(
-                self.f_ppm[self.glx2_idx], signal,combinedmodel)
+                self.f_ppm[self.glx2_idx], signal, combinedmodel)
             # Reject outliers:
-            scalemodel, signal, params, ii = self._rm_outlier_by_amp(params,
-                                                                scalemodel,
-                                                                signal,
-                                                                ii)
+            scalemodel, signal, params, ii = self._rm_outlier_by_amp(
+                                                        params,
+                                                        scalemodel,
+                                                        signal,
+                                                        ii)
             self.glx2_model = scalemodel
         else:
             self.glx2_model = self.glxp1_model + self.glxp2_model
-
 
         self.glx2_signal = signal
         self.glx2_auc = (
@@ -686,15 +684,15 @@ class GABA(object):
             self._calc_auc(ut.gaussian, self.glxp1_params, self.glx2_idx))
 
 
-    def _rm_outlier_by_amp(self, params, model, signal, ii):
+    def _rm_outlier_by_amp(self, params, model, signal, ii, zthresh=2.0):
         """
         Helper function to reject outliers based on mean amplitude
         """
-        maxamps = np.nanmax(np.abs(model),0)
-        z_score = (maxamps - np.nanmean(maxamps,0))/np.nanstd(maxamps,0)
+        maxamps = np.nanmax(np.abs(model), 0)
+        z_score = (maxamps - np.nanmean(maxamps, 0)) / np.nanstd(maxamps, 0)
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            outlier_idx = np.where(np.abs(z_score)>2.0)[0]
+            outlier_idx = np.where(np.abs(z_score) > zthresh)[0]
             nan_idx = np.where(np.isnan(params))[0]
             outlier_idx = np.unique(np.hstack([nan_idx, outlier_idx]))
             ii[outlier_idx] = 0
@@ -703,7 +701,6 @@ class GABA(object):
             params[outlier_idx] = np.nan
 
         return model, signal, params, ii
-
 
     def est_gaba_conc(self):
         """
@@ -723,32 +720,29 @@ class GABA(object):
 
         # estimate [GABA] according to equation9
         gaba_conc_est = self.gaba_auc / self.creatine_auc * 1.5 * 9.0
-        
-        self.gaba_conc_est = gaba_conc_est
 
+        self.gaba_conc_est = gaba_conc_est
 
     def voxel_seg(self, segfile, MRSfile):
         """
         add voxel segmentation info
-        
+
         Parameters
         ----------
-        
+
         segfile : str
             Path to nifti file with segmentation info (e.g. XXXX_aseg.nii.gz)
-        
+
         MRSfile : str
-            Path to MRS nifti file 
+            Path to MRS nifti file
         """
         total, grey, white, csf, nongmwm, pGrey, pWhite, pCSF, pNongmwm =\
             fs.MRSvoxelStats(segfile, MRSfile)
-        
+
         self.pGrey = pGrey
         self.pWhite = pWhite
         self.pCSF = pCSF
         self.pNongmwm = pNongmwm
-
-
 
 
 class SingleVoxel(object):
@@ -768,7 +762,7 @@ class SingleVoxel(object):
 
         line_broadening : float
            How much to broaden the spectral line-widths (Hz)
-           
+
         zerofill : int
            How many zeros to add to the spectrum for additional spectral
            resolution
@@ -778,13 +772,13 @@ class SingleVoxel(object):
 
         fit_lb, fit_ub : float
            The limits for the part of the spectrum for which we fit the
-           creatine and GABA peaks. 
-        
+           creatine and GABA peaks.
+
         """
         self.raw_data = np.transpose(nib.load(in_file).get_data(),
-                                     [1,2,3,4,5,0]).squeeze()
+                                     [1, 2, 3, 4, 5, 0]).squeeze()
 
-        w_data, w_supp_data = ana.coil_combine(self.raw_data, w_idx = range(8),
+        w_data, w_supp_data = ana.coil_combine(self.raw_data, w_idx=range(8),
                                                coil_dim=1)
         # We keep these around for reference, as private attrs
         self._water_data = w_data
@@ -796,7 +790,7 @@ class SingleVoxel(object):
                                         line_broadening=line_broadening,
                                         zerofill=zerofill,
                                         filt_method=filt_method)
-                                           
+
         self.f_hz = f_hz
         # Convert from Hz to ppm and extract the part you are interested in.
         f_ppm = ut.freq_to_ppm(self.f_hz)
@@ -804,4 +798,4 @@ class SingleVoxel(object):
         idx1 = np.argmin(np.abs(f_ppm - max_ppm))
         self.idx = slice(idx1, idx0)
         self.f_ppm = f_ppm
-        self.spectra = spectra[:,self.idx]
+        self.spectra = spectra[:, self.idx]
