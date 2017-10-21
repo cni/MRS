@@ -154,9 +154,10 @@ def fetch_from_sdr(folder=data_folder, data='test'):
             _get_file_data(fname, url + k)
             check_md5(fname, v)
         else:
-            print('File %s is already in place. If you want to fetch',
-                  'it again,  please first remove it from the folder %s' %
-                  (fname, folder))
+            print('File %s is already in place' % fname,
+                  'If you want to fetch it again, ',
+                  'please first remove it from the folder',
+                   ' %s' % folder)
 
     print('Done.')
     print('Files copied in folder %s' % folder)
