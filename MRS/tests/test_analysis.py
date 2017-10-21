@@ -13,7 +13,7 @@ import MRS.utils as ut
 import MRS.analysis as ana
 import MRS.data as mrd
 
-data_folder = os.path.join(os.path.join(os.path.expanduser('~'), '.mrs_data'))
+data_folder = mrd.data_folder
 file_name = os.path.join(data_folder, 'pure_gaba_P64024.nii.gz')
 
 def test_separate_signals():
@@ -26,14 +26,14 @@ def test_separate_signals():
     npt.assert_equal(w_data.shape[-1], data.shape[-1])
     npt.assert_equal(w_supp_data.shape[-1], data.shape[-1])
     npt.assert_array_equal(data[1], w_data[0])
-    
+
 def test_coil_combine():
     """
     Test combining of information from different coils
     """
     data = np.transpose(nib.load(file_name).get_data(), [1,2,3,4,5,0]).squeeze()
     w_data, w_supp_data = ana.coil_combine(data)
-    # Make sure that the time-dimension is still correct: 
+    # Make sure that the time-dimension is still correct:
     npt.assert_equal(w_data.shape[-1], data.shape[-1])
     npt.assert_equal(w_supp_data.shape[-1], data.shape[-1])
 
@@ -43,7 +43,7 @@ def test_coil_combine():
                                   np.zeros_like(w_data[:,:,0]),
                                   decimal=1)  # We're not being awfully strict
                                               # about it.
-        
+
 def test_get_spectra():
     """
     Test the function that does the spectral analysis
@@ -63,7 +63,7 @@ def test_get_spectra():
                                        sampling_rate=5000),
                                        line_broadening=5,
                                        zerofill=1000)
-    
+
 def test_bootstrap_stat():
     """
     Test simple bootstrapping statistics

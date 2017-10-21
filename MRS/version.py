@@ -2,7 +2,7 @@
 
 # Format expected by setup.py and doc/source/conf.py: string of form "X.Y.Z"
 _version_major = 0
-_version_minor = 1
+_version_minor = 2
 _version_micro = ''  # use '' for first of series, number for 1 and above
 _version_extra = 'dev'
 _version_extra = ''  # Uncomment this for full releases
@@ -32,7 +32,7 @@ The STANFORD CNI MRS ANALYSIS LIBRARY (SMAL)
 --------------------------------------------
 
 This library contains implementations of analysis of data acquired in
-magnetic resonance spectroscopy experiments (MRS). 
+magnetic resonance spectroscopy experiments (MRS).
 
 
 Copyright (c) 2013-, Ariel Rokem, Grace Tang.
@@ -59,7 +59,7 @@ MINOR = _version_minor
 MICRO = _version_micro
 VERSION = __version__
 PACKAGES = ['MRS', 'MRS.leastsqbound', 'MRS.tests']
-BIN = 'bin/'            
+BIN = 'bin/'
 PACKAGE_DATA = {"MRS": ["LICENSE"]}
 
 REQUIRES = ["numpy", "matplotlib", "scipy",
