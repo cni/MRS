@@ -75,6 +75,7 @@ that the upstream file has been updated.""" % (fullpath, md5)
     else:
         _log("Files successfully downloaded to %s" % (folder))
 
+
 def _get_file_md5(filename):
     """Compute the md5 checksum of a file"""
     md5_data = md5()
@@ -99,10 +100,12 @@ def check_md5(filename, stored_md5):
     """
     computed_md5 = _get_file_md5(filename)
     if stored_md5 != computed_md5:
-        print ("MD5 checksum of filename", filename,
-               "failed. Expected MD5 was", stored_md5,
-               "but computed MD5 was", computed_md5, '\n',
-               "Please check if the data has been downloaded correctly or if the upstream data has changed.")
+        print("MD5 checksum of filename", filename,
+              "failed. Expected MD5 was", stored_md5,
+              "but computed MD5 was", computed_md5, '\n',
+              "Please check if the data has been downloaded correctly",
+              "or if the upstream data has changed.")
+
 
 def _get_file_data(fname, url):
     with contextlib.closing(urlopen(url)) as opener:
@@ -129,14 +132,15 @@ def fetch_from_sdr(folder=data_folder, data='test'):
 
     if data == 'test':
         md5_dict = {'5182_1_1.nii.gz': '0656e59818538baa7d45311f2581bb4e',
-                '5182_15_1.nii.gz': 'a5a307b581620184baf868cd0df81f89',
-                'data.mat': 'a6275698f2220c65994354d412e6d82e',
-                'pure_gaba_P64024.nii.gz': 'f3e09ec0f00bd9a03910b19bfe731afb'}
+                    '5182_15_1.nii.gz': 'a5a307b581620184baf868cd0df81f89',
+                    'data.mat': 'a6275698f2220c65994354d412e6d82e',
+                    'pure_gaba_P64024.nii.gz':
+                    'f3e09ec0f00bd9a03910b19bfe731afb'}
 
     elif data == 'example':
         md5_dict = {'12_1_PROBE_MEGA_L_Occ.nii.gz':
                     'a0571606c1caa16a9d9b00847771bc94',
-                     '5062_2_1.nii.gz':
+                    '5062_2_1.nii.gz':
                     '6f77fb5134bc2841bdfc954390f0f4a4'}
 
     if not os.path.exists(folder):
@@ -146,11 +150,13 @@ def fetch_from_sdr(folder=data_folder, data='test'):
     for k, v in md5_dict.items():
         fname = pjoin(folder, k)
         if not os.path.exists(fname):
-            print('Downloading %s from SDR ...'%k)
+            print('Downloading %s from SDR ...' % k)
             _get_file_data(fname, url + k)
             check_md5(fname, v)
         else:
-            print('File %s is already in place. If you want to fetch it again, please first remove it from the folder %s ' % (fname, folder))
+            print('File %s is already in place. If you want to fetch',
+                  'it again,  please first remove it from the folder %s' %
+                  (fname, folder))
 
     print('Done.')
     print('Files copied in folder %s' % folder)

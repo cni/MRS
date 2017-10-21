@@ -683,7 +683,6 @@ class GABA(object):
             self._calc_auc(ut.gaussian, self.glxp2_params, self.glx2_idx) +
             self._calc_auc(ut.gaussian, self.glxp1_params, self.glx2_idx))
 
-
     def _rm_outlier_by_amp(self, params, model, signal, ii, zthresh=2.0):
         """
         Helper function to reject outliers based on mean amplitude
@@ -725,7 +724,7 @@ class GABA(object):
 
     def voxel_seg(self, segfile, MRSfile):
         """
-        add voxel segmentation info
+        Add voxel segmentation info.
 
         Parameters
         ----------
